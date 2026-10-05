@@ -1,0 +1,2 @@
+# Only eval/run_review.py needs these (Python 3.10+). The other scripts use the standard library.
+anthropic[bedrock]>=1.0

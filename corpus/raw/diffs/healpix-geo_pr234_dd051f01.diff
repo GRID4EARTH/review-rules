@@ -1,0 +1,891 @@
+diff --git a/js/README.md b/js/README.md
+index 222e14a1..9b2ce3b2 100644
+--- a/js/README.md
++++ b/js/README.md
+@@ -9,6 +9,12 @@ import init, * as healpixGeo from "healpix-geo";
+ 
+ await init(); // or use a bundler
+ 
++// parse once, reuse for any number of calls
++const ellipsoid = healpixGeo.Ellipsoid.from({
++  semi_major_axis: 6378137.0,
++  inverse_flattening: 298.257223563,
++}); // or Ellipsoid.from(null) for the default sphere
++
+ const cellId: bigint = 10;
+ const level: number = 2;
+ const { lon, lat } = healpixGeo.nested.healpixToLonLat(
+@@ -17,3 +23,16 @@ const { lon, lat } = healpixGeo.nested.healpixToLonLat(
+   ellipsoid,
+ );
+ ```
++
++### Migrating from 0.2.x
++
++- The ellipsoid argument of the `nested` / `ring` / `zuniq` functions is now
++  required and takes an `Ellipsoid` handle: pass `Ellipsoid.from(null)` where
++  `null` used to be passed.
++- `parseEllipsoid` keeps its name and input shapes, but returns the handle
++  instead of a `Sphere` / `EllipsoidInverseFlattening` /
++  `EllipsoidSemiMinorAxis` value — a breaking return-type change. Code that
++  only parses and passes the result is unaffected (and gains reuse); code that
++  read `radius` / `semi_major_axis` / `inverse_flattening` /
++  `semi_minor_axis` off the result reads `semiMajorAxis`, `flattening` and
++  `isSphere` instead. Those three classes are no longer exported.
+diff --git a/js/src/ellipsoid.rs b/js/src/ellipsoid.rs
+index 644bb22b..5348b705 100644
+--- a/js/src/ellipsoid.rs
++++ b/js/src/ellipsoid.rs
+@@ -1,13 +1,30 @@
+ use geodesy::ellps::Ellipsoid as GeodesyEllipsoid;
++use geodesy::prelude::EllipsoidBase;
+ use healpix_geo_core::ellipsoid::{
+-    Ellipsoid as RustEllipsoid, ReferenceEllipsoid, ReferenceSphere,
++    Ellipsoid as RustEllipsoid, ReferenceBody, ReferenceEllipsoid, ReferenceSphere,
+ };
+ use serde::Deserialize;
+ use serde_wasm_bindgen::from_value;
+ use wasm_bindgen::prelude::*;
+ 
++/// The plain-object shapes accepted wherever an ellipsoid is expected.
++///
++/// Mirrors [`EllipsoidLike`], which is an input (deserialization) type only
++/// and is therefore not exported as a class.
++#[wasm_bindgen(typescript_custom_section)]
++const ELLIPSOID_INPUT: &'static str = r#"
++export type EllipsoidInput =
++    | { radius: number }
++    | { semi_major_axis: number; inverse_flattening: number }
++    | { semi_major_axis: number; semi_minor_axis: number };
++"#;
++
++/// Plain-object shapes accepted as ellipsoid definitions.
++///
++/// This is an input (deserialization) type only; the parsed, reusable state
++/// lives in [`Ellipsoid`]. The TypeScript view of it is `EllipsoidInput`
++/// (see the custom section above).
+ #[derive(Deserialize, Debug, PartialEq)]
+-#[wasm_bindgen]
+ pub enum EllipsoidLike {
+     #[serde(untagged)]
+     EllipsoidInverseFlattening(EllipsoidInverseFlattening),
+@@ -18,14 +35,12 @@ pub enum EllipsoidLike {
+ }
+ 
+ #[derive(Deserialize, Debug, PartialEq)]
+-#[wasm_bindgen]
+ pub struct EllipsoidInverseFlattening {
+     pub semi_major_axis: f64,
+     pub inverse_flattening: f64,
+ }
+ 
+ #[derive(Deserialize, Debug, PartialEq)]
+-#[wasm_bindgen]
+ pub struct EllipsoidSemiMinorAxis {
+     pub semi_major_axis: f64,
+     pub semi_minor_axis: f64,
+@@ -44,7 +59,6 @@ impl From<EllipsoidSemiMinorAxis> for EllipsoidInverseFlattening {
+ }
+ 
+ #[derive(Deserialize, Debug, PartialEq)]
+-#[wasm_bindgen]
+ pub struct Sphere {
+     pub radius: f64,
+ }
+@@ -55,16 +69,6 @@ impl Default for Sphere {
+     }
+ }
+ 
+-#[wasm_bindgen(js_name = parseEllipsoid)]
+-pub fn parse_ellipsoid(obj: JsValue) -> Result<EllipsoidLike, JsValue> {
+-    let ellipsoid_like = if obj.is_null() {
+-        EllipsoidLike::Sphere(Sphere::default())
+-    } else {
+-        from_value(obj)?
+-    };
+-    Ok(ellipsoid_like)
+-}
+-
+ impl EllipsoidLike {
+     pub fn into_ellipsoid(self) -> RustEllipsoid {
+         match self {
+@@ -91,11 +95,90 @@ impl EllipsoidLike {
+     }
+ }
+ 
++/// A parsed, reusable reference body.
++///
++/// Unlike the previous `parseEllipsoid` result (a dynamic union that was
++/// *consumed* — moved into WASM — on first use), this handle is passed to
++/// functions by reference and can be reused for any number of calls. Parsing
++/// and the authalic-latitude Fourier coefficient computation happen once, at
++/// construction.
++#[wasm_bindgen]
++pub struct Ellipsoid {
++    pub(crate) inner: RustEllipsoid,
++}
++
++#[wasm_bindgen]
++impl Ellipsoid {
++    /// Parse a plain object (or `null` for the default sphere) into a
++    /// reusable ellipsoid handle.
++    ///
++    /// Accepted shapes:
++    /// - `null` or `undefined` (including a missing argument) — the default
++    ///   sphere (radius 6370997 m)
++    /// - `{ radius }` — a sphere
++    /// - `{ semi_major_axis, inverse_flattening }`
++    /// - `{ semi_major_axis, semi_minor_axis }`
++    ///
++    /// Note that `undefined` is accepted as well as `null`; upstream's
++    /// `parseEllipsoid` rejected it. Extra keys (e.g. `name`) are ignored.
++    #[wasm_bindgen(js_name = from)]
++    pub fn from_value(
++        #[wasm_bindgen(unchecked_param_type = "EllipsoidInput | null | undefined")] obj: JsValue,
++    ) -> Result<Ellipsoid, JsValue> {
++        let inner = if obj.is_null() || obj.is_undefined() {
++            RustEllipsoid::default()
++        } else {
++            let parsed: EllipsoidLike = from_value(obj)?;
++            parsed.into_ellipsoid()
++        };
++
++        Ok(Ellipsoid { inner })
++    }
++
++    /// Semi-major axis (the radius, for a sphere) in meters
++    #[wasm_bindgen(getter, js_name = semiMajorAxis)]
++    pub fn semi_major_axis(&self) -> f64 {
++        self.inner.ellipsoid().semimajor_axis()
++    }
++
++    /// Flattening (0 for a sphere)
++    #[wasm_bindgen(getter)]
++    pub fn flattening(&self) -> f64 {
++        self.inner.ellipsoid().flattening()
++    }
++
++    /// Whether this reference body is a sphere
++    #[wasm_bindgen(getter, js_name = isSphere)]
++    pub fn is_sphere(&self) -> bool {
++        matches!(self.inner, RustEllipsoid::Sphere(_))
++    }
++}
++
++/// Parse a plain object into a reusable [`Ellipsoid`] handle.
++///
++/// Deprecated alias of `Ellipsoid.from`. The name and the accepted input
++/// shapes are unchanged from 0.2.x, but **the return type is a breaking
++/// change**: it used to be a union value (`Sphere` /
++/// `EllipsoidInverseFlattening` / `EllipsoidSemiMinorAxis`) whose properties
++/// echoed the input (`radius`, `semi_major_axis`, `inverse_flattening`,
++/// `semi_minor_axis`), and it is now an [`Ellipsoid`] handle exposing
++/// `semiMajorAxis`, `flattening` and `isSphere`.
++///
++/// Migration: `parseEllipsoid(x)`-then-pass call sites keep working unchanged
++/// (and become reusable); call sites that *read* properties off the result
++/// have to be updated — `.radius`/`.semi_major_axis` become
++/// `.semiMajorAxis`, and `.inverse_flattening`/`.semi_minor_axis` become
++/// `1 / .flattening` and `.semiMajorAxis * (1 - .flattening)`.
++#[wasm_bindgen(js_name = parseEllipsoid)]
++pub fn parse_ellipsoid(
++    #[wasm_bindgen(unchecked_param_type = "EllipsoidInput | null | undefined")] obj: JsValue,
++) -> Result<Ellipsoid, JsValue> {
++    Ellipsoid::from_value(obj)
++}
++
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+-    use geodesy::prelude::EllipsoidBase;
+-    use healpix_geo_core::ellipsoid::ReferenceBody;
+ 
+     #[test]
+     fn test_ellipsoidlike_to_ellipsoid() {
+@@ -180,13 +263,8 @@ pub mod tests_wasm32 {
+         let data = json!({"name": "WGS84", "semi_major_axis": a, "inverse_flattening": if_});
+         let obj = to_value(&data).map_err(JsValue::from).unwrap();
+ 
+-        let actual: EllipsoidLike = parse_ellipsoid(obj).map_err(JsValue::from).unwrap();
+-        match actual {
+-            EllipsoidLike::EllipsoidInverseFlattening(ell) => {
+-                assert_eq!(ell.semi_major_axis, a);
+-                assert_eq!(ell.inverse_flattening, if_);
+-            }
+-            _ => unreachable!(),
+-        }
++        let actual = Ellipsoid::from_value(obj).map_err(JsValue::from).unwrap();
++        assert_eq!(actual.semi_major_axis(), a);
++        assert!(!actual.is_sphere());
+     }
+ }
+diff --git a/js/src/lib.rs b/js/src/lib.rs
+index 3e04ffd6..793b9aff 100644
+--- a/js/src/lib.rs
++++ b/js/src/lib.rs
+@@ -9,7 +9,7 @@ pub mod zuniq;
+ use wasm_bindgen::prelude::*;
+ 
+ pub use crate::coordinates::Coordinate;
+-pub use crate::ellipsoid::EllipsoidLike;
++pub use crate::ellipsoid::{Ellipsoid, EllipsoidLike};
+ 
+ pub use crate::nested::Nested;
+ pub use crate::ring::Ring;
+diff --git a/js/src/nested.rs b/js/src/nested.rs
+index ba0ca098..8e91416c 100644
+--- a/js/src/nested.rs
++++ b/js/src/nested.rs
+@@ -4,7 +4,7 @@ use healpix_geo_core::scalar::nested::coordinates as scalar;
+ use wasm_bindgen::prelude::*;
+ 
+ use crate::coordinates::Coordinate;
+-use crate::ellipsoid::EllipsoidLike;
++use crate::ellipsoid::Ellipsoid;
+ use crate::geometry::spherical_vertex;
+ 
+ #[wasm_bindgen(js_name = nested)]
+@@ -25,43 +25,32 @@ impl Nested {
+ 
+     /// Center coordinates for the given cell
+     #[wasm_bindgen(js_name = healpixToLonLat)]
+-    pub fn healpix_to_lonlat(ipix: u64, depth: u8, ellipsoid: Option<EllipsoidLike>) -> Coordinate {
++    pub fn healpix_to_lonlat(ipix: u64, depth: u8, ellipsoid: &Ellipsoid) -> Coordinate {
+         let layer = healpix::nested::get(depth);
+ 
+-        let ellipsoid_ = ellipsoid.map(|e| e.into_ellipsoid()).unwrap_or_default();
++        let ellipsoid_ = &ellipsoid.inner;
+ 
+-        let (lon, lat) = scalar::healpix_to_lonlat(&ipix, layer, &ellipsoid_);
++        let (lon, lat) = scalar::healpix_to_lonlat(&ipix, layer, ellipsoid_);
+ 
+         Coordinate { lon, lat }
+     }
+ 
+     /// Project the given coordinate to the healpix grid
+     #[wasm_bindgen(js_name = lonLatToHealpix)]
+-    pub fn lonlat_to_healpix(
+-        lon: f64,
+-        lat: f64,
+-        depth: u8,
+-        ellipsoid: Option<EllipsoidLike>,
+-    ) -> u64 {
++    pub fn lonlat_to_healpix(lon: f64, lat: f64, depth: u8, ellipsoid: &Ellipsoid) -> u64 {
+         let layer = healpix::nested::get(depth);
+-        let ellipsoid_ = ellipsoid.map(|e| e.into_ellipsoid()).unwrap_or_default();
++        let ellipsoid_ = &ellipsoid.inner;
+ 
+-        scalar::lonlat_to_healpix(&lon, &lat, layer, &ellipsoid_)
++        scalar::lonlat_to_healpix(&lon, &lat, layer, ellipsoid_)
+     }
+ 
+     /// Single vertex of the given cell
+     ///
+     /// The parameters `u` and `v` represent offsets from the southern vertex of the given cell.
+     #[wasm_bindgen(js_name = vertex)]
+-    pub fn vertex(
+-        hash: u64,
+-        depth: u8,
+-        u: f64,
+-        v: f64,
+-        ellipsoid: Option<EllipsoidLike>,
+-    ) -> Coordinate {
++    pub fn vertex(hash: u64, depth: u8, u: f64, v: f64, ellipsoid: &Ellipsoid) -> Coordinate {
+         let layer = healpix::nested::get(depth);
+-        let ellipsoid_ = ellipsoid.map(|e| e.into_ellipsoid()).unwrap_or_default();
++        let ellipsoid_ = &ellipsoid.inner;
+ 
+         let center = layer.center_of_projected_cell(hash);
+         let (lon, lat) = spherical_vertex(center, depth, (u, v));
+@@ -76,6 +65,13 @@ impl Nested {
+ #[cfg(test)]
+ mod tests {
+     use super::*;
++    use healpix_geo_core::ellipsoid::Ellipsoid as RustEllipsoid;
++
++    fn default_sphere() -> Ellipsoid {
++        Ellipsoid {
++            inner: RustEllipsoid::default(),
++        }
++    }
+ 
+     #[test]
+     fn test_vertex() {
+@@ -95,7 +91,7 @@ mod tests {
+ 
+         let values = uv
+             .into_iter()
+-            .map(|(u, v)| Nested::vertex(hash, depth, u, v, None))
++            .map(|(u, v)| Nested::vertex(hash, depth, u, v, &default_sphere()))
+             .collect::<Vec<_>>();
+         let expected: Vec<Coordinate> = vec![
+             (45.0, 0.0),
+@@ -137,24 +133,30 @@ mod tests {
+         // authalic -> geographic conversion produces a measurable difference
+         let ipix: u64 = 0;
+ 
+-        let sphere_default = Nested::healpix_to_lonlat(ipix, depth, None);
++        let sphere_default = Nested::healpix_to_lonlat(ipix, depth, &default_sphere());
+ 
+         // WGS84: the geographic latitude differs measurably from the authalic
+         // (spherical) latitude, while the longitude is unaffected
+-        let wgs84 = EllipsoidLike::EllipsoidInverseFlattening(EllipsoidInverseFlattening {
+-            semi_major_axis: 6378137.0,
+-            inverse_flattening: 298.257223563,
+-        });
+-        let ellipsoidal = Nested::healpix_to_lonlat(ipix, depth, Some(wgs84));
++        let wgs84 = Ellipsoid {
++            inner: EllipsoidLike::EllipsoidInverseFlattening(EllipsoidInverseFlattening {
++                semi_major_axis: 6378137.0,
++                inverse_flattening: 298.257223563,
++            })
++            .into_ellipsoid(),
++        };
++        let ellipsoidal = Nested::healpix_to_lonlat(ipix, depth, &wgs84);
+ 
+         assert!((sphere_default.lon - ellipsoidal.lon).abs() < 1e-9);
+         assert!((sphere_default.lat - ellipsoidal.lat).abs() > 1e-3);
+ 
+         // an explicit sphere reproduces the default (radius does not affect lon/lat)
+-        let sphere = EllipsoidLike::Sphere(Sphere {
+-            radius: 6_371_000.0,
+-        });
+-        let explicit_sphere = Nested::healpix_to_lonlat(ipix, depth, Some(sphere));
++        let sphere = Ellipsoid {
++            inner: EllipsoidLike::Sphere(Sphere {
++                radius: 6_371_000.0,
++            })
++            .into_ellipsoid(),
++        };
++        let explicit_sphere = Nested::healpix_to_lonlat(ipix, depth, &sphere);
+ 
+         assert!((sphere_default.lon - explicit_sphere.lon).abs() < 1e-9);
+         assert!((sphere_default.lat - explicit_sphere.lat).abs() < 1e-9);
+diff --git a/js/src/ring.rs b/js/src/ring.rs
+index ff5e4684..40db7daf 100644
+--- a/js/src/ring.rs
++++ b/js/src/ring.rs
+@@ -4,7 +4,7 @@ use healpix_geo_core::scalar::nested::coordinates as scalar;
+ use wasm_bindgen::prelude::*;
+ 
+ use crate::coordinates::Coordinate;
+-use crate::ellipsoid::EllipsoidLike;
++use crate::ellipsoid::Ellipsoid;
+ use crate::geometry::spherical_vertex;
+ 
+ #[wasm_bindgen(js_name = ring)]
+@@ -28,43 +28,32 @@ impl Ring {
+ 
+     /// Center coordinates for the given cell
+     #[wasm_bindgen(js_name = healpixToLonLat)]
+-    pub fn healpix_to_lonlat(hash: u64, depth: u8, ellipsoid: Option<EllipsoidLike>) -> Coordinate {
++    pub fn healpix_to_lonlat(hash: u64, depth: u8, ellipsoid: &Ellipsoid) -> Coordinate {
+         let layer = healpix::nested::get(depth);
+-        let ellipsoid_ = ellipsoid.map(|e| e.into_ellipsoid()).unwrap_or_default();
++        let ellipsoid_ = &ellipsoid.inner;
+         let hash_ = layer.from_ring(hash);
+ 
+-        let (lon, lat) = scalar::healpix_to_lonlat(&hash_, layer, &ellipsoid_);
++        let (lon, lat) = scalar::healpix_to_lonlat(&hash_, layer, ellipsoid_);
+ 
+         Coordinate { lon, lat }
+     }
+ 
+     /// Project the given coordinate to the healpix grid
+     #[wasm_bindgen(js_name = lonLatToHealpix)]
+-    pub fn lonlat_to_healpix(
+-        lon: f64,
+-        lat: f64,
+-        depth: u8,
+-        ellipsoid: Option<EllipsoidLike>,
+-    ) -> u64 {
++    pub fn lonlat_to_healpix(lon: f64, lat: f64, depth: u8, ellipsoid: &Ellipsoid) -> u64 {
+         let layer = healpix::nested::get(depth);
+-        let ellipsoid_ = ellipsoid.map(|e| e.into_ellipsoid()).unwrap_or_default();
++        let ellipsoid_ = &ellipsoid.inner;
+ 
+-        layer.to_ring(scalar::lonlat_to_healpix(&lon, &lat, layer, &ellipsoid_))
++        layer.to_ring(scalar::lonlat_to_healpix(&lon, &lat, layer, ellipsoid_))
+     }
+ 
+     /// Single vertex of the given cell
+     ///
+     /// The parameters `u` and `v` represent offsets from the southern vertex of the given cell.
+     #[wasm_bindgen(js_name = vertex)]
+-    pub fn vertex(
+-        hash: u64,
+-        depth: u8,
+-        u: f64,
+-        v: f64,
+-        ellipsoid: Option<EllipsoidLike>,
+-    ) -> Coordinate {
++    pub fn vertex(hash: u64, depth: u8, u: f64, v: f64, ellipsoid: &Ellipsoid) -> Coordinate {
+         let layer = healpix::nested::get(depth);
+-        let ellipsoid_ = ellipsoid.map(|e| e.into_ellipsoid()).unwrap_or_default();
++        let ellipsoid_ = &ellipsoid.inner;
+ 
+         let center = layer.center_of_projected_cell(layer.from_ring(hash));
+         let (lon, lat) = spherical_vertex(center, depth, (u, v));
+@@ -79,6 +68,13 @@ impl Ring {
+ #[cfg(test)]
+ mod tests {
+     use super::*;
++    use healpix_geo_core::ellipsoid::Ellipsoid as RustEllipsoid;
++
++    fn default_sphere() -> Ellipsoid {
++        Ellipsoid {
++            inner: RustEllipsoid::default(),
++        }
++    }
+ 
+     #[test]
+     fn test_vertex() {
+@@ -98,7 +94,7 @@ mod tests {
+ 
+         let values = uv
+             .into_iter()
+-            .map(|(u, v)| Ring::vertex(hash, depth, u, v, None))
++            .map(|(u, v)| Ring::vertex(hash, depth, u, v, &default_sphere()))
+             .collect::<Vec<_>>();
+         let expected: Vec<Coordinate> = vec![
+             (45.0, 0.0),
+diff --git a/js/src/zuniq.rs b/js/src/zuniq.rs
+index 20bf500f..7a7c5c30 100644
+--- a/js/src/zuniq.rs
++++ b/js/src/zuniq.rs
+@@ -4,7 +4,7 @@ use healpix_geo_core::scalar::zuniq::coordinates as scalar;
+ use wasm_bindgen::prelude::*;
+ 
+ use crate::coordinates::Coordinate;
+-use crate::ellipsoid::EllipsoidLike;
++use crate::ellipsoid::Ellipsoid;
+ use crate::geometry::spherical_vertex;
+ 
+ #[wasm_bindgen(js_name = zuniq)]
+@@ -28,36 +28,31 @@ impl Zuniq {
+ 
+     /// Center coordinates for the given cell
+     #[wasm_bindgen(js_name = healpixToLonLat)]
+-    pub fn healpix_to_lonlat(hash: u64, ellipsoid: Option<EllipsoidLike>) -> Coordinate {
+-        let ellipsoid_ = ellipsoid.map(|e| e.into_ellipsoid()).unwrap_or_default();
++    pub fn healpix_to_lonlat(hash: u64, ellipsoid: &Ellipsoid) -> Coordinate {
++        let ellipsoid_ = &ellipsoid.inner;
+ 
+-        let (lon, lat) = scalar::healpix_to_lonlat(&hash, &ellipsoid_);
++        let (lon, lat) = scalar::healpix_to_lonlat(&hash, ellipsoid_);
+ 
+         Coordinate { lon, lat }
+     }
+ 
+     /// Project the given coordinate to the healpix grid
+     #[wasm_bindgen(js_name = lonLatToHealpix)]
+-    pub fn lonlat_to_healpix(
+-        lon: f64,
+-        lat: f64,
+-        depth: u8,
+-        ellipsoid: Option<EllipsoidLike>,
+-    ) -> u64 {
++    pub fn lonlat_to_healpix(lon: f64, lat: f64, depth: u8, ellipsoid: &Ellipsoid) -> u64 {
+         let layer = healpix::nested::get(depth);
+-        let ellipsoid_ = ellipsoid.map(|e| e.into_ellipsoid()).unwrap_or_default();
++        let ellipsoid_ = &ellipsoid.inner;
+ 
+-        scalar::lonlat_to_healpix(&lon, &lat, layer, &ellipsoid_)
++        scalar::lonlat_to_healpix(&lon, &lat, layer, ellipsoid_)
+     }
+ 
+     /// Single vertex of the given cell
+     ///
+     /// The parameters `u` and `v` represent offsets from the southern vertex of the given cell.
+     #[wasm_bindgen(js_name = vertex)]
+-    pub fn vertex(hash: u64, u: f64, v: f64, ellipsoid: Option<EllipsoidLike>) -> Coordinate {
++    pub fn vertex(hash: u64, u: f64, v: f64, ellipsoid: &Ellipsoid) -> Coordinate {
+         let (depth, nested) = healpix::nested::from_zuniq(hash);
+         let layer = healpix::nested::get(depth);
+-        let ellipsoid_ = ellipsoid.map(|e| e.into_ellipsoid()).unwrap_or_default();
++        let ellipsoid_ = &ellipsoid.inner;
+ 
+         let center = layer.center_of_projected_cell(nested);
+         let (lon, lat) = spherical_vertex(center, depth, (u, v));
+@@ -72,6 +67,13 @@ impl Zuniq {
+ #[cfg(test)]
+ mod tests {
+     use super::*;
++    use healpix_geo_core::ellipsoid::Ellipsoid as RustEllipsoid;
++
++    fn default_sphere() -> Ellipsoid {
++        Ellipsoid {
++            inner: RustEllipsoid::default(),
++        }
++    }
+ 
+     #[test]
+     fn test_vertex() {
+@@ -90,7 +92,7 @@ mod tests {
+ 
+         let values = uv
+             .into_iter()
+-            .map(|(u, v)| Zuniq::vertex(hash, u, v, None))
++            .map(|(u, v)| Zuniq::vertex(hash, u, v, &default_sphere()))
+             .collect::<Vec<_>>();
+         let expected: Vec<Coordinate> = vec![
+             (45.0, 0.0),
+diff --git a/js/tests/ellipsoid.test.ts b/js/tests/ellipsoid.test.ts
+index 4d799aa0..7be077b6 100644
+--- a/js/tests/ellipsoid.test.ts
++++ b/js/tests/ellipsoid.test.ts
+@@ -1,48 +1,89 @@
+ import init, * as healpixGeo from "../pkg/index.js";
++import { Ellipsoid } from "../pkg/index.js";
+ import { describe, expect, test } from "vitest";
+ 
+-describe("parseEllipsoid", () => {
+-  test("null", () => {
+-    const result = healpixGeo.parseEllipsoid(null);
+-    expect(result).to.have.property("radius", 6370997.0);
++describe("Ellipsoid.from", () => {
++  test("null gives the default sphere", () => {
++    const result = Ellipsoid.from(null);
++    expect(result.isSphere).to.equal(true);
++    expect(result.semiMajorAxis).to.equal(6370997.0);
++    expect(result.flattening).to.equal(0);
++  });
++
++  test("undefined gives the default sphere", () => {
++    // upstream's parseEllipsoid rejected `undefined`; documented in the
++    // doc comment of `Ellipsoid.from`
++    const explicit = Ellipsoid.from(undefined);
++    expect(explicit.isSphere).to.equal(true);
++    expect(explicit.semiMajorAxis).to.equal(6370997.0);
++
++    // a missing argument behaves the same way
++    const missing = (Ellipsoid.from as () => Ellipsoid)();
++    expect(missing.isSphere).to.equal(true);
+   });
+ 
+   test("sphere", () => {
+-    const ellipsoid = { name: "sphere", radius: 6371000.0 };
+-    const result = healpixGeo.parseEllipsoid(ellipsoid);
+-    expect(result).to.have.property("radius", 6371000);
++    const result = Ellipsoid.from({ name: "sphere", radius: 6371000.0 });
++    expect(result.isSphere).to.equal(true);
++    expect(result.semiMajorAxis).to.equal(6371000);
+   });
+ 
+   test("ellipsoid from semi-major axis and inverse flattening", () => {
+-    const ellipsoid = {
++    const result = Ellipsoid.from({
+       name: "WGS84",
+       semi_major_axis: 6378137.0,
+       inverse_flattening: 298.257223563,
+-    };
+-    const result = healpixGeo.parseEllipsoid(ellipsoid);
+-    expect(result).to.have.property(
+-      "semi_major_axis",
+-      ellipsoid.semi_major_axis,
+-    );
+-    expect(result).to.have.property(
+-      "inverse_flattening",
+-      ellipsoid.inverse_flattening,
+-    );
++    });
++    expect(result.isSphere).to.equal(false);
++    expect(result.semiMajorAxis).to.equal(6378137.0);
++    expect(result.flattening).to.be.closeTo(1 / 298.257223563, 1e-15);
+   });
++
+   test("ellipsoid from semi-major axis and semi-minor axis", () => {
+-    const ellipsoid = {
++    const result = Ellipsoid.from({
+       name: "WGS84",
+       semi_major_axis: 6378137.0,
+       semi_minor_axis: 6356752.314245179,
+-    };
+-    const result = healpixGeo.parseEllipsoid(ellipsoid);
+-    expect(result).to.have.property(
+-      "semi_major_axis",
+-      ellipsoid.semi_major_axis,
+-    );
+-    expect(result).to.have.property(
+-      "semi_minor_axis",
+-      ellipsoid.semi_minor_axis,
+-    );
++    });
++    expect(result.isSphere).to.equal(false);
++    expect(result.semiMajorAxis).to.equal(6378137.0);
++    expect(result.flattening).to.be.closeTo(1 / 298.257223563, 1e-9);
++  });
++
++  test("invalid input throws", () => {
++    expect(() => Ellipsoid.from({ bogus: 1 })).to.throw();
++  });
++});
++
++describe("parseEllipsoid (deprecated alias, breaking return type)", () => {
++  test("returns a reusable handle instead of the input-shaped union", () => {
++    const result = healpixGeo.parseEllipsoid({ radius: 6371000.0 });
++    expect(result).to.be.instanceOf(Ellipsoid);
++    expect(result.semiMajorAxis).to.equal(6371000);
++
++    // the 0.2.x property surface is gone — this is the breaking part of the
++    // change, not a compatibility shim
++    expect(result).to.not.have.property("radius");
++    expect(result).to.not.have.property("semi_major_axis");
++    expect(result).to.not.have.property("inverse_flattening");
++  });
++});
++
++describe("handle reuse", () => {
++  test("the same handle survives repeated calls", () => {
++    const ellipsoid = Ellipsoid.from({
++      semi_major_axis: 6378137.0,
++      inverse_flattening: 298.257223563,
++    });
++
++    // before the handle existed, the second call would throw
++    // "invalid dynamic union value" because the union argument was
++    // consumed (moved into WASM) by the first call
++    const first = healpixGeo.nested.healpixToLonLat(164n, 4, ellipsoid);
++    const second = healpixGeo.nested.healpixToLonLat(164n, 4, ellipsoid);
++
++    expect(first.lon).to.equal(second.lon);
++    expect(first.lat).to.equal(second.lat);
++    expect(ellipsoid.semiMajorAxis).to.equal(6378137.0);
+   });
+ });
+diff --git a/js/tests/nested.test.ts b/js/tests/nested.test.ts
+index 22be4d8d..edfc5fd0 100644
+--- a/js/tests/nested.test.ts
++++ b/js/tests/nested.test.ts
+@@ -1,5 +1,5 @@
+ import init, * as healpixGeo from "../pkg/index.js";
+-import { Coordinate, TEllipsoid } from "../pkg/index.js";
++import { Coordinate, Ellipsoid } from "../pkg/index.js";
+ import { describe, expect, test } from "vitest";
+ 
+ describe("nested bitcombine", () => {
+@@ -14,13 +14,17 @@ describe("nested bitcombine", () => {
+ 
+ describe("nested healpixToLonLat", () => {
+   test("default-ellipsoid", () => {
+-    const actual: Coordinate = healpixGeo.nested.healpixToLonLat(164n, 4, null);
++    const actual: Coordinate = healpixGeo.nested.healpixToLonLat(
++      164n,
++      4,
++      Ellipsoid.from(null),
++    );
+     expect(actual).to.have.a.property("lon", 16.875);
+     expect(actual).to.have.a.property("lat", 38.68218745348944);
+   });
+ 
+   test("sphere", () => {
+-    const sphere: TEllipsoid = healpixGeo.parseEllipsoid({ radius: 6371000 });
++    const sphere: Ellipsoid = healpixGeo.parseEllipsoid({ radius: 6371000 });
+     const actual: Coordinate = healpixGeo.nested.healpixToLonLat(
+       164n,
+       4,
+@@ -30,7 +34,7 @@ describe("nested healpixToLonLat", () => {
+     expect(actual).to.have.a.property("lat", 38.68218745348944);
+   });
+   test("ellipsoid", () => {
+-    const ellipsoid: TEllipsoid = healpixGeo.parseEllipsoid({
++    const ellipsoid: Ellipsoid = healpixGeo.parseEllipsoid({
+       semi_major_axis: 6378137.0,
+       inverse_flattening: 298.257223563,
+     });
+@@ -47,7 +51,7 @@ describe("nested healpixToLonLat", () => {
+ describe("nested vertex", () => {
+   test("default ellipsoid northern", () => {
+     const cellId: bigint = 4n;
+-    const ellipsoid: TEllipsoid = null;
++    const ellipsoid: Ellipsoid = Ellipsoid.from(null);
+     const actual: Coordinate = healpixGeo.nested.vertex(
+       cellId,
+       0,
+@@ -62,7 +66,7 @@ describe("nested vertex", () => {
+   test("sphere eastern", () => {
+     const cellId: bigint = 4n;
+     const depth: number = 0;
+-    const ellipsoid: TEllipsoid = healpixGeo.parseEllipsoid({
++    const ellipsoid: Ellipsoid = healpixGeo.parseEllipsoid({
+       radius: 6371000,
+     });
+ 
+@@ -79,7 +83,7 @@ describe("nested vertex", () => {
+   test("ellipsoid western", () => {
+     const cellId: bigint = 4n;
+     const depth: number = 0;
+-    const ellipsoid: TEllipsoid = healpixGeo.parseEllipsoid({
++    const ellipsoid: Ellipsoid = healpixGeo.parseEllipsoid({
+       semi_major_axis: 6378137.0,
+       inverse_flattening: 298.257223563,
+     });
+diff --git a/js/tests/ring.test.ts b/js/tests/ring.test.ts
+index 378d732a..9fb17a31 100644
+--- a/js/tests/ring.test.ts
++++ b/js/tests/ring.test.ts
+@@ -1,5 +1,5 @@
+ import init, * as healpixGeo from "../pkg/index.js";
+-import { Coordinate, TEllipsoid } from "../pkg/index.js";
++import { Coordinate, Ellipsoid } from "../pkg/index.js";
+ import { describe, expect, test } from "vitest";
+ 
+ describe("ring bitcombine", () => {
+@@ -14,19 +14,23 @@ describe("ring bitcombine", () => {
+ 
+ describe("ring healpixToLonLat", () => {
+   test("default-ellipsoid", () => {
+-    const actual: Coordinate = healpixGeo.ring.healpixToLonLat(164n, 4, null);
++    const actual: Coordinate = healpixGeo.ring.healpixToLonLat(
++      164n,
++      4,
++      Ellipsoid.from(null),
++    );
+     expect(actual).to.have.a.property("lon", 205);
+     expect(actual).to.have.a.property("lat", 63.44828368030105);
+   });
+ 
+   test("sphere", () => {
+-    const sphere: TEllipsoid = healpixGeo.parseEllipsoid({ radius: 6371000 });
++    const sphere: Ellipsoid = healpixGeo.parseEllipsoid({ radius: 6371000 });
+     const actual: Coordinate = healpixGeo.ring.healpixToLonLat(164n, 4, sphere);
+     expect(actual).to.have.a.property("lon", 205);
+     expect(actual).to.have.a.property("lat", 63.44828368030105);
+   });
+   test("ellipsoid", () => {
+-    const ellipsoid: TEllipsoid = healpixGeo.parseEllipsoid({
++    const ellipsoid: Ellipsoid = healpixGeo.parseEllipsoid({
+       semi_major_axis: 6378137.0,
+       inverse_flattening: 298.257223563,
+     });
+@@ -43,7 +47,7 @@ describe("ring healpixToLonLat", () => {
+ describe("ring vertex", () => {
+   test("default ellipsoid northern", () => {
+     const cellId: bigint = 4n;
+-    const ellipsoid: TEllipsoid = null;
++    const ellipsoid: Ellipsoid = Ellipsoid.from(null);
+     const actual: Coordinate = healpixGeo.ring.vertex(
+       cellId,
+       0,
+@@ -58,7 +62,7 @@ describe("ring vertex", () => {
+   test("sphere eastern", () => {
+     const cellId: bigint = 4n;
+     const depth: number = 0;
+-    const ellipsoid: TEllipsoid = healpixGeo.parseEllipsoid({
++    const ellipsoid: Ellipsoid = healpixGeo.parseEllipsoid({
+       radius: 6371000,
+     });
+ 
+@@ -75,7 +79,7 @@ describe("ring vertex", () => {
+   test("ellipsoid western", () => {
+     const cellId: bigint = 4n;
+     const depth: number = 0;
+-    const ellipsoid: TEllipsoid = healpixGeo.parseEllipsoid({
++    const ellipsoid: Ellipsoid = healpixGeo.parseEllipsoid({
+       semi_major_axis: 6378137.0,
+       inverse_flattening: 298.257223563,
+     });
+diff --git a/js/tests/types.test.ts b/js/tests/types.test.ts
+new file mode 100644
+index 00000000..a90b3e1b
+--- /dev/null
++++ b/js/tests/types.test.ts
+@@ -0,0 +1,34 @@
++import { readFileSync } from "node:fs";
++import { describe, expect, test } from "vitest";
++
++// The generated `.d.ts` is the API surface TypeScript consumers actually see.
++// `JsValue` parameters default to `any` there, which silently drops the input
++// contract, so the hand-written `typescript_custom_section` types are pinned
++// here.
++const declarations = readFileSync(
++  new URL("../pkg/index.d.ts", import.meta.url),
++  "utf8",
++);
++
++describe("generated index.d.ts", () => {
++  test("declares the accepted ellipsoid input shapes", () => {
++    expect(declarations).to.include("export type EllipsoidInput");
++    expect(declarations).to.include("{ radius: number }");
++    expect(declarations).to.include(
++      "{ semi_major_axis: number; inverse_flattening: number }",
++    );
++    expect(declarations).to.include(
++      "{ semi_major_axis: number; semi_minor_axis: number }",
++    );
++  });
++
++  test("ellipsoid entry points are typed, not `any`", () => {
++    expect(declarations).to.include(
++      "parseEllipsoid(obj: EllipsoidInput | null | undefined)",
++    );
++    expect(declarations).to.include(
++      "from(obj: EllipsoidInput | null | undefined)",
++    );
++    expect(declarations).to.not.match(/parseEllipsoid\(obj: any\)/);
++  });
++});
+diff --git a/js/tests/zuniq.test.ts b/js/tests/zuniq.test.ts
+index 4a2a574d..05002712 100644
+--- a/js/tests/zuniq.test.ts
++++ b/js/tests/zuniq.test.ts
+@@ -1,5 +1,5 @@
+ import init, * as healpixGeo from "../pkg/index.js";
+-import { Coordinate, TEllipsoid } from "../pkg/index.js";
++import { Coordinate, Ellipsoid } from "../pkg/index.js";
+ import { describe, expect, test } from "vitest";
+ 
+ describe("zuniq bitcombine", () => {
+@@ -16,19 +16,22 @@ describe("zuniq bitcombine", () => {
+ 
+ describe("zuniq healpixToLonLat", () => {
+   test("default-ellipsoid", () => {
+-    const actual: Coordinate = healpixGeo.zuniq.healpixToLonLat(164n, null);
++    const actual: Coordinate = healpixGeo.zuniq.healpixToLonLat(
++      164n,
++      Ellipsoid.from(null),
++    );
+     expect(actual).to.have.a.property("lon", 45.00000100582838);
+     expect(actual).to.have.a.property("lat", 9.960692539601928e-7);
+   });
+ 
+   test("sphere", () => {
+-    const sphere: TEllipsoid = healpixGeo.parseEllipsoid({ radius: 6371000 });
++    const sphere: Ellipsoid = healpixGeo.parseEllipsoid({ radius: 6371000 });
+     const actual: Coordinate = healpixGeo.zuniq.healpixToLonLat(164n, sphere);
+     expect(actual).to.have.a.property("lon", 45.00000100582838);
+     expect(actual).to.have.a.property("lat", 9.960692539601928e-7);
+   });
+   test("ellipsoid", () => {
+-    const ellipsoid: TEllipsoid = healpixGeo.parseEllipsoid({
++    const ellipsoid: Ellipsoid = healpixGeo.parseEllipsoid({
+       semi_major_axis: 6378137.0,
+       inverse_flattening: 298.257223563,
+     });
+@@ -44,7 +47,7 @@ describe("zuniq healpixToLonLat", () => {
+ describe("zuniq vertex", () => {
+   test("default ellipsoid northern", () => {
+     const cellId: bigint = 4n;
+-    const ellipsoid: TEllipsoid = null;
++    const ellipsoid: Ellipsoid = Ellipsoid.from(null);
+     const actual: Coordinate = healpixGeo.zuniq.vertex(
+       cellId,
+       1.0,
+@@ -57,7 +60,7 @@ describe("zuniq vertex", () => {
+ 
+   test("sphere eastern", () => {
+     const cellId: bigint = 4n;
+-    const ellipsoid: TEllipsoid = healpixGeo.parseEllipsoid({
++    const ellipsoid: Ellipsoid = healpixGeo.parseEllipsoid({
+       radius: 6371000,
+     });
+ 
+@@ -72,7 +75,7 @@ describe("zuniq vertex", () => {
+   });
+   test("ellipsoid western", () => {
+     const cellId: bigint = 4n;
+-    const ellipsoid: TEllipsoid = healpixGeo.parseEllipsoid({
++    const ellipsoid: Ellipsoid = healpixGeo.parseEllipsoid({
+       semi_major_axis: 6378137.0,
+       inverse_flattening: 298.257223563,
+     });

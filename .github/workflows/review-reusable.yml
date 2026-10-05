@@ -1,0 +1,122 @@
+# Reusable workflow: review a pull request against the GRID4EARTH rubric
+# using Claude Code Action with inference on Amazon Bedrock.
+#
+# Call it from a target repository (see caller-example.yml). The calling
+# workflow must pass the three secrets and grant the permissions below.
+#
+# Prerequisites (one-time, outside this file):
+#   * An IAM role with an OIDC trust policy for token.actions.githubusercontent.com
+#     restricted to your organisation / repositories, and permissions for
+#     bedrock:InvokeModel, bedrock:InvokeModelWithResponseStream,
+#     bedrock:ListInferenceProfiles, bedrock:GetInferenceProfile.
+#   * The chosen Claude model enabled in the Bedrock console for the region.
+#   * A custom GitHub App (Contents, Issues, Pull requests: read+write),
+#     installed on the target repositories. The Anthropic-hosted GitHub App
+#     cannot be used together with Bedrock.
+name: Rubric review (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      pr_number:
+        description: Pull request number to review
+        required: true
+        type: number
+      rubric_repository:
+        description: owner/repo that holds rubric/REVIEW_RUBRIC.md and rubric/STYLE.md
+        required: true
+        type: string
+      rubric_ref:
+        description: Git ref of the rubric repository to use
+        required: false
+        type: string
+        default: main
+      model:
+        description: Bedrock cross-region inference profile id, e.g. eu.anthropic.<model>
+        required: true
+        type: string
+      aws_region:
+        description: AWS region used for Bedrock
+        required: false
+        type: string
+        default: eu-west-3
+      max_turns:
+        description: Upper bound on agent turns
+        required: false
+        type: number
+        default: 40
+    secrets:
+      REVIEW_APP_ID:
+        required: true
+      REVIEW_APP_PRIVATE_KEY:
+        required: true
+      AWS_BEDROCK_ROLE_ARN:
+        required: true
+
+permissions: {}
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - name: Check out the pull request head
+        uses: actions/checkout@v6
+        with:
+          ref: refs/pull/${{ inputs.pr_number }}/head
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out the rubric
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ inputs.rubric_repository }}
+          ref: ${{ inputs.rubric_ref }}
+          path: .review-rules
+          persist-credentials: false
+
+      - name: Mint a GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.REVIEW_APP_ID }}
+          private-key: ${{ secrets.REVIEW_APP_PRIVATE_KEY }}
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_BEDROCK_ROLE_ARN }}
+          aws-region: ${{ inputs.aws_region }}
+
+      - name: Review with Claude Code (Bedrock)
+        uses: anthropics/claude-code-action@v1
+        with:
+          github_token: ${{ steps.app-token.outputs.token }}
+          use_bedrock: "true"
+          prompt: |
+            You are reviewing pull request #${{ inputs.pr_number }} of
+            ${{ github.repository }}.
+
+            First read `.review-rules/rubric/REVIEW_RUBRIC.md` and
+            `.review-rules/rubric/STYLE.md` in full. Then read
+            `.review-rules/.claude/agents/grid4earth-reviewer.md` and follow
+            its "Before reviewing" and "Reviewing" sections exactly.
+
+            Obtain the diff with `gh pr diff ${{ inputs.pr_number }}` and the
+            description with `gh pr view ${{ inputs.pr_number }}`.
+
+            Post each finding as an inline comment on the exact changed line
+            using the inline comment tool, ending every comment with its
+            rubric rule id in brackets. Then post one summary comment that
+            states whether the PR is mergeable as-is, mergeable after the
+            listed changes, or should be split, and names any follow-up PRs.
+            Do not post more than 15 inline comments. If there is nothing
+            to say, post a single short summary comment saying so.
+          claude_args: >-
+            --model ${{ inputs.model }}
+            --max-turns ${{ inputs.max_turns }}
+            --allowedTools "Read,Grep,Glob,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git diff:*),Bash(git log:*),mcp__github_inline_comment__create_inline_comment"

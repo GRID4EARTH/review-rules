@@ -1,0 +1,348 @@
+diff --git a/docs/api.rst b/docs/api.rst
+index b473ab18..5d42a1bc 100644
+--- a/docs/api.rst
++++ b/docs/api.rst
+@@ -129,6 +129,7 @@ Calculate distances between HEALPix cells.
+    :nosignatures:
+ 
+    angular_distances
++   geodesic_distance
+ 
+ 
+ Indexes and data structure
+@@ -181,6 +182,7 @@ Distance Calculations
+    :nosignatures:
+ 
+    angular_distances
++   geodesic_distance
+ 
+ Module zuniq
+ ============
+diff --git a/pixi.toml b/pixi.toml
+index 71c564fc..c64b9077 100644
+--- a/pixi.toml
++++ b/pixi.toml
+@@ -33,6 +33,7 @@ depends-on = [{ task = "rust-lints", environment = "dev" }]
+ 
+ [feature.dev.dependencies]
+ ipython = "*"
++pyproj = "*"
+ 
+ [feature.dev.tasks]
+ ipython = "ipython"
+@@ -42,6 +43,7 @@ pytest = "*"
+ pytest-cov = "*"
+ shapely = "*"
+ cdshealpix = "*"
++pyproj = "*"
+ 
+ [feature.tests.tasks]
+ run-tests = { cmd = "pytest --cov=healpix_geo" }
+@@ -76,6 +78,7 @@ pyresample = "*"
+ astropy = ">=7.2.0,<8"
+ cdshealpix = ">=0.7.2,<0.8"
+ sphinx-design = ">=0.7.0,<0.8"
++pyproj = "*"
+ 
+ [feature.docs.tasks]
+ build-docs = { cmd = "rm -rf generated/; python -m sphinx -b html -w warnings.log -W -Tn -j auto . _build", cwd = "docs" }
+diff --git a/pyproject.toml b/pyproject.toml
+index 68caac50..c18afcb6 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -11,7 +11,7 @@ classifiers = [
+   "Programming Language :: Rust",
+   "Programming Language :: Python :: Implementation :: CPython",
+ ]
+-dependencies = ["numpy"]
++dependencies = ["numpy", "pyproj"]
+ dynamic = ["version"]
+ 
+ [project.optional-dependencies]
+diff --git a/python/healpix_geo/nested.py b/python/healpix_geo/nested.py
+index e62ded73..1e6c5234 100644
+--- a/python/healpix_geo/nested.py
++++ b/python/healpix_geo/nested.py
+@@ -1,4 +1,5 @@
+ import numpy as np
++from pyproj import Geod
+ 
+ from healpix_geo import healpix_geo
+ from healpix_geo.utils import _check_depth, _check_ipixels, _check_ring
+@@ -374,6 +375,73 @@ def angular_distances(from_, to_, depth, num_threads=0):
+     return np.where(mask, np.reshape(distances, to_.shape), np.nan)
+ 
+ 
++def geodesic_distance(from_, to_, depth, ellipsoid):
++    """Compute the geodesic distances between cell centers on a reference ellipsoid.
++
++    Converts the cell IDs to authalic lon/lat using
++    :func:`healpix_geo.nested.healpix_to_lonlat` and solves the geodesic inverse
++    problem on the given ellipsoid.
++
++    Parameters
++    ----------
++    from_ : numpy.ndarray
++        The source HEALPix cell indexes given as a ``np.uint64`` numpy array.
++        Should be 1D.
++    to_ : numpy.ndarray
++        The destination HEALPix cell indexes given as a ``np.int64`` numpy array.
++    depth : int
++        The depth of the HEALPix cells.
++    ellipsoid : str
++        Ellipsoid name accepted by :class:`pyproj.Geod` (e.g. ``"WGS84"``).
++
++    Returns
++    -------
++    distances_m : numpy.ndarray
++        Geodesic distances in metres.
++    Raises
++    ------
++    ValueError
++        When the HEALPix cell indexes given have values out of
++        :math:`[0, 4^{depth}[`.
++    ValueError
++        When the shape of ``from_`` is not compatible with the shape of ``to_``.
++    """
++
++    from_ = np.atleast_1d(from_)
++    _check_ipixels(data=from_, depth=depth)
++    from_ = from_.astype("uint64")
++
++    mask = to_ != -1
++    masked_to = np.where(mask, to_, 0)
++
++    to_ = np.atleast_1d(masked_to)
++    _check_ipixels(data=to_, depth=depth)
++    to_ = to_.astype("uint64")
++
++    if from_.shape != to_.shape and from_.shape != to_.shape[:-1]:
++        raise ValueError(
++            "The shape of `from_` must be compatible with the shape of `to_`:\n"
++            f"{to_.shape} or {to_.shape[:-1]} must be equal to {from_.shape}."
++        )
++
++    # Flatten to_ to 1D for healpix_to_lonlat, then restore shape
++    to_flat = to_.ravel()
++    from_broadcast = np.broadcast_to(
++        from_.reshape(from_.shape + (1,) * (to_.ndim - from_.ndim)),
++        to_.shape,
++    ).ravel()
++
++    lon1, lat1 = healpix_to_lonlat(from_broadcast, depth, ellipsoid=ellipsoid)
++    lon2, lat2 = healpix_to_lonlat(to_flat, depth, ellipsoid=ellipsoid)
++
++    geod = Geod(ellps=ellipsoid)
++    _az12, _az21, dist_m = geod.inv(lon1, lat1, lon2, lat2)
++
++    distances = dist_m.reshape(to_.shape)
++
++    return np.where(mask, distances, np.nan)
++
++
+ def zone_coverage(bbox, depth, *, ellipsoid="sphere", flat=True):
+     """Search the cells covering the given bounding box
+ 
+diff --git a/python/healpix_geo/ring.py b/python/healpix_geo/ring.py
+index 00be675b..e941a0ac 100644
+--- a/python/healpix_geo/ring.py
++++ b/python/healpix_geo/ring.py
+@@ -1,4 +1,5 @@
+ import numpy as np
++from pyproj import Geod
+ 
+ from healpix_geo import healpix_geo
+ from healpix_geo.utils import _check_depth, _check_ipixels, _check_ring
+@@ -284,3 +285,71 @@ def angular_distances(from_, to_, depth, num_threads=0):
+     )
+ 
+     return np.where(mask, np.reshape(distances, to_.shape), np.nan)
++
++
++def geodesic_distance(from_, to_, depth, ellipsoid):
++    """Compute the geodesic distances between cell centers on a reference ellipsoid.
++
++    Converts the cell IDs to authalic lon/lat using
++    :func:`healpix_geo.nested.healpix_to_lonlat` and solves the geodesic inverse
++    problem on the given ellipsoid.
++
++    Parameters
++    ----------
++    from_ : numpy.ndarray
++        The source HEALPix cell indexes given as a ``np.uint64`` numpy array.
++        Should be 1D.
++    to_ : numpy.ndarray
++        The destination HEALPix cell indexes given as a ``np.int64`` numpy array.
++    depth : int
++        The depth of the HEALPix cells.
++    ellipsoid : str
++        Ellipsoid name accepted by :class:`pyproj.Geod` (e.g. ``"WGS84"``).
++
++    Returns
++    -------
++    distances_m : numpy.ndarray
++        Geodesic distances in metres.
++    Raises
++    ------
++    ValueError
++        When the HEALPix cell indexes given have values out of
++        :math:`[0, 4^{depth}[`.
++    ValueError
++        When the shape of ``from_`` is not compatible with the shape of ``to_``.
++    """
++    _check_depth(depth)
++
++    from_ = np.atleast_1d(from_)
++    _check_ipixels(data=from_, depth=depth)
++    from_ = from_.astype("uint64")
++
++    mask = to_ != -1
++    masked_to = np.where(mask, to_, 0)
++
++    to_ = np.atleast_1d(masked_to)
++    _check_ipixels(data=to_, depth=depth)
++    to_ = to_.astype("uint64")
++
++    if from_.shape != to_.shape and from_.shape != to_.shape[:-1]:
++        raise ValueError(
++            "The shape of `from_` must be compatible with the shape of `to_`:\n"
++            f"{to_.shape} or {to_.shape[:-1]} must be equal to {from_.shape}."
++        )
++
++    # Flatten to_ to 1D for healpix_to_lonlat, then restore shape
++    to_flat = to_.ravel()
++    from_broadcast = np.broadcast_to(
++        from_.reshape(from_.shape + (1,) * (to_.ndim - from_.ndim)),
++        to_.shape,
++    ).ravel()
++
++    lon1, lat1 = healpix_to_lonlat(from_broadcast, depth, ellipsoid=ellipsoid)
++    lon2, lat2 = healpix_to_lonlat(to_flat, depth, ellipsoid=ellipsoid)
++
++    geod = Geod(ellps=ellipsoid)
++    _az12, _az21, dist_m = geod.inv(lon1, lat1, lon2, lat2)
++
++    distances = dist_m.reshape(to_.shape)
++
++    return np.where(mask, distances, np.nan)
+diff --git a/python/healpix_geo/tests/test_geodesic_distance.py b/python/healpix_geo/tests/test_geodesic_distance.py
+new file mode 100644
+index 00000000..ea154318
+--- /dev/null
++++ b/python/healpix_geo/tests/test_geodesic_distance.py
+@@ -0,0 +1,115 @@
++import numpy as np
++import pytest
++from pyproj import Geod
++
++import healpix_geo
++
++
++@pytest.mark.parametrize("indexing_scheme", ["nested", "ring"])
++@pytest.mark.parametrize(
++    ["depth", "from_", "to_"],
++    (
++        # 1D to_ — same shape as from_
++        (
++            1,
++            np.array([0, 16, 25, 32, 46]),
++            np.array([2, 15, 27, 40, 41], dtype="int64"),
++        ),
++        # 2D to_ — one destination per source (column vector)
++        (
++            1,
++            np.array([0, 16, 25, 32, 46]),
++            np.array([[2], [15], [27], [40], [41]], dtype="int64"),
++        ),
++        # 2D to_ with -1 sentinel (missing destinations → np.nan)
++        (
++            2,
++            np.array([0, 16, 25, 32, 46]),
++            np.array([[2, 4], [15, 7], [27, 26], [40, -1], [-1, 41]], dtype="int64"),
++        ),
++    ),
++)
++def test_geodesic_distance_shape_and_nan(indexing_scheme, depth, from_, to_):
++    """Output shape matches to_, and -1 entries produce np.nan."""
++    fn = getattr(healpix_geo, indexing_scheme).geodesic_distance
++    result = fn(from_, to_, depth, ellipsoid="WGS84")
++
++    assert (
++        result.shape == to_.shape
++    ), f"[{indexing_scheme}] Expected shape {to_.shape}, got {result.shape}"
++    nan_mask = to_ == -1
++    assert np.all(
++        np.isnan(result[nan_mask])
++    ), f"[{indexing_scheme}] Expected np.nan for -1 destinations"
++    valid_mask = ~nan_mask
++    assert np.all(
++        result[valid_mask] > 0
++    ), f"[{indexing_scheme}] Geodesic distances must be positive"
++    assert np.all(
++        np.isfinite(result[valid_mask])
++    ), f"[{indexing_scheme}] Geodesic distances must be finite"
++
++
++@pytest.mark.parametrize("indexing_scheme", ["nested", "ring"])
++def test_geodesic_distance_values(indexing_scheme):
++    """Values match a direct pyproj computation on the cell centres."""
++    module = getattr(healpix_geo, indexing_scheme)
++    depth = 1
++    ellipsoid = "WGS84"
++    from_ = np.array([0, 16, 25], dtype="uint64")
++    to_ = np.array([2, 15, 27], dtype="int64")
++
++    result = module.geodesic_distance(from_, to_, depth, ellipsoid=ellipsoid)
++
++    # Reference: compute directly with pyproj on the cell centres
++    lon1, lat1 = module.healpix_to_lonlat(from_, depth, ellipsoid=ellipsoid)
++    lon2, lat2 = module.healpix_to_lonlat(
++        to_.astype("uint64"), depth, ellipsoid=ellipsoid
++    )
++    _, _, expected = Geod(ellps=ellipsoid).inv(lon1, lat1, lon2, lat2)
++
++    np.testing.assert_allclose(result, expected, rtol=1e-6)
++
++
++@pytest.mark.parametrize("indexing_scheme", ["nested", "ring"])
++def test_geodesic_distance_symmetry(indexing_scheme):
++    """geodesic_distance(A→B) == geodesic_distance(B→A)."""
++    fn = getattr(healpix_geo, indexing_scheme).geodesic_distance
++    depth = 2
++    from_ = np.array([0, 5, 10], dtype="uint64")
++    to_ = np.array([3, 8, 20], dtype="int64")
++
++    distance_forward = fn(from_, to_, depth, ellipsoid="WGS84")
++    distance_backward = fn(
++        to_.astype("uint64"), from_.astype("int64"), depth, ellipsoid="WGS84"
++    )
++
++    np.testing.assert_allclose(distance_forward, distance_backward, rtol=1e-6)
++
++
++@pytest.mark.parametrize("indexing_scheme", ["nested", "ring"])
++def test_geodesic_distance_same_cell_is_zero(indexing_scheme):
++    """Distance from a cell to itself is 0."""
++    fn = getattr(healpix_geo, indexing_scheme).geodesic_distance
++    cells = np.array([0, 10, 47], dtype="uint64")
++    result = fn(cells, cells.astype("int64"), depth=2, ellipsoid="WGS84")
++    np.testing.assert_allclose(result, 0.0, atol=1e-3)
++
++
++@pytest.mark.parametrize("indexing_scheme", ["nested", "ring"])
++def test_geodesic_distance_error_shape(indexing_scheme):
++    """Incompatible from_/to_ shapes raise ValueError."""
++    fn = getattr(healpix_geo, indexing_scheme).geodesic_distance
++    from_ = np.array([4, 7])
++    to_ = np.array([[2, 3], [4, 6], [5, 4]], dtype="int64")
++
++    with pytest.raises(ValueError, match="The shape of `from_` must be compatible"):
++        fn(from_, to_, depth=1, ellipsoid="WGS84")
++
++
++@pytest.mark.parametrize("indexing_scheme", ["nested", "ring"])
++def test_geodesic_distance_error_depth(indexing_scheme):
++    """Out-of-range depth raises ValueError."""
++    fn = getattr(healpix_geo, indexing_scheme).geodesic_distance
++    with pytest.raises(ValueError):
++        fn(np.array([0]), np.array([1], dtype="int64"), depth=30, ellipsoid="WGS84")

@@ -1,0 +1,500 @@
+diff --git a/docs/changelog.md b/docs/changelog.md
+index 864c078a..59b0a4b9 100644
+--- a/docs/changelog.md
++++ b/docs/changelog.md
+@@ -10,6 +10,7 @@
+ - Lazy coordinates for the healpix MOC index ({pull}`259`)
+ - Support serializing indexes to zarr with compressed coordinates ({pull}`262`
+ - Use `H3HexagonLayer` to visualize H3 data ({pull}`263`)
++- Support missing coordinates for the zarr convention and fail on missing required properties ({pull}`260`)
+ 
+ ## 0.6.0 (2026-02-05)
+ 
+diff --git a/pyproject.toml b/pyproject.toml
+index b93167ba..21c9d81d 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -23,6 +23,7 @@ classifiers = [
+ requires-python = ">=3.12"
+ dependencies = [
+   "xarray",
++  "pandas",
+   "numpy>=2.0",
+   "healpix-geo>=0.3.0",
+   "h3ronpy",
+diff --git a/xdggs/conventions/base.py b/xdggs/conventions/base.py
+index bbebe497..ffd8bf45 100644
+--- a/xdggs/conventions/base.py
++++ b/xdggs/conventions/base.py
+@@ -24,10 +24,10 @@ def _translate(key, value, table):
+         if isinstance(replacement, str):
+             return replacement, value
+ 
+-        renamed_object = {
++        renamed_object = dict(
+             _translate(subkey, subvalue, replacement)
+             for subkey, subvalue in value.items()
+-        }
++        )
+         return key, renamed_object
+ 
+     return dict(_translate(key, value, table) for key, value in mapping.items())
+diff --git a/xdggs/conventions/zarr.py b/xdggs/conventions/zarr.py
+index e2541bfd..31cc16cc 100644
+--- a/xdggs/conventions/zarr.py
++++ b/xdggs/conventions/zarr.py
+@@ -107,38 +107,63 @@ def decode(
+         if grid_name is None:
+             raise DecoderError("Required field `name` is missing or null.")
+ 
++        try:
++            index_cls = GRID_REGISTRY[grid_name]
++        except KeyError:
++            raise DecoderError(f"Unknown grid name: {grid_name}") from None
++
+         spatial_dimension = metadata.pop("spatial_dimension", None)
+         if spatial_dimension is None:
+             raise DecoderError("Required field `spatial_dimension` is missing or null.")
+ 
+-        # optional, but required for now
+-        coordinate = metadata.pop("coordinate", None)
+-        if coordinate is None:
+-            raise NotImplementedError("missing coordinate is not supported for now")
++        if "refinement_level" not in metadata:
++            raise DecoderError("Required field `refinement_level` is missing.")
+ 
+         # optional, but required to be `"none"` for now
+         compression = metadata.pop("compression", "none")
++
++        coordinate = metadata.pop("coordinate", None)
++        if name in ds.keys():
++            # name takes precedence over coordinate
++            coordinate = name
++        else:
++            # name becomes the new coordinate
++            name = name or "cell_ids"
++
+         variables_to_drop = []
+         if compression != "none":
+             index_options["compression"] = compression
+             index_options["dim"] = spatial_dimension
+             variables_to_drop.append(coordinate)
+ 
+-        # construct index
++        # construct index based on coordinate presence
+         translation_table = self._create_translation_table(direction="xdggs")
+         metadata_ = translate_metadata_keys(metadata, translation_table)
+ 
+-        var = ds.variables[coordinate].copy(deep=False)
+-        var.attrs = metadata_
+-
+-        if grid_name not in GRID_REGISTRY:
+-            raise DecoderError(f"cf convention: unknown grid name: {grid_name}")
+-        index_cls = GRID_REGISTRY[grid_name]
+-        index = index_cls.from_variables({name: var}, options=index_options)
++        if coordinate is None:
++            if name in ds.keys():
++                raise DecoderError(f"Cannot overwrite existing variable '{name}'.")
++
++            # create index for the entire domain at given refinement level
++            level = metadata_.pop("level")
++            if level is None:
++                raise DecoderError("No `coordinate` requires a `refinement_level`.")
++            options = dict(metadata_)
++            options.update(index_options)
++            index = index_cls.full_domain(
++                level, spatial_dimension, name, options=options
++            )
++        elif coordinate not in ds.keys():
++            raise DecoderError(f"Coordinate variable {coordinate}, does not exist.")
++        else:
++            var = ds.variables[coordinate].copy(deep=False)
++            var.attrs = metadata_
++            index = index_cls.from_variables({coordinate: var}, options=index_options)
+ 
++        # construct index
+         new_ds = (
+-            ds.assign_coords(xr.Coordinates.from_xindex(index))
+-            .drop_vars(variables_to_drop)
++            ds.drop_vars(variables_to_drop)
++            .assign_coords(xr.Coordinates.from_xindex(index))
+             .assign_attrs(copy.deepcopy(ds.attrs))
+         )
+         # remove redundant attrs
+diff --git a/xdggs/h3.py b/xdggs/h3.py
+index b47e93ea..40d34abf 100644
+--- a/xdggs/h3.py
++++ b/xdggs/h3.py
+@@ -241,6 +241,28 @@ def from_variables(
+ 
+         return cls(var.data, dim, name, grid_info)
+ 
++    @classmethod
++    def full_domain(
++        cls,
++        level: int,
++        dim: str,
++        name: str,
++        *,
++        options: Mapping[str, Any],
++    ) -> Self:
++        """Create the index for the complete domain of the given level"""
++        # create the base_cells
++        nbase_cells = 122
++        mode = 1 << 59
++        base = np.arange(nbase_cells) << 45
++        ones = (1 << 45) - 1
++        base_cells = mode | base | ones
++        cell_ids = change_resolution(base_cells, level).to_numpy()
++        dict_options = dict(options)
++        dict_options.update(level=level)
++        grid_info = H3Info.from_dict(dict_options)
++        return cls(cell_ids, dim, name, grid_info)
++
+     @property
+     def grid_info(self) -> H3Info:
+         return self._grid
+diff --git a/xdggs/healpix/index.py b/xdggs/healpix/index.py
+index 1ed89611..795bc503 100644
+--- a/xdggs/healpix/index.py
++++ b/xdggs/healpix/index.py
+@@ -1,6 +1,7 @@
+ from collections.abc import Mapping
+ from typing import Any, Self
+ 
++import pandas as pd
+ import xarray as xr
+ from xarray.core.indexes import PandasIndex
+ 
+@@ -76,6 +77,41 @@ def from_variables(
+ 
+         return cls(var.data, dim=dim, name=name, grid_info=grid_info, **options_)
+ 
++    @classmethod
++    def full_domain(
++        cls,
++        level: int,
++        dim: str,
++        name: str,
++        *,
++        options: Mapping[str, Any],
++    ) -> Self:
++        """Create the index for the complete domain of the given level"""
++        size = 12 * 4**level
++        indexing_scheme = options.get("indexing_scheme", "nested")
++        if indexing_scheme == "zuniq":
++            start = 1 << 2 * (29 - level)
++            step = start << 1
++            stop = size * step
++            cell_ids = pd.RangeIndex(start, stop, step)
++            # Note: I do not understand why level must be None for zuniq
++            # with H3 we also use a multi-level index for a fixed level
++            level = None
++        # not yet supported
++        # elif indexing_scheme == "nuniq":
++        #    start = 4 ** (1 + level)
++        #    stop = start + size
++        #    cell_ids = pd.RangeIndex(start, stop)
++        else:
++            cell_ids = pd.RangeIndex(size)
++        dict_options = dict(options)
++        dict_options.update(level=level)
++        index_kind = dict_options.pop("index_kind", None)
++        grid_info = HealpixInfo.from_dict(dict_options)
++        return cls(
++            cell_ids, dim=dim, name=name, grid_info=grid_info, index_kind=index_kind
++        )
++
+     def _replace(self, new_index: xr.Index):
+         return type(self)(
+             new_index,
+diff --git a/xdggs/index.py b/xdggs/index.py
+index 5f05fa80..0e1fa6cc 100644
+--- a/xdggs/index.py
++++ b/xdggs/index.py
+@@ -53,6 +53,18 @@ def from_variables(
+ 
+         return index
+ 
++    @classmethod
++    def full_domain(
++        cls,
++        level: int,
++        dim: str,
++        name: str,
++        *,
++        options: Mapping[str, Any],
++    ) -> Self:
++        """Create the index for the complete domain of the given level"""
++        raise NotImplementedError("To be implemented in child class")
++
+     def values(self):
+         return self._index.index.values
+ 
+diff --git a/xdggs/tests/test_conventions_zarr.py b/xdggs/tests/test_conventions_zarr.py
+index 2e0e5e5d..dc7f11b3 100644
+--- a/xdggs/tests/test_conventions_zarr.py
++++ b/xdggs/tests/test_conventions_zarr.py
+@@ -1,9 +1,10 @@
+ import numpy as np
++import pandas as pd
+ import pytest
+ import xarray as xr
+ 
+ import xdggs
+-from xdggs.conventions.zarr import Zarr
++from xdggs.conventions.zarr import DecoderError, Zarr
+ from xdggs.tests import assert_indexes_equal, requires_healpix_geo_0_4_1
+ 
+ 
+@@ -12,6 +13,35 @@ def translate(mapping):
+     return {translations.get(name, name): value for name, value in mapping.items()}
+ 
+ 
++WGS84 = {
++    "xdggs": {
++        "name": "WGS84",
++        "semimajor_axis": 6378137.0,
++        "inverse_flattening": 298.257223563,
++    },
++    "zarr": {
++        "name": "WGS84",
++        "semi_major_axis": 6378137.0,
++        "inverse_flattening": 298.257223563,
++    },
++}
++
++
++@pytest.fixture
++def healpix_dataset():
++    data_vars = {"data": ("healpix_index", np.arange(12) % 2 == 0)}
++    attrs = {
++        "zarr_conventions": [Zarr.convention_metadata],
++        "dggs": {
++            "name": "healpix",
++            "refinement_level": 0,
++            "spatial_dimension": "healpix_index",
++            "ellipsoid": WGS84["zarr"],
++        },
++    }
++    return xr.Dataset(data_vars=data_vars, attrs=attrs)
++
++
+ @pytest.mark.parametrize(
+     ["name", "dim"], [("cell_ids", "cells"), ("zone_ids", "zones")]
+ )
+@@ -23,6 +53,21 @@ def translate(mapping):
+             {"name": "healpix", "refinement_level": 1, "indexing_scheme": "nested"},
+             np.array([3, 6, 9], dtype="uint64"),
+         ),
++        (
++            {
++                "grid_name": "healpix",
++                "level": 1,
++                "indexing_scheme": "nested",
++                "ellipsoid": WGS84["xdggs"],
++            },
++            {
++                "name": "healpix",
++                "refinement_level": 1,
++                "indexing_scheme": "nested",
++                "ellipsoid": WGS84["zarr"],
++            },
++            np.array([3, 6, 9], dtype="uint64"),
++        ),
+         (
+             {"grid_name": "h3", "level": 4},
+             {"name": "h3", "refinement_level": 4},
+@@ -72,8 +117,80 @@ def test_decode(grid_info, metadata_object, cell_ids, name, dim):
+     assert_indexes_equal(actual[name].xindexes, expected[name].xindexes)
+ 
+ 
++def test_decode_no_coordinate(healpix_dataset):
++    from xarray.indexes import PandasIndex
++
++    from xdggs.healpix import HealpixIndex, HealpixInfo
++
++    actual = Zarr().decode(healpix_dataset, grid_info=None, name=None, index_options={})
++
++    index = HealpixIndex(
++        PandasIndex(pd.RangeIndex(12, name="cell_ids"), dim="healpix_index"),
++        grid_info=HealpixInfo.from_dict(
++            {
++                "level": 0,
++                "indexing_scheme": "nested",
++                "ellipsoid": WGS84["xdggs"],
++            }
++        ),
++        name="cell_ids",
++        dim="healpix_index",
++    )
++    expected = healpix_dataset.drop_attrs().assign_coords(
++        xr.Coordinates.from_xindex(index)
++    )
++    xr.testing.assert_identical(actual, expected)
++    assert_indexes_equal(actual["cell_ids"].xindexes, expected["cell_ids"].xindexes)
++
++
++def test_decode_no_coordinate_custom_name(healpix_dataset):
++    name = "my_index"
++    ds = Zarr().decode(healpix_dataset, grid_info=None, name=name, index_options={})
++    assert "cell_ids" not in ds
++    assert name in ds
++
++
++@pytest.mark.parametrize("key", ["zarr_conventions", "dggs"])
++def test_raise_decode_error_missing_convention(key, healpix_dataset):
++    healpix_dataset.attrs.pop(key)
++    with pytest.raises(DecoderError):
++        Zarr().decode(healpix_dataset, grid_info=None, name=None, index_options={})
++
++
++@pytest.mark.parametrize("key", ["name", "refinement_level", "spatial_dimension"])
++def test_raise_decode_error_missing_required(key, healpix_dataset):
++    healpix_dataset.attrs["dggs"].pop(key)
++    with pytest.raises(DecoderError, match=key):
++        Zarr().decode(healpix_dataset, grid_info=None, name=None, index_options={})
++
++
++def test_raise_decode_error_no_coordinate_but_default_exists(healpix_dataset):
++    # the default coordinate name is "cell_ids"
++    healpix_dataset["cell_ids"] = ("healpix_index", np.arange(12))
++    with pytest.raises(DecoderError, match="cell_ids"):
++        Zarr().decode(healpix_dataset, grid_info=None, name=None, index_options={})
++
++
++def test_raise_decode_error_coordinate_not_existing(healpix_dataset):
++    healpix_dataset.attrs["dggs"]["coordinate"] = "healpix_index"
++    with pytest.raises(DecoderError, match="does not exist"):
++        Zarr().decode(healpix_dataset, grid_info=None, name=None, index_options={})
++
++
++def test_raise_decode_error_no_coordinate_and_no_level(healpix_dataset):
++    healpix_dataset.attrs["dggs"]["refinement_level"] = None
++    with pytest.raises(DecoderError, match="No .* requires .*"):
++        Zarr().decode(healpix_dataset, grid_info=None, name=None, index_options={})
++
++
++def test_raise_decode_error_unkown_dggs(healpix_dataset):
++    healpix_dataset.attrs["dggs"]["name"] = "DUMMY"
++    with pytest.raises(DecoderError, match="DUMMY"):
++        Zarr().decode(healpix_dataset, grid_info=None, name=None, index_options={})
++
++
+ @pytest.mark.parametrize(
+-    ["metadata_object", "grid_info", "variable"],
++    ["metadata_object", "grid_info", "expected_name", "variable"],
+     (
+         pytest.param(
+             {
+@@ -85,6 +202,7 @@ def test_decode(grid_info, metadata_object, cell_ids, name, dim):
+                 "compression": "ranges",
+             },
+             {"grid_name": "healpix", "level": 10, "indexing_scheme": "nested"},
++            "cell_ranges",
+             xr.Variable(
+                 ("range_index", "bounds"),
+                 np.array(
+@@ -106,6 +224,7 @@ def test_decode(grid_info, metadata_object, cell_ids, name, dim):
+                 "compression": "compacted",
+             },
+             {"grid_name": "healpix", "level": 5, "indexing_scheme": "nested"},
++            "compacted_cell_ids",
+             xr.Variable(
+                 ("compacted_cells"),
+                 np.array(
+@@ -117,7 +236,7 @@ def test_decode(grid_info, metadata_object, cell_ids, name, dim):
+         ),
+     ),
+ )
+-def test_decode_compression(metadata_object, grid_info, variable):
++def test_decode_compression(metadata_object, grid_info, expected_name, variable):
+     convention = Zarr()
+ 
+     name = metadata_object["coordinate"]
+@@ -136,7 +255,7 @@ def test_decode_compression(metadata_object, grid_info, variable):
+     var = variable.copy()
+     var.attrs = grid_info
+     index = xdggs.index.DGGSIndex.from_variables(
+-        {"cell_ids": var},
++        {expected_name: var},
+         options={
+             "index_kind": "moc",
+             "compression": metadata_object["compression"],
+@@ -160,6 +279,21 @@ def test_decode_compression(metadata_object, grid_info, variable):
+             {"name": "healpix", "refinement_level": 1, "indexing_scheme": "nested"},
+             np.array([3, 6, 9], dtype="uint64"),
+         ),
++        (
++            {
++                "grid_name": "healpix",
++                "level": 1,
++                "indexing_scheme": "nested",
++                "ellipsoid": WGS84["xdggs"],
++            },
++            {
++                "name": "healpix",
++                "refinement_level": 1,
++                "indexing_scheme": "nested",
++                "ellipsoid": WGS84["zarr"],
++            },
++            np.array([3, 6, 9], dtype="uint64"),
++        ),
+         (
+             {"grid_name": "h3", "level": 4},
+             {"name": "h3", "refinement_level": 4},
+diff --git a/xdggs/tests/test_h3.py b/xdggs/tests/test_h3.py
+index d4e00e14..f254b294 100644
+--- a/xdggs/tests/test_h3.py
++++ b/xdggs/tests/test_h3.py
+@@ -284,6 +284,16 @@ def test_from_variables(variable_name, variable, options):
+     assert np.all(index._index.index.values == variable.data)
+ 
+ 
++def test_full_domain():
++    level = 2
++    dim = "cells"
++    name = "cell_ids"
++    index = h3.H3Index.full_domain(level, dim, name, options={})
++    assert index._index.index.size == 5882
++    assert index.dim == dim
++    assert index.name == name
++
++
+ @pytest.mark.parametrize(["old_variable", "new_variable"], variable_combinations)
+ def test_replace(old_variable, new_variable):
+     name = "cell_ids"
+diff --git a/xdggs/tests/test_healpix.py b/xdggs/tests/test_healpix.py
+index c4bfc50f..38671c2e 100644
+--- a/xdggs/tests/test_healpix.py
++++ b/xdggs/tests/test_healpix.py
+@@ -745,6 +745,29 @@ def test_from_variables_moc_ranges() -> None:
+     assert index.grid_info.to_dict() == grid_info
+ 
+ 
++full_domain_options = [
++    {"grid_name": "healpix", "indexing_scheme": "nested"},
++    {"grid_name": "healpix", "indexing_scheme": "ring"},
++    {"grid_name": "healpix", "indexing_scheme": "zuniq"},
++    {"grid_name": "healpix", "indexing_scheme": "nested", "index_kind": "moc"},
++]
++
++
++@pytest.mark.parametrize("options", full_domain_options)
++def test_full_domain(options):
++    level = 10
++    dim = "cells"
++    name = "healpix_cell_ids"
++    index = healpix.HealpixIndex.full_domain(level, dim, name, options=options)
++    assert index.dim == dim
++    assert index.name == name
++    if options.get("index_kind", "") == "moc":
++        assert isinstance(index._index, healpix.HealpixMocIndex)
++        assert index._index.size == 12 * 4**level
++    else:
++        assert index._index.index.size == 12 * 4**level
++
++
+ @pytest.mark.parametrize(["old_variable", "new_variable"], variable_combinations)
+ def test_replace(old_variable, new_variable) -> None:
+     grid = healpix.HealpixInfo.from_dict(old_variable.attrs)

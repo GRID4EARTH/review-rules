@@ -1,0 +1,514 @@
+diff --git a/benchmarks/benchmark_cone_coverage_many.py b/benchmarks/benchmark_cone_coverage_many.py
+new file mode 100644
+index 00000000..609d8aa5
+--- /dev/null
++++ b/benchmarks/benchmark_cone_coverage_many.py
+@@ -0,0 +1,101 @@
++"""Compare scalar and batched nested cone coverage.
++
++The default workload models the 15,069-center Level-20 geometry construction
++observed in a roughly 600 m healpix-analyse Gaussian-filter patch. Run with:
++
++    python benchmarks/benchmark_cone_coverage_many.py
++"""
++
++from __future__ import annotations
++
++import argparse
++import math
++import time
++
++import numpy as np
++
++from healpix_geo import nested
++
++
++def make_centers(count: int) -> np.ndarray:
++    side = math.ceil(math.sqrt(count))
++    # About one Level-20 cell (six metres) between centers near Paris.
++    spacing_lat = 6.0 / 111_320.0
++    spacing_lon = spacing_lat / math.cos(math.radians(48.86))
++    axis = np.arange(side, dtype=np.float64) - (side - 1) / 2
++    lon, lat = np.meshgrid(2.35 + axis * spacing_lon, 48.86 + axis * spacing_lat)
++    return np.column_stack((lon.ravel(), lat.ravel()))[:count]
++
++
++def timed(function):
++    start = time.perf_counter()
++    result = function()
++    return time.perf_counter() - start, result
++
++
++def assert_matches_scalar(scalar_rows, batched):
++    offsets, cell_ids, depths, fully_covered = batched
++    assert len(offsets) == len(scalar_rows) + 1
++    for index, expected in enumerate(scalar_rows):
++        start, end = offsets[index : index + 2]
++        np.testing.assert_array_equal(cell_ids[start:end], expected[0])
++        np.testing.assert_array_equal(depths[start:end], expected[1])
++        np.testing.assert_array_equal(fully_covered[start:end], expected[2])
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument("--count", type=int, default=15_069)
++    parser.add_argument("--depth", type=int, default=20)
++    parser.add_argument("--radius-metres", type=float, default=100.0)
++    args = parser.parse_args()
++
++    centers = make_centers(args.count)
++    radius_degrees = args.radius_metres / 111_320.0
++    kwargs = {"ellipsoid": "WGS84", "flat": True}
++
++    scalar_seconds, scalar_rows = timed(
++        lambda: [
++            nested.cone_coverage(center, radius_degrees, args.depth, **kwargs)
++            for center in centers
++        ]
++    )
++    one_thread_seconds, one_thread = timed(
++        lambda: nested.cone_coverage_many(
++            centers,
++            radius_degrees,
++            args.depth,
++            num_threads=1,
++            **kwargs,
++        )
++    )
++    eight_thread_seconds, eight_threads = timed(
++        lambda: nested.cone_coverage_many(
++            centers,
++            radius_degrees,
++            args.depth,
++            num_threads=8,
++            **kwargs,
++        )
++    )
++
++    assert_matches_scalar(scalar_rows, one_thread)
++    assert_matches_scalar(scalar_rows, eight_threads)
++
++    print(
++        f"centers: {args.count:,}; depth: {args.depth}; radius: {args.radius_metres:g} m"
++    )
++    print(f"scalar Python loop: {scalar_seconds:.6f} s")
++    print(
++        f"batch, one thread: {one_thread_seconds:.6f} s "
++        f"({scalar_seconds / one_thread_seconds:.2f}x)"
++    )
++    print(
++        f"batch, eight threads: {eight_thread_seconds:.6f} s "
++        f"({scalar_seconds / eight_thread_seconds:.2f}x)"
++    )
++    print("correctness: all batched rows exactly match scalar results")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/python/healpix-geo/docs/api/nested.rst b/python/healpix-geo/docs/api/nested.rst
+index 06980234..df5f8841 100644
+--- a/python/healpix-geo/docs/api/nested.rst
++++ b/python/healpix-geo/docs/api/nested.rst
+@@ -69,6 +69,7 @@ Find all the cells which intersect a region.
+    box_coverage
+    polygon_coverage
+    cone_coverage
++   cone_coverage_many
+    elliptical_cone_coverage
+    internal_boundary
+ 
+diff --git a/python/healpix-geo/python/healpix_geo/nested.py b/python/healpix-geo/python/healpix_geo/nested.py
+index 12beb011..bae3bb40 100644
+--- a/python/healpix-geo/python/healpix_geo/nested.py
++++ b/python/healpix-geo/python/healpix_geo/nested.py
+@@ -952,6 +952,79 @@ def cone_coverage(
+     )
+ 
+ 
++def cone_coverage_many(
++    centers,
++    radius,
++    depth,
++    *,
++    delta_depth=0,
++    ellipsoid="sphere",
++    flat=True,
++    num_threads=0,
++):
++    """Search the cells covering multiple cones.
++
++    This is the batched equivalent of :func:`cone_coverage`. Each row of the
++    result is identical to a scalar call for the corresponding center. Results
++    are returned in compressed sparse row (CSR) form because different cones
++    may cover different numbers of cells.
++
++    Parameters
++    ----------
++    centers : array-like of float
++        Cone centers as a two-dimensional ``(N, 2)`` array of longitude and
++        latitude pairs in degrees.
++    radius : float
++        Radius shared by all cones, in degrees.
++    depth : int
++        Maximum depth of the cells to return.
++    delta_depth : int, default: 0
++        Additional depth used by the approximate cone coverage algorithm.
++    ellipsoid : ellipsoid-like, default: "sphere"
++        Reference ellipsoid on which to evaluate HEALPix.
++    flat : bool, default: True
++        If ``True``, all returned cells are at ``depth``.
++    num_threads : int, default: 0
++        Number of native worker threads. Zero selects the available parallelism.
++        To keep automatic parallelism conservative, this operation uses at most
++        eight threads; larger values are clamped to eight.
++
++    Returns
++    -------
++    offsets : numpy.ndarray
++        Unsigned offsets with length ``N + 1``. The result for center ``i`` is
++        stored in ``offsets[i]:offsets[i + 1]`` in each following array.
++    cell_ids : numpy.ndarray
++        Concatenated nested HEALPix cell ids.
++    depths : numpy.ndarray
++        Concatenated depths of the returned cells.
++    fully_covered : numpy.ndarray
++        Concatenated flags marking fully covered cells.
++    """
++    _check_depth(depth)
++
++    centers = np.asarray(centers, dtype=np.float64)
++    if centers.ndim != 2 or centers.shape[1] != 2:
++        raise ValueError(
++            "centers must be a two-dimensional array with shape (N, 2), "
++            f"got {centers.shape}"
++        )
++    if num_threads < 0:
++        raise ValueError("num_threads must be non-negative")
++
++    centers = np.ascontiguousarray(centers)
++    num_threads = np.uint16(min(int(num_threads), 8))
++    return healpix_geo.nested.cone_coverage_many(
++        depth,
++        centers,
++        float(radius),
++        delta_depth=delta_depth,
++        ellipsoid=ellipsoid,
++        flat=flat,
++        nthreads=num_threads,
++    )
++
++
+ def elliptical_cone_coverage(
+     center,
+     ellipse_geometry,
+diff --git a/python/healpix-geo/python/healpix_geo/tests/test_coverage.py b/python/healpix-geo/python/healpix_geo/tests/test_coverage.py
+index 26317492..3efcf883 100644
+--- a/python/healpix-geo/python/healpix_geo/tests/test_coverage.py
++++ b/python/healpix-geo/python/healpix_geo/tests/test_coverage.py
+@@ -808,6 +808,76 @@ def test_cone_coverage(scheme, expected_cell_ids, expected_depths, expected_cove
+     np.testing.assert_equal(fully_covered, expected_coverage)
+ 
+ 
++@pytest.mark.parametrize("ellipsoid", ["sphere", "WGS84"])
++@pytest.mark.parametrize("flat", [True, False])
++@pytest.mark.parametrize("num_threads", [0, 1, 4, 32])
++def test_cone_coverage_many_matches_scalar(ellipsoid, flat, num_threads):
++    centers = np.array(
++        [
++            [45.0, 45.0],
++            [179.999, 0.0],
++            [-179.999, 0.0],
++            [12.0, 89.9],
++            [12.0, -89.9],
++        ]
++    )
++    radius = 0.5
++    depth = 8
++    delta_depth = 1
++
++    offsets, cell_ids, depths, fully_covered = healpix_geo.nested.cone_coverage_many(
++        centers,
++        radius,
++        depth,
++        ellipsoid=ellipsoid,
++        delta_depth=delta_depth,
++        flat=flat,
++        num_threads=num_threads,
++    )
++
++    assert offsets.dtype == np.dtype("uint64")
++    np.testing.assert_equal(offsets.shape, (len(centers) + 1,))
++    for index, center in enumerate(centers):
++        start, end = offsets[index : index + 2]
++        expected = healpix_geo.nested.cone_coverage(
++            center,
++            radius,
++            depth,
++            ellipsoid=ellipsoid,
++            delta_depth=delta_depth,
++            flat=flat,
++        )
++        np.testing.assert_array_equal(cell_ids[start:end], expected[0])
++        np.testing.assert_array_equal(depths[start:end], expected[1])
++        np.testing.assert_array_equal(fully_covered[start:end], expected[2])
++
++
++def test_cone_coverage_many_empty():
++    result = healpix_geo.nested.cone_coverage_many(
++        np.empty((0, 2)), 0.5, 8, ellipsoid="WGS84"
++    )
++
++    np.testing.assert_array_equal(result[0], np.array([0], dtype="uint64"))
++    for array in result[1:]:
++        assert array.size == 0
++
++
++@pytest.mark.parametrize(
++    "centers",
++    [np.array([45.0, 45.0]), np.empty((2, 3)), np.empty((2, 2, 1))],
++)
++def test_cone_coverage_many_rejects_invalid_centers(centers):
++    with pytest.raises(ValueError, match="shape \\(N, 2\\)"):
++        healpix_geo.nested.cone_coverage_many(centers, 0.5, 8)
++
++
++def test_cone_coverage_many_rejects_negative_threads():
++    with pytest.raises(ValueError, match="num_threads must be non-negative"):
++        healpix_geo.nested.cone_coverage_many(
++            np.array([[45.0, 45.0]]), 0.5, 8, num_threads=-1
++        )
++
++
+ @pytest.mark.parametrize(
+     ["scheme", "expected_cell_ids", "expected_depths", "expected_coverage"],
+     (
+diff --git a/python/healpix-geo/src/indexing_schemes/nested/coverage.rs b/python/healpix-geo/src/indexing_schemes/nested/coverage.rs
+index 747b54ee..3d44d253 100644
+--- a/python/healpix-geo/src/indexing_schemes/nested/coverage.rs
++++ b/python/healpix-geo/src/indexing_schemes/nested/coverage.rs
+@@ -5,6 +5,7 @@ use pyo3::exceptions::PyValueError;
+ use pyo3::prelude::*;
+ 
+ use healpix_geo_core::scalar::nested::coverage as scalar;
++use healpix_geo_core::vectorized::nested::coverage as vectorized;
+ 
+ #[allow(clippy::type_complexity)]
+ #[pyfunction]
+@@ -142,6 +143,91 @@ pub(crate) fn cone_coverage<'py>(
+     ))
+ }
+ 
++#[allow(clippy::type_complexity, clippy::too_many_arguments)]
++#[pyfunction]
++#[pyo3(signature = (depth, centers, radius, *, ellipsoid, delta_depth = 0, flat = true, nthreads = 0))]
++pub(crate) fn cone_coverage_many<'py>(
++    py: Python<'py>,
++    depth: u8,
++    centers: &Bound<'py, PyArray2<f64>>,
++    radius: f64,
++    ellipsoid: EllipsoidLike,
++    delta_depth: u8,
++    flat: bool,
++    nthreads: u16,
++) -> PyResult<(
++    Bound<'py, PyArray1<u64>>,
++    Bound<'py, PyArray1<u64>>,
++    Bound<'py, PyArray1<u8>>,
++    Bound<'py, PyArray1<bool>>,
++)> {
++    if depth > 29 {
++        return Err(PyValueError::new_err(
++            "depth must be between 0 and 29, inclusive.",
++        ));
++    } else if depth + delta_depth > 29 {
++        return Err(PyValueError::new_err(
++            "delta_depth must chosen such that depth + delta_depth <= 29",
++        ));
++    }
++
++    let shape = centers.shape();
++    if shape[1] != 2 {
++        return Err(PyValueError::new_err(format!(
++            "The last dimension of the centers array must have a size of 2, got shape ({}, {})",
++            shape[0], shape[1]
++        )));
++    }
++
++    let centers_: Vec<(f64, f64)> = centers
++        .to_vec()?
++        .chunks_exact(2)
++        .map(|row| (row[0], row[1]))
++        .collect();
++    let ellipsoid_ = ellipsoid.into_ellipsoid()?;
++    let layer = healpix::nested::get(depth);
++
++    let result = py.detach(move || {
++        let rows = vectorized::cone_coverage_many(
++            &centers_,
++            radius,
++            layer,
++            &ellipsoid_,
++            delta_depth,
++            flat,
++            nthreads as usize,
++        );
++
++        let total_len = rows
++            .iter()
++            .try_fold(0usize, |total, row| total.checked_add(row.0.len()))?;
++        let mut offsets = Vec::<u64>::with_capacity(rows.len() + 1);
++        let mut ipix = Vec::<u64>::with_capacity(total_len);
++        let mut depths = Vec::<u8>::with_capacity(total_len);
++        let mut fully_covered = Vec::<bool>::with_capacity(total_len);
++        offsets.push(0);
++
++        for (row_ipix, row_depths, row_fully_covered) in rows {
++            ipix.extend(row_ipix);
++            depths.extend(row_depths);
++            fully_covered.extend(row_fully_covered);
++            offsets.push(u64::try_from(ipix.len()).ok()?);
++        }
++
++        Some((offsets, ipix, depths, fully_covered))
++    });
++
++    let (offsets, ipix, depths, fully_covered) = result
++        .ok_or_else(|| PyValueError::new_err("cone coverage result is too large to represent"))?;
++
++    Ok((
++        PyArray1::from_vec(py, offsets),
++        PyArray1::from_vec(py, ipix),
++        PyArray1::from_vec(py, depths),
++        PyArray1::from_vec(py, fully_covered),
++    ))
++}
++
+ #[allow(clippy::type_complexity, clippy::too_many_arguments)]
+ #[pyfunction]
+ #[pyo3(signature = (depth, center, ellipse_geometry, position_angle, *, ellipsoid, delta_depth = 0, flat = true))]
+diff --git a/python/healpix-geo/src/indexing_schemes/nested/mod.rs b/python/healpix-geo/src/indexing_schemes/nested/mod.rs
+index 621e7a63..593b6984 100644
+--- a/python/healpix-geo/src/indexing_schemes/nested/mod.rs
++++ b/python/healpix-geo/src/indexing_schemes/nested/mod.rs
+@@ -11,7 +11,8 @@ pub(crate) use self::coordinates::{
+     healpix_to_lonlat, lonlat_to_healpix, vertices,
+ };
+ pub(crate) use self::coverage::{
+-    box_coverage, cone_coverage, elliptical_cone_coverage, polygon_coverage, zone_coverage,
++    box_coverage, cone_coverage, cone_coverage_many, elliptical_cone_coverage, polygon_coverage,
++    zone_coverage,
+ };
+ pub(crate) use self::hierarchy::{kth_neighbourhood, kth_neighbours, siblings, zoom_to};
+ pub(crate) use self::mesh::vertex_indices;
+diff --git a/python/healpix-geo/src/lib.rs b/python/healpix-geo/src/lib.rs
+index 2108348b..2870ebdb 100644
+--- a/python/healpix-geo/src/lib.rs
++++ b/python/healpix-geo/src/lib.rs
+@@ -16,9 +16,10 @@ mod nested {
+     #[pymodule_export]
+     use crate::indexing_schemes::nested::{
+         angular_distances, bilinear_interpolation, box_coverage, cartesian_to_healpix,
+-        cone_coverage, elliptical_cone_coverage, healpix_to_cartesian, healpix_to_lonlat,
+-        internal_boundary, kth_neighbourhood, kth_neighbours, lonlat_to_healpix, polygon_coverage,
+-        siblings, to_ring, to_zuniq, vertex_indices, vertices, zone_coverage, zoom_to,
++        cone_coverage, cone_coverage_many, elliptical_cone_coverage, healpix_to_cartesian,
++        healpix_to_lonlat, internal_boundary, kth_neighbourhood, kth_neighbours, lonlat_to_healpix,
++        polygon_coverage, siblings, to_ring, to_zuniq, vertex_indices, vertices, zone_coverage,
++        zoom_to,
+     };
+ }
+ 
+diff --git a/rust/healpix-geo-core/src/vectorized/nested/coverage.rs b/rust/healpix-geo-core/src/vectorized/nested/coverage.rs
+index 63ad2369..6cf760ec 100644
+--- a/rust/healpix-geo-core/src/vectorized/nested/coverage.rs
++++ b/rust/healpix-geo-core/src/vectorized/nested/coverage.rs
+@@ -1,5 +1,88 @@
+-// re-export, no need for vectorization here
++#[cfg(not(target_arch = "wasm32"))]
++use rayon::prelude::*;
++
++use cdshealpix::nested::Layer;
++
++use crate::ellipsoid::Ellipsoid;
++use crate::maybe_parallelize;
++use crate::scalar::nested::coverage as scalar;
++
++pub type Coverage = (Vec<u64>, Vec<u8>, Vec<bool>);
++
++// Keep automatic parallelism conservative because every worker builds an
++// independent variable-sized coverage result.
++const MAX_CONE_COVERAGE_THREADS: usize = 8;
++
++fn bounded_thread_count(nthreads: usize) -> usize {
++    if nthreads == 0 {
++        std::thread::available_parallelism()
++            .map(usize::from)
++            .unwrap_or(1)
++            .min(MAX_CONE_COVERAGE_THREADS)
++    } else {
++        nthreads.clamp(1, MAX_CONE_COVERAGE_THREADS)
++    }
++}
++
++/// Evaluate multiple cone coverage queries while preserving the result and
++/// ordering of [`scalar::cone_coverage`] for every input center.
++pub fn cone_coverage_many(
++    centers: &[(f64, f64)],
++    radius: f64,
++    layer: &Layer,
++    ellipsoid: &Ellipsoid,
++    delta_depth: u8,
++    flat: bool,
++    nthreads: usize,
++) -> Vec<Coverage> {
++    if centers.is_empty() {
++        return Vec::new();
++    }
++
++    let nthreads = bounded_thread_count(nthreads).min(centers.len());
++    let mut result = Vec::<Coverage>::with_capacity(centers.len());
++
++    maybe_parallelize!(nthreads, centers, result, |&center| {
++        scalar::cone_coverage(center, radius, layer, ellipsoid, delta_depth, flat)
++    });
++
++    result
++}
++
++// Re-export the scalar functions which do not benefit from vectorization.
+ #[allow(unused)]
+ use crate::scalar::nested::coverage::{
+     box_coverage, cone_coverage, elliptical_cone_coverage, polygon_coverage, zone_coverage,
+ };
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use crate::ellipsoid::{Ellipsoid, ReferenceSphere};
++    use geodesy::ellps::Ellipsoid as GeodesyEllipsoid;
++
++    #[test]
++    fn cone_coverage_many_matches_scalar() {
++        let centers = vec![(45.0, 45.0), (179.999, 0.0), (12.0, 89.9)];
++        let layer = cdshealpix::nested::get(8);
++        let ellipsoid = Ellipsoid::Sphere(ReferenceSphere::new(GeodesyEllipsoid::new(1.0, 0.0)));
++
++        let expected: Vec<Coverage> = centers
++            .iter()
++            .map(|&center| scalar::cone_coverage(center, 0.5, layer, &ellipsoid, 1, false))
++            .collect();
++
++        assert_eq!(
++            cone_coverage_many(&centers, 0.5, layer, &ellipsoid, 1, false, 4),
++            expected
++        );
++    }
++
++    #[test]
++    fn cone_coverage_many_accepts_empty_input() {
++        let layer = cdshealpix::nested::get(8);
++        let ellipsoid = Ellipsoid::Sphere(ReferenceSphere::new(GeodesyEllipsoid::new(1.0, 0.0)));
++
++        assert!(cone_coverage_many(&[], 0.5, layer, &ellipsoid, 0, true, 0).is_empty());
++    }
++}

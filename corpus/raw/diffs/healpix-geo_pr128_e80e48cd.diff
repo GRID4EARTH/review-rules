@@ -1,0 +1,1747 @@
+diff --git a/docs/api.rst b/docs/api.rst
+index 3b7b4efd..b473ab18 100644
+--- a/docs/api.rst
++++ b/docs/api.rst
+@@ -1,98 +1,272 @@
+ API reference
+ =============
+ 
+-Calculation functions
+-~~~~~~~~~~~~~~~~~~~~~
++This page contains the complete documentation of all the functions and classes available in `healpix-geo`.
++
++Overview
++========
++
++`healpix-geo` is organised in several modules following the **HEALPix indexing scheme** used :
++
++- :mod:`healpix_geo.nested` : nested scheme
++- :mod:`healpix_geo.ring` : ring scheme
++- :mod:`healpix_geo.zuniq` : Zuniq scheme for Multi-Order Coverage (MOC)
++
++.. tip::
++   **For most of the applications**, use module :mod:`healpix_geo.nested`. It offers the best support for hierarchical operations.
++
++Guide of module choice
++=======================
++
++Choose your module following your needs :
+ 
+-Nested
+-------
++.. list-table::
++   :widths: 20 40 40
++   :header-rows: 1
+ 
+-**Coordinates**:
++   * - Module
++     - When to use it
++     - Principal functionalities
++   * - **nested**
++     - - General applications
++       - Hierarchical requests
++       - Multi-resolution
++     - - Coordinates conversions
++       - Coverage
++       - Hierarchy
++       - Distances
++   * - **ring**
++     - - Compatibility legacy
++       - Specific order requested
++     - - Coordinates conversions
++       - Distances
++       - Limited neighbours
++   * - **zuniq**
++     - - Work with MOC
++       - Interoperability
++     - - Conversions nested ↔ zuniq
++       - Cell Coordinates
++
++
++Module nested
++==============
++
++The module :mod:`healpix_geo.nested` gives functions for the nested indexing scheme.
++
++.. currentmodule:: healpix_geo.nested
++
++Coordinates Conversions
++~~~~~~~~~~~~~~~~~~~~~~~~
++
++Conversions between geographic coordinates and HEALPix indices.
+ 
+ .. autosummary::
+    :toctree: generated/
++   :nosignatures:
++
++   healpix_to_lonlat
++   lonlat_to_healpix
++   vertices
+ 
+-   healpix_geo.nested.healpix_to_lonlat
+-   healpix_geo.nested.lonlat_to_healpix
+-   healpix_geo.nested.vertices
++.. seealso::
++   Tutorial complete : :doc:`tutorials/coordinate_conversion`
+ 
+-**Hierarchy**:
++Hierarchy and neighborhood
++~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Navigation in the hierarchical structure of HEALPix.
+ 
+ .. autosummary::
+    :toctree: generated/
++   :nosignatures:
++
++   kth_neighbourhood
++   zoom_to
++   siblings
++
++**Quick Examples** :
++
++.. code-block:: python
++
++    from healpix_geo.nested import kth_neighbourhood, zoom_to
++
++    # Direct neighbours
++    neighbours = kth_neighbourhood(ipix, depth=8, k=1)
++
++    # Parents and children
++    children = zoom_to(parent_ipix, parent_depth, parent_depth + 1)
+ 
+-   healpix_geo.nested.kth_neighbourhood
+-   healpix_geo.nested.zoom_to
+-   healpix_geo.nested.siblings
++.. seealso::
++   Complete tutorial : :doc:`user-guide/hierarchical_indexing`
+ 
+-**Coverage**:
++Cover Requests
++~~~~~~~~~~~~~~~
++
++Find all the cells which intersect a region.
+ 
+ .. autosummary::
+    :toctree: generated/
++   :nosignatures:
++
++   zone_coverage
++   box_coverage
++   polygon_coverage
++   cone_coverage
++   elliptical_cone_coverage
++   internal_boundary
+ 
+-   healpix_geo.nested.zone_coverage
+-   healpix_geo.nested.box_coverage
+-   healpix_geo.nested.polygon_coverage
+-   healpix_geo.nested.cone_coverage
+-   healpix_geo.nested.elliptical_cone_coverage
+ 
+-   healpix_geo.nested.internal_boundary
++.. seealso::
++   Complete tutorial : :doc:`tutorials/coverage_queries`
++
++Distance Calculations
++~~~~~~~~~~~~~~~~~~~~~
+ 
+-**Distances**:
++Calculate distances between HEALPix cells.
+ 
+ .. autosummary::
+    :toctree: generated/
++   :nosignatures:
+ 
+-   healpix_geo.nested.angular_distances
++   angular_distances
+ 
+-Zuniq
+------
+ 
+-**Conversion**
++Indexes and data structure
++~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Classes to manipulate HEALPix cell sets.
+ 
+ .. autosummary::
+    :toctree: generated/
++   :nosignatures:
++
++   RangeMOCIndex
++
+ 
+-   healpix_geo.zuniq.from_nested
+-   healpix_geo.zuniq.to_nested
++Module ring
++===========
+ 
+-**Coordinates**:
++The module :mod:`healpix_geo.ring` gives for the ring indexation scheme.
++
++.. currentmodule:: healpix_geo.ring
++
++.. note::
++   The ring scheme is principally given for **compatibility**. For ne applications, prefer :mod:`healpix_geo.nested`.
++
++Coordinates Conversions
++~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ .. autosummary::
+    :toctree: generated/
++   :nosignatures:
+ 
+-   healpix_geo.zuniq.healpix_to_lonlat
+-   healpix_geo.zuniq.lonlat_to_healpix
+-   healpix_geo.zuniq.vertices
++   healpix_to_lonlat
++   lonlat_to_healpix
++   vertices
+ 
+-Ring
+-----
+-**Coordinates**:
++Hierarchy
++~~~~~~~~~~
+ 
+ .. autosummary::
+    :toctree: generated/
++   :nosignatures:
+ 
+-   healpix_geo.ring.healpix_to_lonlat
+-   healpix_geo.ring.lonlat_to_healpix
+-   healpix_geo.ring.vertices
++   kth_neighbourhood
+ 
+-**Hierarchy**:
++Distance Calculations
++~~~~~~~~~~~~~~~~~~~~~~
+ 
+ .. autosummary::
+    :toctree: generated/
++   :nosignatures:
++
++   angular_distances
++
++Module zuniq
++============
++
++The module :mod:`healpix_geo.zuniq` gives functions for the zuniq scheme, utilised for MOC (Multi-Order Coverage).
++
++.. currentmodule:: healpix_geo.zuniq
+ 
+-   healpix_geo.ring.kth_neighbourhood
++Conversions
++~~~~~~~~~~~
+ 
+-**Distances**:
++Conversions between schemes nested et zuniq.
+ 
+ .. autosummary::
+    :toctree: generated/
++   :nosignatures:
+ 
+-   healpix_geo.ring.angular_distances
++   from_nested
++   to_nested
++
++.. seealso::
++   Complete tutorial : :doc:`tutorials/coordinate_conversion`
++
++
++Coordinates Conversions
++~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+-Indexes
+-~~~~~~~
+ .. autosummary::
+    :toctree: generated/
++   :nosignatures:
++
++   healpix_to_lonlat
++   lonlat_to_healpix
++   vertices
++
++Common Parameters
++==================
++
++healpix-geo functions shares common parameters :
++
++Geographical coordinates
++~~~~~~~~~~~~~~~~~~~~~~~~~
++
++- **lon** (*array-like*) : Longitude(s) in degrees [-180, 180]
++- **lat** (*array-like*) : Latitude(s) in degrees [-90, 90]
++
++HEALPix indices
++~~~~~~~~~~~~~~~
++
++- **ipix** (*array-like of int*) : Indice(s) of HEALPix cell
++- **depth** (*int*) : resolution level [0, 29]
++
++  - 0 = coarser (12 cells)
++  - 29 = finer (~0.2 mm)
++  - See :doc:`healpix/levels` pour le tableau complete
++
++Ellipsoids
++~~~~~~~~~~
++
++- **ellipsoid** (*str*) : Ellipsoidal Model to use
++
++  - ``"WGS84"`` : Standard GPS
++  - ``"GRS80"`` : Geodesic System of reference 1980
++  - ``"WGS72"`` : Old standard GPS
++  - ``"sphere"`` : Perfect sphere
++
++.. tip::
++   **Always use** ``ellipsoid="WGS84"`` for real geospatial applications.
++   See :doc:`tutorials/ellipsoid_basics` for more details.
++
++
++Conventions
++===========
++
++Return types
++~~~~~~~~~~~~
++
++- Functions returns **numpy arrays**
++- Coordinates are always in **decimal degrees**
++- Indices are always **unsigned integers** (uint64)
++
++Vectorisation
++~~~~~~~~~~~~~
++
++All functions are **vectorized** and accept:
+ 
+-   healpix_geo.nested.RangeMOCIndex
++- Scalars (automatically converted to arrays)
++- 1D NumPy arrays
++- Multidimensional NumPy arrays (depending on the function)
+diff --git a/docs/conf.py b/docs/conf.py
+index c6abdbd3..df40e2e7 100644
+--- a/docs/conf.py
++++ b/docs/conf.py
+@@ -46,12 +46,19 @@ def run_script(name, outpath):
+     "sphinx.ext.autodoc",
+     "sphinx.ext.napoleon",
+     "sphinx.ext.intersphinx",
++    "sphinx_design",
+     "myst_parser",
+     "jupyter_sphinx",
+ ]
+ 
++
+ templates_path = ["_templates"]
+-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
++exclude_patterns = [
++    "_build",
++    "Thumbs.db",
++    ".DS_Store",
++    "**/.ipynb_checkpoints",
++]
+ 
+ # -- intersphinx -------------------------------------------------------------
+ 
+@@ -81,7 +88,10 @@ def run_script(name, outpath):
+ 
+ # -- myst-parser -------------------------------------------------------------
+ 
+-myst_enable_extensions = ["dollarmath"]
++myst_enable_extensions = [
++    "dollarmath",
++    "colon_fence",
++]
+ 
+ # -- Options for HTML output -------------------------------------------------
+ 
+diff --git a/docs/examples/index.md b/docs/examples/index.md
+new file mode 100644
+index 00000000..f90ecf29
+--- /dev/null
++++ b/docs/examples/index.md
+@@ -0,0 +1 @@
++# Gallery og example
+diff --git a/docs/index.md b/docs/index.md
+index 88aed4ec..7a288496 100644
+--- a/docs/index.md
++++ b/docs/index.md
+@@ -1,22 +1,129 @@
+-# healpix-geo
++# HEALPix-geo: Geo-algorithms for HEALPix
++
++`healpix-geo` is a Python library which contains geo-specific algorithms for healpix. It is built on top of the [cdshealpix rust crate](https://crates.io/crates/cdshealpix), but unlike the [cdshealpix python bindings](https://cds-astro.github.io/cds-healpix-python/index.html) it does not require `astropy`.
++
++- {doc}`HEALPix cell statistics <healpix/levels>` - Tab of levels and resolutions
++
++## Install
++
++::::{tab-set}
++
++:::{tab-item} conda
++
++```bash
++conda install -c conda-forge healpix-geo
++```
++
++:::
++
++:::{tab-item} pip
++
++```bash
++pip install healpix-geo
++```
++
++:::
++
++:::{tab-item} pixi
++
++```bash
++pixi add healpix-geo
++```
++
++:::
++
++:::{tab-item} uv
++
++```bash
++uv add healpix-geo
++```
++
++:::
++
++:::{tab-item} From source
++
++```bash
++pixi run build-all-wheels # option 1: build wheels for all supported python versions
++pixi run -e py313 build-wheel # option 2: build wheel for python=3.13
++
++# then install the appropriate wheel:
++pip install ./target/wheels/healpix-geo-<version>-cp313-cp313-<wheel-version>.whl
++```
++
++:::
++::::
++
++## Principal Functionalities
++
++- **Ellipsoid Support** : `healpix-geo` supports reference ellipsoids such as WGS84 for optimal geodetic accuracy.
++
++- **Performances** : Rust implementation with Python bindings for fast computation, including native multi-threading support.
++
++- **Geo-algorithms** : Coverage calculations, neighbor search, distance calculations...
++
++- **Easy Integration** :Compatible with NumPy, compatible with visualization tools such as Matplotlib.
++
++## Start
++
++::::{grid} 1 1 2 2
++:gutter: 2
++
++:::{grid-item-card} Quickstart
++:link: tutorials/quickstart
++:link-type: doc
++
++Learn basics in 10 minutes.
++:::
++
++:::{grid-item-card} User Guide
++:link: user-guide/index
++:link-type: doc
++
++Fundamental concepts and detailed guides.
++:::
++
++:::{grid-item-card} Gallery of Examples
++:link: examples/index
++:link-type: doc
++
++See concrete examples with visualisations.
++:::
++
++:::{grid-item-card} API Reference
++:link: api
++:link-type: doc
++
++Complete documentation of all functions.
++:::
++
++::::
++
++## Resources
++
++- {doc}`HEALPix cell statistics <healpix/levels>` - Tab of levels and resolutions
++- {doc}`reference-system` - Reference systems and ellipsoids
++- {doc}`terminology` - Glossary of using terms
+ 
+ ```{toctree}
+ ---
+ maxdepth: 2
+-caption: Contents:
++caption: Guide utilisateur
+ hidden: true
+ ---
+ installation
+-reference-system
+-healpix/index
++user-guide/index
++tutorials/index
++examples/index
++```
++
++```{toctree}
++---
++maxdepth: 2
++caption: Référence
++hidden: true
++---
+ api
++healpix/index
++reference-system
+ terminology
+ ```
+-
+-`healpix-geo` contains geo-specific algorithms for healpix.
+-
+-It is built on top of the [cdshealpix rust crate](https://crates.io/crates/cdshealpix), but unlike the [cdshealpix python bindings](https://cds-astro.github.io/cds-healpix-python/index.html) it does not require `astropy`.
+-
+-**Important resources**:
+-
+-- {doc}`HEALPix cell statistics <healpix/levels>`
+diff --git a/docs/installation.md b/docs/installation.md
+index 181d006e..0a9a6f7c 100644
+--- a/docs/installation.md
++++ b/docs/installation.md
+@@ -1,32 +1,115 @@
+-# Installing
++# Installation
+ 
+-`healpix-geo` is available on `conda-forge`:
++This guide explains you how to install `healpix-geo` on your system.
+ 
+-```sh
++## Prerequisites
++
++- **Python** : Version >= 3.9
++- **NumPy** : Automatically install with `healpix-geo`
++
++### Via conda
++
++::::{tab-set}
++
++:::{tab-item} conda
++
++```bash
+ conda install -c conda-forge healpix-geo
++```
++
++:::
++
++:::{tab-item} mamba
++
++```bash
++mamba install -c conda-forge healpix-geo
++```
++
++:::
++
++:::{tab-item} pixi
++
++```bash
+ pixi add healpix-geo
+ ```
+ 
+-or on PyPI:
++:::
++
++::::
++
++### Via pip
+ 
+-```sh
+-# pip
++::::{tab-set}
++
++:::{tab-item} pip
++
++```bash
+ pip install healpix-geo
+-# uv
++```
++
++:::
++
++:::{tab-item} uv
++
++```bash
+ uv add healpix-geo
+ ```
+ 
+-## From source
++:::
++
++::::
++
++:::{note}
++Pre-compiled wheels are available for the following platforms :
++
++- **Linux** : x86_64, aarch64
++- **macOS** : x86_64 (Intel), arm64 (Apple Silicon)
++- **Windows** : x86_64
++  :::
++
++## Installation from sources
+ 
+-To install from source, run
++### Prerequisite
+ 
+-```sh
+-pixi run build-all-wheels  # option 1: build wheels for all supported python versions
+-pixi run -e py313 build-wheel  # option 2: build wheel for python=3.13
++- **Rust** : Version >= 1.70 ([installation](https://rustup.rs/))
++- **Python** : Version >=3.9
++- **pixi** : ([installation](https://pixi.sh/))
++
++### Steps
++
++1. **Clone the depository** :
++
++```bash
++git clone https://github.com/EOPF-DGGS/healpix-geo.git
++cd healpix-geo
+ ```
+ 
+-then install the appropriate wheel:
++2. **Build wheels** :
++
++Option 1 - build wheels for all supported python versions :
++
++```bash
++pixi run build-all-wheels
++```
++
++Option 2 - build wheel for python=3.13 :
++
++```bash
++pixi run -e py313 build-wheel
++```
++
++3. **Install the appropriate wheel** :
++
++```bash
++pip install ./target/wheels/healpix-geo-<version>-cp313-cp313-<platform>.whl
++```
++
++## Unsinstallation
++
++To uninstall `healpix-geo` :
+ 
+-```sh
+-pip install ./target/wheels/healpix-geo-<version>-cp313-cp313-<wheel-version>.whl
++```bash
++pip uninstall healpix-geo
++# or
++conda remove healpix-geo
+ ```
+diff --git a/docs/reference-system.md b/docs/reference-system.md
+index 709db179..34309dbd 100644
+--- a/docs/reference-system.md
++++ b/docs/reference-system.md
+@@ -2,14 +2,14 @@
+ 
+ Geographic data can be expressed in different coordinate systems:
+ 
+-- 3D cartesian
+-- Spherical
+-- Ellipsoidal
+-- Projected
++- **3D cartesian** : Coordinates (x, y, z) in space
++- **Spherical** : Simple model with constant radius
++- **Ellipsoidal** : Accurate model with flattening at the poles
++- **Projected** : Projection onto a plane (e.g., Mercator, UTM)
+ 
+ 3D cartesian coordinates are the simplest coordinates, but rather tricky to use to describe coordinates on earth's curved surface.
+ 
+-Instead, the earth's surface is commonly approximated in first order as a sphere, and in second order as an ellipsoid.
++Instead, the earth's surface is commonly approximated in first order as a **sphere**, and in second order as an **ellipsoid**.
+ 
+ ## Ellipsoidal coordinates
+ 
+diff --git a/docs/terminology.md b/docs/terminology.md
+index ad467888..c42c6f5d 100644
+--- a/docs/terminology.md
++++ b/docs/terminology.md
+@@ -1,13 +1,110 @@
+ # Terminology
+ 
++## General terms
++
++```{glossary}
++HEALPix
++    Hierarchical Equal Area isoLatitude Pixelization. A spherical tiling system that divides a sphere into cells of equal area, organized hierarchically.
++
++Cell
++    An individual region of the HEALPix tiling. Each cell is a spherical quadrilateral with 4 vertices.
++
++Depth
++    The resolution level in the HEALPix hierarchy. Depth 0 = 12 cells, depth N = 12 × 4^N cells. Range: [0, 29].
++
++Index, ipix
++    The unique numeric identifier of a HEALPix cell at a given level. Type: 64-bit unsigned integer (uint64).
++```
++
++## Indexing scheme
++
++```{glossary}
++Nested
++    Hierarchical indexing scheme where child cells have consecutive indices. Optimized for hierarchical operations. **Recommended by default.**
++
++Ring
++    Latitude ring indexing scheme. Cells on the same latitude ring have similar indices. Used primarily for compatibility.
++
++Zuniq
++    An indexing scheme that encodes both the depth and the index into a single 64-bit integer. Used for Multi-Order Coverage (MOC).
++
++Nuniq
++   A variant of zuniq with breadth-first ordering (by level). Less used than zuniq.
++```
++
++## Geometry and coordinates
++
++```{glossary}
++Longitude
++    Range: [-180°, +180°]. 0° = Greenwich meridian. Positive towards the East.
++
++Latitude
++    Range: [-90°, +90°]. 0° = ecuador. Positive towards the North.
++
++Geodetic latitude, Geographic latitude
++    The standard latitude used in cartography, measured perpendicular to the ellipsoid. This is the latitude returned by GPS devices. Symbol: φ (phi).
++
++Geocentric latitude
++    Latitude measured from the center of the ellipsoid. Symbol: θ (theta).
++
++Parametric latitude, Reduced latitude
++    Auxiliary latitude obtained by "stretching" the ellipsoid into a sphere. Symbol: β (beta)
++
++Authalic latitude
++    Latitude on a sphere with the same area as the ellipsoid. Used by HEALPix for ellipsoids. Symbol: ξ (xi).
++
++Vertices
++    The coins of an HEALPix cell.
++
++Center of a cell
++    The geometric center of a HEALPix cell. Coordinates returned by `healpix_to_lonlat`.
++```
++
++## Ellipsoids et geodesy
++
+ ```{glossary}
++Ellipsoid
++    Mathematical model of the Earth's shape, described by two radius (equatorial and polar). More accurate than a sphere.
++
++Sphere
++    Simplified model where the Earth has a constant radius. Less precise than an ellipsoid but faster calculations.
++
++Flattening
++    Measure of the difference between the ellipsoid and a sphere. Symbol: f.
++
++Eccentricity
++    Another measure of flatness. Symbol: e. Related to f by: e² = 2f - f².
+ 
+ ellipsoid-like
+     An ellipsoid specification. Can be either:
+ 
+-    - the name of the ellipsoid as a {py:class}`str`. For a complete list of known ellipsoids, see [the `geodesy` crate](https://github.com/busstoptaktik/geodesy/blob/f9090b8c91f401892a93979f100fa4d987eb0836/src/ellipsoid/constants.rs#L6-L54).
+-    - a {py:class}`dict`, with either a `"radius"` item for spheres or `"semimajor_axis"` and `"inverse_flattening"` for ellipsoids. All items need to be {py:class}`float`s.
+-    - a class with a `"radius"` attribute for spheres or `"semimajor_axis"` and `"inverse_flattening"` attributes for ellipsoids. All attributes need to be {py:class}`float`s.
++    - The name of the ellipsoid as a {py:class}`str`. For a complete list of known ellipsoids, see [the `geodesy` create](https://github.com/busstoptaktik/geodesy/blob/f9090b8c91f401892a93979f100fa4d987eb0836/src/ellipsoid/constants.rs#L6-L54).
++    - A {py:class}`dict`, with either a ``"radius"`` item for spheres or ``"semimajor_axis"`` and ``"inverse_flattening"`` for ellipsoids. All items need to be {py:class}`float`s.
++    - A class with a ``"radius"`` attribute for spheres or ``"semimajor_axis"`` and ``"inverse_flattening"`` attributes for ellipsoids. All attributes need to be {py:class}`float`s.
+ 
+     If an object or {py:class}`dict` could be interpreted as both a sphere and an ellipsoid, the ellipsoid will be preferred.
+ ```
++
++## Hierarchy
++
++```{glossary}
++Parent
++    At depth N, the parent of a cell is the cell of level N-1 which contains it.
++
++Children
++    At depth N, a cell has 4 children at depth N+1 which subdivide it.
++
++Siblings
++    The 4 children cells of a same parent.
++
++Neighbourhood
++    The set of adjacent cells. A neighborhood of order k includes cells at a distance of k.
++
++k-th neighborhood, Neighborhood of order k
++    - k=1: direct neighbors (share an edge)
++    - k=2: neighbors at a distance of 2
++    - etc.
++
++Zoom
++    Navigation between resolution levels. `zoom_to(ipix, depth_from, depth_to)` converts cells from one level to another.
++```
+diff --git a/docs/tutorials/coordinate_conversion.md b/docs/tutorials/coordinate_conversion.md
+new file mode 100644
+index 00000000..8396bfeb
+--- /dev/null
++++ b/docs/tutorials/coordinate_conversion.md
+@@ -0,0 +1,156 @@
++# Advanced coordinate conversion
++
++This tutorial delves deeper into conversions between geographic coordinates and HEALPix indices, exploring the different indexing schemes.
++
++## HEALPix indexing schemes
++
++HEALPix supports three different indexing schemes:
++
++- Nested
++- Ring
++- Zuniq
++
++## Conversions between schemes
++
++### Nested → Ring
++
++```python
++import numpy as np
++from healpix_geo.nested import lonlat_to_healpix as nested_lonlat
++from healpix_geo.ring import lonlat_to_healpix as ring_lonlat
++
++# Same point, two schemes
++lon, lat = np.array([0.0]), np.array([45.0])
++depth = 8
++
++ipix_nested = nested_lonlat(lon, lat, depth, "WGS84")
++ipix_ring = ring_lonlat(lon, lat, depth, "WGS84")
++
++print(f"Point (0°, 45°) at depth={depth}:")
++print(f"  Nested: {ipix_nested[0]}")
++print(f"  Ring:   {ipix_ring[0]}")
++```
++
++:::{warning}
++The nested and ring indices **are not interchangeable**. The same point has different indices depending on the scheme!
++:::
++
++### Nested → Zuniq
++
++```python
++from healpix_geo.zuniq import from_nested, to_nested
++
++# Nested → Zuniq
++ipix_nested = 349440
++depth = 8
++zuniq_id = from_nested(ipix_nested, depth)
++
++print(f"Nested (depth={depth}, ipix={ipix_nested}) → Zuniq: {zuniq_id}")
++
++# Zuniq → Nested
++ipix_back, depth_back = to_nested(zuniq_id)
++print(f"Zuniq {zuniq_id} → Nested (depth={depth_back}, ipix={ipix_back})")
++```
++
++### Visual comparison
++
++Let see how the different schemes are organising cells :
++
++```python
++import matplotlib.pyplot as plt
++from healpix_geo.nested import vertices as nested_vertices
++from healpix_geo.ring import vertices as ring_vertices
++
++fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
++
++depth = 2
++n_cells = 12 * 4**depth
++
++# Sample cells
++sample_cells = range(0, n_cells, max(1, n_cells // 50))
++
++# Nested
++for ipix in sample_cells:
++    lons, lats = nested_vertices(np.array([ipix]), depth, "WGS84")
++    lons_closed = np.append(lons[:, 0], lons[0, 0])
++    lats_closed = np.append(lats[:, 0], lats[0, 0])
++
++    ax1.plot(lons_closed, lats_closed, "b-", linewidth=0.5, alpha=0.5)
++    ax1.text(
++        lons[:, 0].mean(),
++        lats[:, 0].mean(),
++        str(ipix),
++        ha="center",
++        va="center",
++        fontsize=6,
++    )
++
++ax1.set_title(f"Nested Scheme (depth={depth})", fontsize=14)
++ax1.set_xlabel("Longitude (°)")
++ax1.set_ylabel("Latitude (°)")
++ax1.grid(True, alpha=0.3)
++
++# Ring
++for ipix in sample_cells:
++    lons, lats = ring_vertices(np.array([ipix]), depth, "WGS84")
++    lons_closed = np.append(lons[:, 0], lons[0, 0])
++    lats_closed = np.append(lats[:, 0], lats[0, 0])
++
++    ax2.plot(lons_closed, lats_closed, "r-", linewidth=0.5, alpha=0.5)
++    ax2.text(
++        lons[:, 0].mean(),
++        lats[:, 0].mean(),
++        str(ipix),
++        ha="center",
++        va="center",
++        fontsize=6,
++    )
++
++ax2.set_title(f"Ring Scheme (depth={depth})", fontsize=14)
++ax2.set_xlabel("Longitude (°)")
++ax2.set_ylabel("Latitude (°)")
++ax2.grid(True, alpha=0.3)
++
++plt.tight_layout()
++plt.show()
++```
++
++## Tableau de choix
++
++| Need                    | Recommended Scheme |
++| ----------------------- | ------------------ |
++| General Application     | **nested**         |
++| Hierarchical Navigation | **nested**         |
++| Legacy Compatibility    | **ring**           |
++| MOC                     | **zuniq**          |
++| Order by latitude       | **ring**           |
++
++## Next Steps
++
++::::{grid} 1 1 2 2
++:gutter: 2
++
++:::{grid-item-card} Cover Requests
++:link: coverage_queries
++:link-type: doc
++:::
++
++:::{grid-item-card} Working MOC
++:link: working_with_moc
++:link-type: doc
++
++:::
++
++:::{grid-item-card} Performance
++:link: performance_optimization
++:link-type: doc
++
++:::
++
++:::{grid-item-card} Hierarchy
++:link: ../user-guide/hierarchical_indexing
++:link-type: doc
++
++:::
++
++::::
+diff --git a/docs/tutorials/coverage_queries.md b/docs/tutorials/coverage_queries.md
+new file mode 100644
+index 00000000..117d73f2
+--- /dev/null
++++ b/docs/tutorials/coverage_queries.md
+@@ -0,0 +1,112 @@
++# Cover requests
++
++This tutorial explains how to find all the HEALPix cells which intersect a geographic region.
++
++## Type of requests
++
++### 1. Cone Coverage
++
++Find all cells within a given radius around a point.
++
++```python
++import numpy as np
++from healpix_geo.nested import cone_coverage
++
++# Center and radius
++lon_center = 2.3522  # Paris
++lat_center = 48.8566
++radius_deg = 1.0  # radius in degrees (~111 km)
++depth = 8
++
++cells = cone_coverage((lon_center, lat_center), radius_deg, depth, ellipsoid="WGS84")
++
++print(f"Number of cells in the radius: {len(cells)}")
++```
++
++### 2. Box Coverage
++
++Find all cells in a box coverage.
++
++```python
++from healpix_geo.nested import box_coverage
++
++# Coverage box
++lon_min, lat_min = 2.0, 48.5
++lon_max, lat_max = 3.0, 49.0
++
++center = (
++    0.5 * (lon_min + lon_max),
++    0.5 * (lat_min + lat_max),
++)
++
++size = (
++    lon_max - lon_min,
++    lat_max - lat_min,
++)
++
++angle = 0.0
++depth = 8
++
++cells = box_coverage(center, size, angle, depth, ellipsoid="WGS84", flat=True)
++
++print(f"Cells number : {len(cells)}")
++```
++
++### 3. Polygon coverage
++
++Find all cells in a polygon coverage.
++
++```python
++from healpix_geo.nested import polygon_coverage
++import numpy as np
++
++vertices = np.array([[2.0, 48.5], [3.0, 48.5], [2.5, 49.0]])
++
++depth = 8
++
++cells = polygon_coverage(vertices, depth, ellipsoid="WGS84", flat=True)
++
++print(f"Cells in the polygon : {len(cells)}")
++```
++
++## Resume
++
++### Principal functions
++
++| Function                   | Usage                    | Key parameters                                  |
++| -------------------------- | ------------------------ | ----------------------------------------------- |
++| `zone_coverage`            | Zone request             | bbox, depth                                     |
++| `cone_coverage`            | Circular request         | center, radius, depth                           |
++| `box_coverage`             | Rectangular request      | center, size, angle, depth                      |
++| `elliptical_cone_coverage` | Ellipticall cone request | center, ellipse_geometry, position_angle, depth |
++| `polygon_coverage`         | Polygonal request        | vertices, depth                                 |
++| `internal_boundary`        | Boundaries               | depth, ipix                                     |
++
++## Next Steps
++
++::::{grid} 1 1 2 2
++:gutter: 2
++
++:::{grid-item-card} Working MOC
++:link: working_with_moc
++:link-type: doc
++:::
++
++:::{grid-item-card} Performance
++:link: performance_optimization
++:link-type: doc
++
++:::
++
++:::{grid-item-card} Hierarchy
++:link: ../user-guide/hierarchical_indexing
++:link-type: doc
++:::
++
++:::{grid-item-card} Api reference
++:link: ../api
++:link-type: doc
++
++:::
++
++::::
+diff --git a/docs/tutorials/ellipsoid_basics.md b/docs/tutorials/ellipsoid_basics.md
+new file mode 100644
+index 00000000..5ccb54fa
+--- /dev/null
++++ b/docs/tutorials/ellipsoid_basics.md
+@@ -0,0 +1,95 @@
++# Ellipsoids basics
++
++This tutorial explain why and how to use ellipsoids of reference in `healpix-geo`.
++
++## Supported Ellipsoids
++
++```python
++import numpy as np
++from healpix_geo.nested import lonlat_to_healpix
++
++# Test Point
++lon, lat = np.array([0.0]), np.array([45.0])
++depth = 10
++
++ellipsoids = {
++    "sphere",
++    "WGS84",
++    "GRS80",
++    "WGS72",
++}
++
++print(f"HEALPix cell at point (0°, 45°) at depth={depth}:\n")
++for ellipsoid, description in ellipsoids.items():
++    ipix = lonlat_to_healpix(lon, lat, depth, ellipsoid=ellipsoid)
++    print(f"{ellipsoid:10s}: {ipix[0]:10d}  # {description}")
++```
++
++:::{seealso}
++See [this link](https://github.com/busstoptaktik/geodesy/blob/f9090b8c91f401892a93979f100fa4d987eb0836/src/ellipsoid/constants.rs#L6-L54), for details on supported ellipsoids.
++:::
++
++### Which ellipsoid choose ?
++
++| Ellipsoid | When to use it                                          |
++| --------- | ------------------------------------------------------- |
++| **WGS84** | **Recommended by default** - International Standard GPS |
++| GRS80     | Almost equal to WGS84                                   |
++| WGS72     | Only for compatibility with old data                    |
++| sphere    | Quick tests                                             |
++
++:::{important}
++**Golden rule**: Use **WGS84** unless you have a specific reason to use a different ellipsoid.
++:::
++
++## Typical use case
++
++### GPS data
++
++```python
++# GPS trajectory data
++gps_points = np.array(
++    [
++        [2.3522, 48.8566],  # Paris
++        [2.3532, 48.8576],  # 100m further
++        [2.3542, 48.8586],  # 100m further
++    ]
++)
++
++lon_gps = gps_points[:, 0]
++lat_gps = gps_points[:, 1]
++depth = 16  # High resolution
++
++# Always use WGS84 for GPS
++ipix = lonlat_to_healpix(lon_gps, lat_gps, depth, ellipsoid="WGS84")
++print(f"HEALPix cells of GPS trajectory:")
++print(ipix)
++```
++
++## Next steps
++
++::::{grid} 1 1 2 2
++:gutter: 2
++
++:::{grid-item-card} Reference systems
++:link: ../reference-system
++:link-type: doc
++
++:::
++
++:::{grid-item-card} Advanced conversion
++:link: coordinate_conversion
++:link-type: doc
++:::
++
++:::{grid-item-card} Cover Requests
++:link: coverage_queries
++:link-type: doc
++:::
++
++:::{grid-item-card} Performance
++:link: performance_optimization
++:link-type: doc
++:::
++
++::::
+diff --git a/docs/tutorials/index.md b/docs/tutorials/index.md
+new file mode 100644
+index 00000000..1d4dcb0e
+--- /dev/null
++++ b/docs/tutorials/index.md
+@@ -0,0 +1,82 @@
++# Tutorials
++
++## To Start
++
++::::{grid} 1 1 2 2
++:gutter: 3
++
++:::{grid-item-card} Quick Start
++:link: quickstart
++:link-type: doc
++
++**Recommended for beginners**
++
++Learn bases of `healpix-geo` in 15 minutes : conversions of coordinates, understand depth, and visualised your first HEALPix cells.
++:::
++
++:::{grid-item-card} Ellipsoids
++:link: ellipsoid_basics
++:link-type: doc
++
++Understand why and how to use ellipsoid of reference such as WGS84 for precise geodesic calculations.
++
++:::
++
++::::
++
++## Basic Tutorials
++
++::::{grid} 1 1 2 2
++:gutter: 3
++
++:::{grid-item-card} Coordinates Conversion
++:link: coordinate_conversion
++:link-type: doc
++
++Master the conversions between geographic coordinates (lon/lat) and HEALPix indices, with the different indexing schemes.
++
++:::
++
++:::{grid-item-card} Cover requests
++:link: coverage_queries
++:link-type: doc
++
++Learn to find all HEALPix cells that intersect a region.
++:::
++
++::::
++
++## Advanced Tutorials
++
++::::{grid} 1 1 2 2
++:gutter: 3
++
++:::{grid-item-card} Working with MOC
++:link: working_with_moc
++:link-type: doc
++
++Use les Multi-Order Coverage maps to represent complex regions in a compact way.
++
++:::
++
++:::{grid-item-card} Performance optimisation
++:link: performance_optimization
++:link-type: doc
++
++Techniques for optimizing performance: vectorization, multi-threading, and best practices.
++
++:::
++
++::::
++
++```{toctree}
++---
++hidden: true
++---
++quickstart
++ellipsoid_basics
++coordinate_conversion
++coverage_queries
++working_with_moc
++performance_optimization
++```
+diff --git a/docs/tutorials/performance_optimization.md b/docs/tutorials/performance_optimization.md
+new file mode 100644
+index 00000000..c4c65179
+--- /dev/null
++++ b/docs/tutorials/performance_optimization.md
+@@ -0,0 +1,33 @@
++# Performance optimisations
++
++This tutorial resents techniques for optimised performances of HEALPix calculations.
++
++## Vectorisation
++
++Always prefer vectorised operations :
++
++```python
++import numpy as np
++from healpix_geo.nested import lonlat_to_healpix
++
++# Good : vectorised
++lon = np.random.uniform(-180, 180, 1000000)
++lat = np.random.uniform(-90, 90, 1000000)
++ipix = lonlat_to_healpix(lon, lat, depth=10, ellipsoid="WGS84")
++
++# Bad : loop
++ipix_list = []
++for i in range(len(lon)):
++    ipix_list.append(lonlat_to_healpix(lon[i], lat[i], 10, "WGS84"))
++```
++
++## Multi-threading
++
++Use `num_threads` parameter :
++
++```python
++ipix = lonlat_to_healpix(lon, lat, depth=10, ellipsoid="WGS84", num_threads=0)
++
++# Use 4 threads
++ipix = lonlat_to_healpix(lon, lat, depth=10, ellipsoid="WGS84", num_threads=4)
++```
+diff --git a/docs/tutorials/quickstart.md b/docs/tutorials/quickstart.md
+new file mode 100644
+index 00000000..cd954046
+--- /dev/null
++++ b/docs/tutorials/quickstart.md
+@@ -0,0 +1,147 @@
++# Quickstart
++
++This tutorial presents you the fundamental concepts of `healpix-geo` through practical examples.
++
++## First example : Coordinates conversion
++
++The most common task is to convert geographic coordinates into HEALPix cell identifiers:
++
++```python
++import numpy as np
++from healpix_geo.nested import lonlat_to_healpix, healpix_to_lonlat
++
++# Define some points of interest (longitude, latitude in degrees)
++paris = (2.3522, 48.8566)
++tokyo = (139.6917, 35.6895)
++new_york = (-74.0060, 40.7128)
++
++lon = np.array([paris[0], tokyo[0], new_york[0]])
++lat = np.array([paris[1], tokyo[1], new_york[1]])
++
++# Convert in HEALPix cells level 8
++depth = 8
++ipix = lonlat_to_healpix(lon, lat, depth, ellipsoid="WGS84")
++
++print(f"HEALPix cells (depth={depth}):")
++print(f"  Paris: {ipix[0]}")
++print(f"  Tokyo: {ipix[1]}")
++print(f"  New York: {ipix[2]}")
++```
++
++:::{note}
++Cell indices are unique integers that identify each cell. Each city is in a different cell at level 8.
++:::
++
++## Understand `depth` parameter
++
++The `depth` parameter (or level) controls the tiling resolution :
++
++- `depth=0` : 12 cells around the world (~4700 km per cell)
++- `depth=8` : 3 145 728 cells (~18 km per cell)
++- `depth=12` : 201 326 592 cells (~1.1 km per cell)
++
++:::{seealso}
++See {doc}`../healpix/healpix_levels_table` for a complete tab of levels with their resolutions.
++:::
++
++### Example: Same point at different resolutions
++
++```python
++# Same point at different resolutions
++lon, lat = np.array([2.3522]), np.array([48.8566])  # Paris
++
++for depth in [0, 4, 8, 12]:
++    ipix = lonlat_to_healpix(lon, lat, depth, ellipsoid="WGS84")
++    print(f"Depth {depth:2d}: cell {ipix[0]:10d}")
++```
++
++:::{tip}
++**General rule**: Increasing the `depth` by 1 multiplies the number of cells by 4 and divides the cell size by 2.
++:::
++
++## Reverse conversion: cell → coordinates
++
++Recover the coordinates of the **center** of a cell:
++
++```python
++# Obtain coordinates of the cell center
++ipix = np.array([349440])  # Paris
++depth = 8
++
++lon_center, lat_center = healpix_to_lonlat(ipix, depth, ellipsoid="WGS84")
++print(f"Cell center {ipix[0]}:")
++print(f"  Longitude: {lon_center[0]:.4f}°")
++print(f"  Latitude:  {lat_center[0]:.4f}°")
++```
++
++:::{note}
++The center coordinates may be slightly different from the original coordinates, because we have "rounded" to the nearest cell.
++:::
++
++## Research of neighbour
++
++HEALPix makes it easy to find **neighboring** cells:
++
++```python
++from healpix_geo.nested import kth_neighbourhood
++
++ipix = np.array([100])
++depth = 5
++k = 1  # direct neighbour (distance 1)
++
++neighbours = kth_neighbourhood(ipix, depth, k)
++print(f"Direct neighbourhoods of the cell {ipix[0]}:")
++print(neighbours)
++```
++
++:::{seealso}
++For more details on hierarchy and neighbourhood, see {doc}`../user-guide/hierarchical_indexing`.
++:::
++
++## Hierarchic navigation
++
++```python
++from healpix_geo.nested import zoom_to
++
++parent_ipix = np.array([100])
++parent_depth = 5
++
++# Obtain the 4 children cells
++children_ipix = zoom_to(parent_ipix, parent_depth, parent_depth + 1)
++
++print(f"Parent cell:  {parent_ipix[0]} (depth={parent_depth})")
++print(f"Children cell: {children_ipix} (depth={parent_depth + 1})")
++```
++
++## Next Steps
++
++Now you know basics, you can explore :
++
++::::{grid} 1 1 2 2
++:gutter: 2
++
++:::{grid-item-card} Ellipsoids
++:link: ellipsoid_basics
++:link-type: doc
++
++:::
++
++:::{grid-item-card} Advanced Conversions
++:link: coordinate_conversion
++:link-type: doc
++
++:::
++
++:::{grid-item-card} Cover Requests
++:link: coverage_queries
++:link-type: doc
++
++:::
++
++:::{grid-item-card} Performance
++:link: performance_optimization
++:link-type: doc
++
++:::
++
++::::
+diff --git a/docs/tutorials/working_with_moc.md b/docs/tutorials/working_with_moc.md
+new file mode 100644
+index 00000000..a370e848
+--- /dev/null
++++ b/docs/tutorials/working_with_moc.md
+@@ -0,0 +1,32 @@
++# Work with MOC
++
++This tutorial explains how to use Multi-Order Coverage maps (MOC) to represent efficiently complex regions.
++
++## zuniq scheme
++
++The MOC is using the **zuniq** scheme which encode depth + ipix in one integer 64-bit.
++
++```python
++from healpix_geo.zuniq import from_nested, to_nested
++import numpy as np
++
++# Cells nested
++ipix_nested = np.array([100, 200, 300])
++depth = 8
++
++# Convert in zuniq
++zuniq_ids = from_nested(ipix_nested, depth)
++print(f"Zuniq IDs: {zuniq_ids}")
++
++# Convert return in nested
++ipix_back, depth_back = to_nested(zuniq_ids)
++print(f"Nested: depth={depth_back}, ipix={ipix_back}")
++```
++
++## Creates a MOC
++
++```python
++from healpix_geo.nested import RangeMOCIndex
++
++moc = RangeMOCIndex
++```
+diff --git a/docs/user-guide/concepts.md b/docs/user-guide/concepts.md
+new file mode 100644
+index 00000000..63b9d219
+--- /dev/null
++++ b/docs/user-guide/concepts.md
+@@ -0,0 +1,15 @@
++# Fundamental Concepts
++
++## Overview
++
++HEALPix is a spherical tiling system with three fundamental properties:
++
++1. **Equal Area** - All cells have the same area
++2. **Iso-latitude** - Cells are arranged in rings of latitude
++3. **Hierarchical** - Natural tree structure
++
++For more details, see:
++
++- {doc}`../healpix/index` - Complete HEALPix Introduction
++- {doc}`../tutorials/quickstart` - Quick Start Tutorial
++- {doc}`../terminology` - Glossary of Terms
+diff --git a/docs/user-guide/coordinates_systems.md b/docs/user-guide/coordinates_systems.md
+new file mode 100644
+index 00000000..3f5a348e
+--- /dev/null
++++ b/docs/user-guide/coordinates_systems.md
+@@ -0,0 +1,16 @@
++# Coordinate Systems
++
++This chapter explains coordinate systems and conversions in Healpix-Geo.
++
++## Indexing Schemes
++
++HEALPix supports three main schemes:
++
++- **Nested** (recommended)
++- **Ring**
++- **Zuniq** (for MOC)
++
++For more details, see:
++
++- {doc}`../tutorials/coordinate_conversion` - Conversion Tutorial
++- {doc}`../healpix/index` - HEALPix Introduction
+diff --git a/docs/user-guide/coverage_queries.md b/docs/user-guide/coverage_queries.md
+new file mode 100644
+index 00000000..9418b853
+--- /dev/null
++++ b/docs/user-guide/coverage_queries.md
+@@ -0,0 +1,14 @@
++# Coverage Queries
++
++This chapter details the spatial query algorithms available in healpix-geo.
++
++## Query Types
++
++- Circular (cone_coverage)
++- Rectangular (box_coverage)
++- Polygonal (polygon_coverage)
++
++For more details, see:
++
++- {doc}`../tutorials/coverage_queries` - Complete Tutorial
++- {doc}`../api` - API Reference
+diff --git a/docs/user-guide/ellipsoids.md b/docs/user-guide/ellipsoids.md
+new file mode 100644
+index 00000000..be4457a6
+--- /dev/null
++++ b/docs/user-guide/ellipsoids.md
+@@ -0,0 +1,13 @@
++# Ellipsoids and Geodesy
++
++This chapter delves into reference ellipsoids and their use in healpix-geo.
++
++## Introduction
++
++The Earth is not a perfect sphere but an ellipsoid flattened at the poles.
++
++For more details, see:
++
++- {doc}`../reference-system` - Complete Reference Systems
++- {doc}`../tutorials/ellipsoid_basics` - Tutorial on Ellipsoids
++- {doc}`../terminology` - Glossary
+diff --git a/docs/user-guide/hierarchical_indexing.md b/docs/user-guide/hierarchical_indexing.md
+new file mode 100644
+index 00000000..e2f73a1c
+--- /dev/null
++++ b/docs/user-guide/hierarchical_indexing.md
+@@ -0,0 +1,17 @@
++# Hierarchical Indexing
++
++This chapter explains the hierarchical structure of HEALPix.
++
++## Hierarchical Navigation
++
++Each cell has:
++
++- 1 parent at the top level
++- 4 children at the bottom level
++- Neighbors at the same level
++
++For more details, see:
++
++- {doc}`../tutorials/quickstart` - Section on Hierarchy
++- {doc}`../healpix/index` - HEALPix Structure
++- {doc}`../api` - Navigation Functions
+diff --git a/docs/user-guide/index.md b/docs/user-guide/index.md
+new file mode 100644
+index 00000000..863c4d6e
+--- /dev/null
++++ b/docs/user-guide/index.md
+@@ -0,0 +1,117 @@
++# User Guide
++
++This guide explains the fundamental concepts of healpix-geo and how to use them effectively.
++
++## Guide organisation
++
++### To start
++
++If you begin with `healpix-geo` and HEALPix, read in the order :
++
++1. {doc}`concepts` - Understand HEALPix and healpix-geo
++2. {doc}`ellipsoids` - Reference system
++3. {doc}`coordinates_systems` - Coordinates system
++
++### Advanced functionalities
++
++When the basis are acquired :
++
++4. {doc}`hierarchical_indexing` - Hierarchical structure and navigation
++5. {doc}`coverage_queries` - Cover request
++6. {doc}`performance` - Optimisation of calculation
++
++## Chapters overview
++
++::::{grid} 1 1 2 2
++:gutter: 3
++
++:::{grid-item-card} Fundamental concepts
++:link: concepts
++:link-type: doc
++
++Understanding what HEALPix is, why to use it, and the basic principles of equal-area spherical tiling.
++
++:::
++
++:::{grid-item-card} Ellipsoids
++:link: ellipsoids
++:link-type: doc
++
++Earth models, reference ellipsoids, and their impact on your calculations.
++
++:::
++
++:::{grid-item-card} Coordinate systems
++:link: coordinates_systems
++:link-type: doc
++
++Conversions between longitude/latitude and HEALPix indices. Nested schemes,
++ring, and zuniq.
++
++:::
++
++:::{grid-item-card} Hierarchical indexing
++:link: hierarchical_indexing
++:link-type: doc
++
++Navigating the hierarchy: parents, children, neighbors, and multiple resolution levels.
++
++:::
++
++:::{grid-item-card} Coverage queries
++:link: coverage_queries
++:link-type: doc
++
++Find all cells that intersect a region: circles, polygons, bounding boxes.
++
++:::
++
++:::{grid-item-card} Performance
++:link: performance
++:link-type: doc
++
++Optimize your calculations: vectorization, multi-threading, and best practices for processing large volumes.
++
++:::
++
++::::
++
++## Conventions
++
++### Notation
++
++In this guide, we are using the following conventions :
++
++- `lon`, `lat` : Longitude and latitude
++- `ipix` : Healpix cell index
++- `depth` : Resolution level
++- `ellipsoid` : Ellipsoidal model
++
++## Quick Glossary
++
++| Term           | Definition                                               |
++| -------------- | -------------------------------------------------------- |
++| **HEALPix**    | Hierarchical Equal Area isoLatitude Pixelization         |
++| **Depth**      | Resolution level (0 = coarser, 29 = finer)               |
++| **Nested**     | Hierarchical indexing scheme                             |
++| **Ring**       | Latitude ring indexing scheme                            |
++| **Zuniq**      | Indexing scheme for MOC                                  |
++| **MOC**        | Multi-Order Coverage - compact representation of regions |
++| **Ellipsoïde** | Mathematical model of the shape of the Earth             |
++| **WGS84**      | World Geodetic System 1984                               |
++
++:::{seealso}
++For a complete glossary, see {doc}`../terminology`.
++:::
++
++```{toctree}
++---
++hidden: true
++---
++concepts
++ellipsoids
++coordinates_systems
++hierarchical_indexing
++coverage_queries
++performance
++```
+diff --git a/docs/user-guide/performance.md b/docs/user-guide/performance.md
+new file mode 100644
+index 00000000..cf35617a
+--- /dev/null
++++ b/docs/user-guide/performance.md
+@@ -0,0 +1,15 @@
++# Performance and Optimization
++
++This chapter presents advanced optimization techniques for Healpix-Geo.
++
++## Optimization Principles
++
++1. Vectorization
++2. Multi-threading
++3. Choosing the Right Depth
++4. Memory Management
++
++For more details, see:
++
++- {doc}`../tutorials/performance_optimization` - Practical Tutorial
++- {doc}`../api` - Performance Parameters
+diff --git a/pixi.toml b/pixi.toml
+index d2c74991..f9c2b340 100644
+--- a/pixi.toml
++++ b/pixi.toml
+@@ -76,6 +76,7 @@ pandas = "*"
+ pyresample = "*"
+ astropy = ">=7.2.0,<8"
+ cdshealpix = ">=0.7.2,<0.8"
++sphinx-design = ">=0.7.0,<0.8"
+ 
+ [feature.docs.tasks]
+ build-docs = { cmd = "rm -rf generated/; python -m sphinx -b html -w warnings.log -W -Tn -j auto . _build", cwd = "docs" }

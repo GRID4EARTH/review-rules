@@ -1,0 +1,59 @@
+# Copy this file into a target repository as
+# .github/workflows/rubric-review.yml and adjust the three values marked
+# CHANGE-ME. Everything else lives in the reusable workflow.
+#
+# Two triggers:
+#   1. pull_request from a branch *inside* this repository: reviewed
+#      automatically on open / push.
+#   2. A maintainer comments "@claude review" on any PR (including PRs from
+#      forks, which cannot receive secrets or OIDC tokens on pull_request
+#      events). issue_comment runs in the base repository's context, so
+#      secrets are available. Only OWNER / MEMBER / COLLABORATOR comments
+#      count.
+name: Rubric review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+  issue_comment:
+    types: [created]
+
+permissions: {}
+
+jobs:
+  review:
+    # Bots' PRs (dependabot, pre-commit.ci) and release bumps were never
+    # reviewed line by line; skip them.
+    if: >-
+      (github.event_name == 'pull_request'
+        && github.event.pull_request.draft == false
+        && github.event.pull_request.head.repo.full_name == github.repository
+        && !contains(fromJSON('["dependabot[bot]","pre-commit-ci[bot]"]'), github.event.pull_request.user.login)
+        && !startsWith(github.event.pull_request.title, 'release ')
+        && !startsWith(github.event.pull_request.title, 'back to a dev version'))
+      || (github.event_name == 'issue_comment'
+        && github.event.issue.pull_request
+        && contains(github.event.comment.body, '@claude review')
+        && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association))
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    # CHANGE-ME: owner/repo and ref of the repository holding the reusable workflow
+    uses: GRID4EARTH/review-rules/.github/workflows/review-reusable.yml@main
+    with:
+      pr_number: ${{ github.event.pull_request.number || github.event.issue.number }}
+      # CHANGE-ME: repository holding rubric/REVIEW_RUBRIC.md (usually the same one)
+      rubric_repository: GRID4EARTH/review-rules
+      rubric_ref: main
+      # CHANGE-ME: copy the exact cross-region inference profile id shown in
+      # the Bedrock console (Model catalog -> the Claude model -> Inference
+      # profiles). It has the form eu.anthropic.<model-id>. The newest Opus
+      # available in your region is the recommended choice.
+      model: eu.anthropic.CHANGE-ME
+      aws_region: eu-west-3
+    secrets:
+      REVIEW_APP_ID: ${{ secrets.REVIEW_APP_ID }}
+      REVIEW_APP_PRIVATE_KEY: ${{ secrets.REVIEW_APP_PRIVATE_KEY }}
+      AWS_BEDROCK_ROLE_ARN: ${{ secrets.AWS_BEDROCK_ROLE_ARN }}

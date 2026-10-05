@@ -1,0 +1,72 @@
+diff --git a/docs/healpix/ellipsoid_schema.png b/docs/healpix/ellipsoid_schema.png
+new file mode 100644
+index 00000000..0ea3aaac
+Binary files /dev/null and b/docs/healpix/ellipsoid_schema.png differ
+diff --git a/docs/healpix/ellipsoidal-extension.md b/docs/healpix/ellipsoidal-extension.md
+new file mode 100644
+index 00000000..b32c7965
+--- /dev/null
++++ b/docs/healpix/ellipsoidal-extension.md
+@@ -0,0 +1,41 @@
++# HEALPix Extension to Ellipsoids
++
++This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.
++
++```{figure} ellipsoid_schema.png
++Ellipsoidal to Authalic Mapping
++```
++
++## Why Extend HEALPix?
++
++Standard HEALPix is defined on the sphere and provides:
++
++- Hierarchical structure
++- Isolatitude grid
++- Equal-area pixels
++
++However, many geospatial applications use **ellipsoidal models** (e.g. WGS84). To maintain HEALPix's properties on an ellipsoid, it is mapped to an **authalic sphere**-a sphere with the same surface area.
++
++## Overview
++
++1. **Authalic Mapping**
++   Geodetic latitudes ($\phi$) on the ellipsoid are mapped to authalic latitudes ($\xi$) on the sphere via an area-preserving transformation.
++
++2. **HEALPix on the Sphere**
++   Standard HEALPix is applied on the (authalic) sphere using latitude $\xi$ and longitude $\lambda$.
++
++3. **Optional Reverse Mapping**
++   Pixel centers or boundaries can be projected back to ellipsoidal coordinates if needed.
++
++Authalic mappings:
++
++- Forward: $\phi \to \xi$ (ellipsoid $\to$ sphere)
++- Reverse: $\xi \to \phi$ (sphere $\to$ ellipsoid)
++
++## Ellipsoidal Pixelation
++
++This method results in an **distorted HEALPix grid** on the ellipsoid, preserving equal-area properties. It is ideal for satellite data, climate grids, and DGGS applications that need to account for Earth's flattening.
++
++## See Also
++
++- 📄 [Reference System – HEALPix-Geo Documentation](../reference-system.md)
+diff --git a/docs/healpix/index.md b/docs/healpix/index.md
+index c9217182..e2bf9520 100644
+--- a/docs/healpix/index.md
++++ b/docs/healpix/index.md
+@@ -5,6 +5,7 @@
+ hidden: true
+ ---
+ levels
++ellipsoidal-extension
+ ```
+ 
+ HEALPix was originally defined for use in astronomy by [Gorski et al., 2005]. It has several important properties:
+@@ -25,4 +26,8 @@ Based on `nested`, there are two more schemes that also encode the refinement le
+ - `nunique`, which represents all cells in the hierarchy breadth-first, i.e. cells of a refinement level are close numerically.
+ - `zunique`, which represents all cells in the hierarchy depth-first, i.e. descendant cells of a given cell are close numerically.
+ 
++## Extensions
++
++- [HEALPix Extension to Ellipsoids](ellipsoidal-extension.md): Apply HEALPix to ellipsoidal Earth models via an area-preserving mapping to an authalic sphere.
++
+ [Gorski et al., 2005]: https://doi.org/10.1086/427976

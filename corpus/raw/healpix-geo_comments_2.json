@@ -1,0 +1,1952 @@
+[
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2171030103",
+    "pull_request_review_id": 2965128504,
+    "id": 2171030103,
+    "node_id": "PRRC_kwDON3RSpc6BZ0pX",
+    "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.\n+\n+```{figure} ellipsoid_schema.png\n+Ellipsoidal to Authalic Mapping\n+```\n+\n+## Why Extend HEALPix?\n+\n+Standard HEALPix is defined on the sphere and provides:\n+\n+- Hierarchical structure\n+- Isolatitude grid\n+- Equal-area pixels\n+\n+However, many geospatial applications use **ellipsoidal models** (e.g. WGS84). To maintain HEALPix's properties on an ellipsoid, it is mapped to an **authalic sphere**-a sphere with the same surface area.\n+\n+## Overview\n+\n+1. **Authalic Mapping**\n+   Geodetic latitudes ($\\phi$) on the ellipsoid are mapped to authalic latitudes ($\\xi$) on the sphere via an area-preserving transformation.\n+\n+2. **HEALPix on the Sphere**\n+   Standard HEALPix is applied on the (authalic) sphere using latitude $\\xi$ and longitude $\\lambda$.\n+\n+3. **Optional Reverse Mapping**\n+   Pixel centers or boundaries can be projected back to ellipsoidal coordinates if needed.\n+\n+Authalic mappings:\n+\n+- Forward: $\\phi \\to \\xi$ (ellipsoid $\\to$ sphere)\n+- Reverse: $\\xi \\to \\phi$ (sphere $\\to$ ellipsoid)\n+\n+## Ellipsoidal Pixelation\n+\n+This method results in an **distorted HEALPix grid** on the ellipsoid, preserving equal-area properties. It is ideal for satellite data, climate grids, and DGGS applications that need to account for Earth's flattening.\n+\n+## See Also\n+\n+- 📄 [Reference System – HEALPix-Geo Documentation](../reference-system.md)",
+    "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+    "commit_id": "66069f376702afb675cf7c959bff4e7f2309d16a",
+    "original_commit_id": "57749ab8e4dedf6d33d48dd1dcd7eded1e848a6f",
+    "user": {
+      "login": "pablo-richard",
+      "id": 24779640,
+      "node_id": "MDQ6VXNlcjI0Nzc5NjQw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24779640?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/pablo-richard",
+      "html_url": "https://github.com/pablo-richard",
+      "followers_url": "https://api.github.com/users/pablo-richard/followers",
+      "following_url": "https://api.github.com/users/pablo-richard/following{/other_user}",
+      "gists_url": "https://api.github.com/users/pablo-richard/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/pablo-richard/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/pablo-richard/subscriptions",
+      "organizations_url": "https://api.github.com/users/pablo-richard/orgs",
+      "repos_url": "https://api.github.com/users/pablo-richard/repos",
+      "events_url": "https://api.github.com/users/pablo-richard/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/pablo-richard/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "ok!",
+    "created_at": "2025-06-27T07:33:13Z",
+    "updated_at": "2025-06-27T07:33:13Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2171030103",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2171030103"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2171030103"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2171030103/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 41,
+    "original_start_line": 39,
+    "start_side": "RIGHT",
+    "line": 43,
+    "original_line": 41,
+    "side": "RIGHT",
+    "in_reply_to_id": 2169080107,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 41,
+    "position": 43,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2171028056",
+    "pull_request_review_id": 2965125248,
+    "id": 2171028056,
+    "node_id": "PRRC_kwDON3RSpc6BZ0JY",
+    "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.\n+\n+```{figure} ellipsoid_schema.png\n+Ellipsoidal to Authalic Mapping\n+```\n+\n+## Why Extend HEALPix?\n+\n+Standard HEALPix is defined on the sphere and provides:\n+\n+- Hierarchical structure\n+- Isolatitude grid\n+- Equal-area pixels\n+\n+However, many geospatial applications use **ellipsoidal models** (e.g. WGS84). To maintain HEALPix's properties on an ellipsoid, it is mapped to an **authalic sphere**-a sphere with the same surface area.",
+    "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+    "commit_id": "e0c3238dc493657fd4f3178fb0987bfbbcb954f7",
+    "original_commit_id": "57749ab8e4dedf6d33d48dd1dcd7eded1e848a6f",
+    "user": {
+      "login": "pablo-richard",
+      "id": 24779640,
+      "node_id": "MDQ6VXNlcjI0Nzc5NjQw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24779640?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/pablo-richard",
+      "html_url": "https://github.com/pablo-richard",
+      "followers_url": "https://api.github.com/users/pablo-richard/followers",
+      "following_url": "https://api.github.com/users/pablo-richard/following{/other_user}",
+      "gists_url": "https://api.github.com/users/pablo-richard/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/pablo-richard/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/pablo-richard/subscriptions",
+      "organizations_url": "https://api.github.com/users/pablo-richard/orgs",
+      "repos_url": "https://api.github.com/users/pablo-richard/repos",
+      "events_url": "https://api.github.com/users/pablo-richard/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/pablo-richard/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I fully agree. So the sentence \"To maintain [...]\" should be moved to the next section and rename that section \"How?\".",
+    "created_at": "2025-06-27T07:32:15Z",
+    "updated_at": "2025-06-27T07:32:16Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2171028056",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2171028056"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2171028056"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2171028056/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 17,
+    "side": "RIGHT",
+    "in_reply_to_id": 2169069344,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 17,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2171012127",
+    "pull_request_review_id": 2965102141,
+    "id": 2171012127,
+    "node_id": "PRRC_kwDON3RSpc6BZwQf",
+    "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.",
+    "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+    "commit_id": "e0c3238dc493657fd4f3178fb0987bfbbcb954f7",
+    "original_commit_id": "57749ab8e4dedf6d33d48dd1dcd7eded1e848a6f",
+    "user": {
+      "login": "pablo-richard",
+      "id": 24779640,
+      "node_id": "MDQ6VXNlcjI0Nzc5NjQw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24779640?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/pablo-richard",
+      "html_url": "https://github.com/pablo-richard",
+      "followers_url": "https://api.github.com/users/pablo-richard/followers",
+      "following_url": "https://api.github.com/users/pablo-richard/following{/other_user}",
+      "gists_url": "https://api.github.com/users/pablo-richard/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/pablo-richard/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/pablo-richard/subscriptions",
+      "organizations_url": "https://api.github.com/users/pablo-richard/orgs",
+      "repos_url": "https://api.github.com/users/pablo-richard/repos",
+      "events_url": "https://api.github.com/users/pablo-richard/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/pablo-richard/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The initial formulation was purposely stronger in the sense that \"a mapping that preserves surface area\" is a general property that stands for any input surface area and therefore implies pixel surface conservation for instance, while the suggested correction only refers to the global surface area. I would either leave the initial suggestion or add the precision \"a mapping to a sphere that preserves surface area, both locally and globaly.\".",
+    "created_at": "2025-06-27T07:26:55Z",
+    "updated_at": "2025-06-27T07:26:55Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2171012127",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2171012127"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2171012127"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2171012127/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 3,
+    "side": "RIGHT",
+    "in_reply_to_id": 2169058927,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 3,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2169080107",
+    "pull_request_review_id": 2962101350,
+    "id": 2169080107,
+    "node_id": "PRRC_kwDON3RSpc6BSYkr",
+    "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.\n+\n+```{figure} ellipsoid_schema.png\n+Ellipsoidal to Authalic Mapping\n+```\n+\n+## Why Extend HEALPix?\n+\n+Standard HEALPix is defined on the sphere and provides:\n+\n+- Hierarchical structure\n+- Isolatitude grid\n+- Equal-area pixels\n+\n+However, many geospatial applications use **ellipsoidal models** (e.g. WGS84). To maintain HEALPix's properties on an ellipsoid, it is mapped to an **authalic sphere**-a sphere with the same surface area.\n+\n+## Overview\n+\n+1. **Authalic Mapping**\n+   Geodetic latitudes ($\\phi$) on the ellipsoid are mapped to authalic latitudes ($\\xi$) on the sphere via an area-preserving transformation.\n+\n+2. **HEALPix on the Sphere**\n+   Standard HEALPix is applied on the (authalic) sphere using latitude $\\xi$ and longitude $\\lambda$.\n+\n+3. **Optional Reverse Mapping**\n+   Pixel centers or boundaries can be projected back to ellipsoidal coordinates if needed.\n+\n+Authalic mappings:\n+\n+- Forward: $\\phi \\to \\xi$ (ellipsoid $\\to$ sphere)\n+- Reverse: $\\xi \\to \\phi$ (sphere $\\to$ ellipsoid)\n+\n+## Ellipsoidal Pixelation\n+\n+This method results in an **distorted HEALPix grid** on the ellipsoid, preserving equal-area properties. It is ideal for satellite data, climate grids, and DGGS applications that need to account for Earth's flattening.\n+\n+## See Also\n+\n+- 📄 [Reference System – HEALPix-Geo Documentation](../reference-system.md)",
+    "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+    "commit_id": "66069f376702afb675cf7c959bff4e7f2309d16a",
+    "original_commit_id": "57749ab8e4dedf6d33d48dd1dcd7eded1e848a6f",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I'd change this to use `myst`'s [referencing syntax](https://myst-parser.readthedocs.io/en/latest/syntax/cross-referencing.html) somewhere in the previews sections (like hyperlinks). For that we'd probably need to create a label in \"reference system\"",
+    "created_at": "2025-06-26T13:29:03Z",
+    "updated_at": "2025-06-26T21:09:17Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2169080107",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2169080107"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2169080107"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2169080107/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 41,
+    "original_start_line": 39,
+    "start_side": "RIGHT",
+    "line": 43,
+    "original_line": 41,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 41,
+    "position": 43,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2169074915",
+    "pull_request_review_id": 2962101350,
+    "id": 2169074915,
+    "node_id": "PRRC_kwDON3RSpc6BSXTj",
+    "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.\n+\n+```{figure} ellipsoid_schema.png\n+Ellipsoidal to Authalic Mapping\n+```\n+\n+## Why Extend HEALPix?\n+\n+Standard HEALPix is defined on the sphere and provides:\n+\n+- Hierarchical structure\n+- Isolatitude grid\n+- Equal-area pixels\n+\n+However, many geospatial applications use **ellipsoidal models** (e.g. WGS84). To maintain HEALPix's properties on an ellipsoid, it is mapped to an **authalic sphere**-a sphere with the same surface area.",
+    "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+    "commit_id": "e0c3238dc493657fd4f3178fb0987bfbbcb954f7",
+    "original_commit_id": "57749ab8e4dedf6d33d48dd1dcd7eded1e848a6f",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Additionally, it might make sense to move to the second sentence to the next section, which is more along the lines of \"how?\" than \"overview\" (so maybe we should rename it?)",
+    "created_at": "2025-06-26T13:26:57Z",
+    "updated_at": "2025-06-26T21:09:17Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2169074915",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2169074915"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2169074915"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2169074915/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 17,
+    "side": "RIGHT",
+    "in_reply_to_id": 2169069344,
+    "author_association": "COLLABORATOR",
+    "original_position": 17,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2169069344",
+    "pull_request_review_id": 2962101350,
+    "id": 2169069344,
+    "node_id": "PRRC_kwDON3RSpc6BSV8g",
+    "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.\n+\n+```{figure} ellipsoid_schema.png\n+Ellipsoidal to Authalic Mapping\n+```\n+\n+## Why Extend HEALPix?\n+\n+Standard HEALPix is defined on the sphere and provides:\n+\n+- Hierarchical structure\n+- Isolatitude grid\n+- Equal-area pixels\n+\n+However, many geospatial applications use **ellipsoidal models** (e.g. WGS84). To maintain HEALPix's properties on an ellipsoid, it is mapped to an **authalic sphere**-a sphere with the same surface area.",
+    "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+    "commit_id": "e0c3238dc493657fd4f3178fb0987bfbbcb954f7",
+    "original_commit_id": "57749ab8e4dedf6d33d48dd1dcd7eded1e848a6f",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "This feels a bit off... what we want to say here is that the ellipsoid is mapped to the authalic sphere, which is then pixelated and transformed back to the ellipsoid. I will most likely need a bit more time to find the right words for this, but either way I think the wording should reference the figure you created.",
+    "created_at": "2025-06-26T13:24:35Z",
+    "updated_at": "2025-06-26T21:09:17Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2169069344",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2169069344"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2169069344"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2169069344/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 17,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 17,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2169058927",
+    "pull_request_review_id": 2962101350,
+    "id": 2169058927,
+    "node_id": "PRRC_kwDON3RSpc6BSTZv",
+    "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.",
+    "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+    "commit_id": "e0c3238dc493657fd4f3178fb0987bfbbcb954f7",
+    "original_commit_id": "57749ab8e4dedf6d33d48dd1dcd7eded1e848a6f",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\nThis page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves the surface area of the ellipsoid.\r\n```",
+    "created_at": "2025-06-26T13:20:02Z",
+    "updated_at": "2025-06-26T21:09:17Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2169058927",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2169058927"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2169058927"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/45"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2169058927/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 3,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 3,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2150551677",
+    "pull_request_review_id": 2933010598,
+    "id": 2150551677,
+    "node_id": "PRRC_kwDON3RSpc6ALtB9",
+    "diff_hunk": "@@ -0,0 +1,304 @@\n+# reference system\n+\n+Geographic data can be expressed in different coordinate systems:\n+\n+- 3D cartesian\n+- Spherical\n+- Ellipsoidal\n+- Projected\n+\n+3D cartesian coordinates are the simplest coordinates, but rather tricky to use to describe coordinates on earth's curved surface.\n+\n+Instead, the earth's surface is commonly approximated in first order as a sphere, and in second order as an ellipsoid.\n+\n+## Ellipsoidal coordinates\n+\n+```{jupyter-execute}\n+---\n+hide-code: true\n+hide-output: true\n+---\n+import matplotlib.pyplot as plt\n+from matplotlib.patches import Arc, Ellipse\n+import numpy as np\n+\n+a = 1\n+f_ = 3\n+f = 1 / f_\n+e = np.sqrt(2 * f - f**2)\n+\n+b = a * (1 - f)\n+\n+def angle_to_xy(angle, a, b):\n+    x = a * np.cos(angle)\n+    y = b * np.sin(angle)\n+\n+    return x, y\n+\n+def normal_at(angle_p, a, b):\n+    x_p, y_p = angle_to_xy(angle_p, a, b)\n+\n+    m_x = 2 * x_p / a**2\n+    m_y = 2 * y_p / b**2\n+\n+    return m_x, m_y\n+\n+def q(ϕ, e):\n+    # from USGS Professional Paper 1395, \"Map projections – A working manual\" by John P. Snyder\n+    return (1 - e**2) * (\n+        np.sin(ϕ) / (1 - e**2 * np.sin(ϕ) ** 2)\n+        - (1 / (2 * e)) * np.log((1 - e * np.sin(ϕ)) / (1 + e * np.sin(ϕ)))\n+    )\n+\n+def authalic_radius(a, e):\n+    q_p = q(np.pi / 2, e)\n+    return a * np.sqrt(q_p / 2)\n+\n+def convert(geographic, e):\n+    q_ = q(geographic, e)\n+    q_p = q(np.pi / 2, e)\n+    xi = np.arcsin(q_ / q_p)\n+\n+    return xi\n+\n+\n+fig, ax = plt.subplots(figsize=(12, 12))\n+# ellipse\n+ellipse = Ellipse(\n+    (0, 0),\n+    width=2 * a,\n+    height=2 * b,\n+    edgecolor=\"black\",\n+    linewidth=1,\n+    facecolor=\"none\"\n+)\n+ax.add_patch(ellipse)\n+\n+ax.hlines(y=0, xmin=-a, xmax=a, color=\"black\", linewidth=1)\n+ax.vlines(x=0, ymin=-b, ymax=b, color=\"black\", linewidth=1)\n+ax.annotate(\"a\", xy=(0.5 * a, 0), xytext=(0.5 * a, -0.05 * b))\n+ax.annotate(\"b\", xy=(0, 0.5 * b), xytext=(-0.04 * a, 0.5 * b))\n+\n+parametric_latitude = np.deg2rad(50)\n+m_x, m_y = normal_at(parametric_latitude, a, b)\n+\n+# points\n+h_p = 0.05 * a\n+x_p0, y_p0 = angle_to_xy(parametric_latitude, a, b)\n+x_p = x_p0 + h_p * m_x\n+y_p = y_p0 + h_p * m_y\n+\n+ax.scatter(x_p0, y_p0, zorder=4)\n+ax.scatter(x_p, y_p, zorder=4)\n+\n+ax.annotate(\"$P$\", xy=(x_p, y_p), xytext=(x_p + 0.015 * a, y_p - 0.05 * b))\n+ax.annotate(\"$P_0$\", xy=(x_p0, y_p0), xytext=(x_p0 + 0.015 * a, y_p0))\n+ax.annotate(\"$h$\", xy=(x_p0, y_p0), xytext=(x_p0 + 0.05 * a, y_p0 + 0.05 * a))\n+\n+# tangent at P_0\n+t = np.linspace(-0.05, 0.05, 100)\n+x_t = x_p0 - m_y * t\n+y_t = y_p0 + m_x * t\n+ax.plot(x_t, y_t, linewidth=1, color=\"black\")\n+\n+# geographic latitude\n+t_y = -x_p / m_x\n+n = np.linspace(t_y, 0, 200)\n+x_geographic = x_p + m_x * n\n+y_geographic = y_p + m_y * n\n+ax.plot(x_geographic, y_geographic, linewidth=1, color=\"black\")\n+\n+t_x = -y_p / m_y\n+x_g0 = x_p + m_x * t_x\n+y_g0 = y_p + m_y * t_x\n+geographic_latitude = np.arctan(a / b * np.tan(parametric_latitude))\n+geographic_arc = Arc(\n+    (x_g0, y_g0),\n+    width=0.25 * a,\n+    height=0.25 * a,\n+    theta1=0,\n+    theta2=np.rad2deg(geographic_latitude),\n+)\n+ax.add_patch(geographic_arc)\n+ax.annotate(r\"$\\phi$\", xy=(0, 0), xytext=(0 + 0.4 * a, 0 + 0.02 * a))\n+\n+rectangular_on_tangent1 = Arc(\n+    (x_p0, y_p0), width=0.08 * a, height=0.08 * a, theta1=np.rad2deg(geographic_latitude), theta2=np.rad2deg(geographic_latitude) + 90,\n+    linewidth=0.5\n+)\n+rectangular_on_tangent2 = Arc(\n+    (x_p0, y_p0), width=0.095 * a, height=0.095 * a, theta1=np.rad2deg(geographic_latitude), theta2=np.rad2deg(geographic_latitude) + 90,\n+    linewidth=0.5\n+)\n+ax.add_patch(rectangular_on_tangent1)\n+ax.add_patch(rectangular_on_tangent2)\n+\n+# geocentric latitude\n+v = np.linspace(0, 1, 200)\n+x_geocentric = 0 + x_p0 * v\n+y_geocentric = 0 + y_p0 * v\n+ax.plot(x_geocentric, y_geocentric, linewidth=1, color=\"black\")\n+\n+geocentric_latitude = np.arctan(b**2 / a**2 * np.tan(geographic_latitude))\n+geocentric_arc = Arc(\n+    (0.0, 0.0),\n+    width=0.5 * a,\n+    height=0.5 * a,\n+    theta1=0,\n+    theta2=np.rad2deg(geocentric_latitude),\n+)\n+ax.add_patch(geocentric_arc)\n+ax.annotate(r\"$\\theta$\", xy=(0, 0), xytext=(0 + 0.19 * a, 0 + 0.02 * a))\n+\n+# reduced latitude\n+semi_major_circle = Arc(\n+    (0, 0),\n+    width=2 * a,\n+    height=2 * a,\n+    angle=0,\n+    theta1=0,\n+    theta2=90,\n+    linestyle=\"--\",\n+)\n+ax.add_patch(semi_major_circle)\n+ax.vlines(x=0, ymin=b, ymax=a, color=\"black\", linestyle=\"--\", linewidth=1)\n+x_r0 = x_p0\n+y_r0 = np.sqrt(a**2 - x_p0**2)\n+ax.scatter(x_r0, y_r0, zorder=4)\n+ax.annotate(r\"$P_\\beta$\", xy=(x_r0, y_r0), xytext=(x_r0 + 0.015 * a, y_r0))\n+\n+ax.vlines(x=x_r0, ymin=0, ymax=y_r0, color=\"black\", linestyle=\"--\", linewidth=1)\n+ax.plot([0, x_r0], [0, y_r0], color=\"black\", linewidth=1)\n+\n+reduced_arc = Arc(\n+    (0, 0),\n+    width=0.3 * a,\n+    height=0.3 * a,\n+    theta1=0,\n+    theta2=np.rad2deg(parametric_latitude),\n+)\n+ax.add_patch(reduced_arc)\n+ax.annotate(r\"$\\beta$\", xy=(0, 0), xytext=(0 + 0.07 * a, 0 + 0.02 * a))\n+\n+# authalic latitude\n+r_a = authalic_radius(a, e)\n+authalic_latitude = convert(geographic_latitude, e)\n+x_a = 0 + r_a * np.cos(authalic_latitude)\n+y_a = 0 + r_a * np.sin(authalic_latitude)\n+\n+authalic_arc = Arc(\n+    (0, 0),\n+    width=0.7 * a,\n+    height=0.7 * a,\n+    theta1=0,\n+    theta2=np.rad2deg(authalic_latitude),\n+)\n+ax.add_patch(authalic_arc)\n+\n+ax.scatter(x_a, y_a, zorder=4)\n+ax.annotate(r\"$P_\\xi$\", xy=(x_a, y_a), xytext=(x_a - 0.015 * a, y_a - 0.045 * a))\n+\n+ax.plot([0, x_a], [0, y_a], color=\"black\", linewidth=1)\n+ax.annotate(\n+    r\"$r_\\xi$\",\n+    xy=(\n+        0.5 * r_a * np.cos(authalic_latitude),\n+        0.5 * r_a * np.sin(authalic_latitude),\n+    ),\n+    xytext=(\n+        0.7 * r_a * np.cos(authalic_latitude) + 0.015 * a,\n+        0.7 * r_a * np.sin(authalic_latitude) - 0.015 * a,\n+    ),\n+)\n+\n+authalic_circle = Arc(\n+    (0, 0),\n+    width=2 * r_a,\n+    height=2 * r_a,\n+    angle=0,\n+    theta1=0,\n+    theta2=90,\n+    linestyle=\"--\",\n+)\n+ax.add_patch(authalic_circle)\n+ax.annotate(r\"$\\xi$\", xy=(0, 0), xytext=(0 + 0.29 * a, 0 + 0.02 * a))\n+\n+ax.axis(\"equal\")\n+ax.axis(\"off\");\n+fig.savefig(\"ellipsoidal_latitudes.png\", dpi=600, bbox_inches=\"tight\")\n+```\n+\n+In coordinate systems based on a ellipsoid of revolution, geographic coordinates of points are expressed as tuples of longitude, latitude, and height above ellipsoid: {math}`(\\lambda, \\phi, h)`. This is much like the spherical coordinate system, except that the local normal on the ellipsoid in general does not pass through the intersection of the rotational axis and the equatorial plane (the ellipsoid's center).\n+\n+```{figure} ellipsoidal_latitudes.png\n+The relation between the geographic latitude and the various auxiliary latitudes.\n+\n+The point $P$ has the coordinates $(\\lambda, \\phi, h)$ (only the latitude is shown). Setting the height to $0$ results in $P_0$, which is used to derive all auxiliary latitudes.\n+```\n+\n+In addition to the geographic latitude (also called the geodetic, astronomic, or common latitude), there are a range of auxiliary latitudes[^1], including:\n+\n+- the parametric (or reduced) latitude $\\beta$, which is the result of stretching the semi-minor axis $b$ to the length of the semi-major axis $a$, resulting in a sphere. This stretching displaces $P_0$ to $P_\\beta$. The conversion is\n+  ```{math}\n+  \\tan{\\beta} = \\frac{b}{a}\\tan{\\phi} = (1 - f)\\tan{\\phi} = \\sqrt{1 - e^2}\\tan{\\phi}\n+  ```\n+- the geocentric latitude $\\theta$, which is the spherical latitude for the local radius at $P_0$ (the distance between the center and $P_0$). The conversion is\n+  ```{math}\n+  \\tan{\\theta} = \\frac{b^2}{a^2} \\tan{\\phi} = (1 - e^2)\\tan{\\phi}\n+  ```\n+- the authalic latitude $\\xi$, which is the result of stretching $b$ and compressing $a$ such that the resulting sphere (the \"authalic sphere\") has the same surface area as the ellipsoid. In the process, $P_0$ is displaced to $P_\\xi$ to keep the surface area of faces on the authalic sphere the same as on the ellipsoid.\n+\n+  The conversion is\n+\n+  ```{math}\n+  q(\\phi) &= \\frac{(1-e^2)\\sin{\\phi}}{1 - e^2\\sin^2{\\phi}} - \\frac{1-e^2}{2e} \\ln{\\left(\\frac{1-e\\sin{\\phi}}{1 + e\\sin{\\phi}}\\right)} \\\\\n+  \\sin{\\xi} &= \\frac{q(\\phi)}{q(\\frac{\\pi}{2})}\n+  ```\n+\n+  And the inverse has to be computed iteratively or through a series expansion.\n+\n+Note that $\\beta$ and $\\xi$ are latitudes for auxiliary spheres.\n+\n+```{jupyter-execute}\n+---\n+hide-code: true\n+---\n+%load_ext rich\n+from rich.table import Table\n+import rich.jupyter\n+from rich.console import Console\n+\n+a = 6378137\n+f_ = 298.257223563\n+f = 1 / f_\n+e = np.sqrt(2 * f - f**2)\n+\n+b = a * (1 - f)\n+\n+geographic_latitude = 45.0\n+parametric_latitude = float(np.rad2deg(np.arctan(b / a * np.tan(np.deg2rad(geographic_latitude)))))\n+geocentric_latitude = float(np.rad2deg(np.arctan(b**2 / a**2 * np.tan(np.deg2rad(geographic_latitude)))))\n+authalic_latitude = float(np.rad2deg(convert(np.deg2rad(geographic_latitude), e)))\n+\n+table = Table(caption=f\"ellipsoidal latitudes for WGS84\\n(a = {a:01f}, f_inv = {f:03f})\")\n+table.add_column(\"Latitude\")\n+table.add_column(\"Value\", justify=\"right\")",
+    "path": "docs/reference-system.md",
+    "commit_id": "acba0a25cdb416f866cb9b0eb71a57cfd189d081",
+    "original_commit_id": "c3fe321a424fd9f08c51cc3e8ee86e240257db92",
+    "user": {
+      "login": "pablo-richard",
+      "id": 24779640,
+      "node_id": "MDQ6VXNlcjI0Nzc5NjQw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24779640?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/pablo-richard",
+      "html_url": "https://github.com/pablo-richard",
+      "followers_url": "https://api.github.com/users/pablo-richard/followers",
+      "following_url": "https://api.github.com/users/pablo-richard/following{/other_user}",
+      "gists_url": "https://api.github.com/users/pablo-richard/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/pablo-richard/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/pablo-richard/subscriptions",
+      "organizations_url": "https://api.github.com/users/pablo-richard/orgs",
+      "repos_url": "https://api.github.com/users/pablo-richard/repos",
+      "events_url": "https://api.github.com/users/pablo-richard/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/pablo-richard/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "May be precise the unit ? (°) Same for the next column.",
+    "created_at": "2025-06-16T17:57:58Z",
+    "updated_at": "2025-06-16T17:57:58Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/33#discussion_r2150551677",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/33",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2150551677"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/33#discussion_r2150551677"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/33"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2150551677/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 285,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 285,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2149386362",
+    "pull_request_review_id": 2931167714,
+    "id": 2149386362,
+    "node_id": "PRRC_kwDON3RSpc6AHQh6",
+    "diff_hunk": "@@ -0,0 +1,56 @@\n+# Towards a lookup list for HEALPIX levels\n+\n+![](healpix_global_indexing.png)",
+    "path": "misc/healpix_levels.md",
+    "commit_id": "e048ff239c12b401d4c4f5514f7ffe4ab95316c9",
+    "original_commit_id": "e048ff239c12b401d4c4f5514f7ffe4ab95316c9",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "feel free to push directly to #42, that's a modified version of the notebook you pushed here.",
+    "created_at": "2025-06-16T08:45:33Z",
+    "updated_at": "2025-06-16T08:45:34Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/32#discussion_r2149386362",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/32",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2149386362"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/32#discussion_r2149386362"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/32"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2149386362/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 3,
+    "original_line": 3,
+    "side": "RIGHT",
+    "in_reply_to_id": 2149379541,
+    "author_association": "COLLABORATOR",
+    "original_position": 3,
+    "position": 3,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2149379541",
+    "pull_request_review_id": 2931156732,
+    "id": 2149379541,
+    "node_id": "PRRC_kwDON3RSpc6AHO3V",
+    "diff_hunk": "@@ -0,0 +1,56 @@\n+# Towards a lookup list for HEALPIX levels\n+\n+![](healpix_global_indexing.png)",
+    "path": "misc/healpix_levels.md",
+    "commit_id": "e048ff239c12b401d4c4f5514f7ffe4ab95316c9",
+    "original_commit_id": "e048ff239c12b401d4c4f5514f7ffe4ab95316c9",
+    "user": {
+      "login": "allixender",
+      "id": 4483885,
+      "node_id": "MDQ6VXNlcjQ0ODM4ODU=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4483885?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/allixender",
+      "html_url": "https://github.com/allixender",
+      "followers_url": "https://api.github.com/users/allixender/followers",
+      "following_url": "https://api.github.com/users/allixender/following{/other_user}",
+      "gists_url": "https://api.github.com/users/allixender/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/allixender/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/allixender/subscriptions",
+      "organizations_url": "https://api.github.com/users/allixender/orgs",
+      "repos_url": "https://api.github.com/users/allixender/repos",
+      "events_url": "https://api.github.com/users/allixender/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/allixender/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "We should mention that this is the `nested` HEALPIX indexing scheme",
+    "created_at": "2025-06-16T08:42:26Z",
+    "updated_at": "2025-06-16T08:42:42Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/32#discussion_r2149379541",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/32",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2149379541"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/32#discussion_r2149379541"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/32"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2149379541/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 3,
+    "original_line": 3,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 3,
+    "position": 3,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2149292194",
+    "pull_request_review_id": 2931017424,
+    "id": 2149292194,
+    "node_id": "PRRC_kwDON3RSpc6AG5ii",
+    "diff_hunk": "@@ -0,0 +1,303 @@\n+# reference system\n+\n+Geographic data can be expressed in different coordinate systems:\n+\n+- 3D cartesian\n+- Spherical\n+- Ellipsoidal\n+- Projected\n+\n+3D cartesian coordinates are the simplest coordinates, but rather tricky to use to describe coordinates on earth's curved surface.\n+\n+Instead, the earth's surface is commonly approximated in first order as a sphere, and in second order as an ellipsoid.\n+\n+## Ellipsoidal coordinates\n+\n+```{jupyter-execute}\n+---\n+hide-code: true\n+hide-output: true\n+---\n+import matplotlib.pyplot as plt\n+from matplotlib.patches import Arc, Ellipse\n+import numpy as np\n+\n+a = 1\n+f_ = 3\n+f = 1 / f_\n+e = np.sqrt(2 * f - f**2)\n+\n+b = a * (1 - f)\n+\n+def angle_to_xy(angle, a, b):\n+    x = a * np.cos(angle)\n+    y = b * np.sin(angle)\n+\n+    return x, y\n+\n+def normal_at(angle_p, a, b):\n+    x_p, y_p = angle_to_xy(angle_p, a, b)\n+\n+    m_x = 2 * x_p / a**2\n+    m_y = 2 * y_p / b**2\n+\n+    return m_x, m_y\n+\n+def q(ϕ, e):\n+    # from USGS Professional Paper 1395, \"Map projections – A working manual\" by John P. Snyder\n+    return (1 - e**2) * (\n+        np.sin(ϕ) / (1 - e**2 * np.sin(ϕ) ** 2)\n+        - (1 / (2 * e)) * np.log((1 - e * np.sin(ϕ)) / (1 + e * np.sin(ϕ)))\n+    )\n+\n+def authalic_radius(a, e):\n+    q_p = q(np.pi / 2, e)\n+    return a * np.sqrt(q_p / 2)\n+\n+def convert(geographic, e):\n+    q_ = q(geographic, e)\n+    q_p = q(np.pi / 2, e)\n+    xi = np.arcsin(q_ / q_p)\n+\n+    return xi\n+\n+\n+fig, ax = plt.subplots(figsize=(12, 12))\n+# ellipse\n+ellipse = Ellipse(\n+    (0, 0),\n+    width=2 * a,\n+    height=2 * b,\n+    edgecolor=\"black\",\n+    linewidth=1,\n+    facecolor=\"none\"\n+)\n+ax.add_patch(ellipse)\n+\n+ax.hlines(y=0, xmin=-a, xmax=a, color=\"black\", linewidth=1)\n+ax.vlines(x=0, ymin=-b, ymax=b, color=\"black\", linewidth=1)\n+ax.annotate(\"a\", xy=(0.5 * a, 0), xytext=(0.5 * a, -0.05 * b))\n+ax.annotate(\"b\", xy=(0, 0.5 * b), xytext=(-0.04 * a, 0.5 * b))\n+\n+parametric_latitude = np.deg2rad(50)\n+m_x, m_y = normal_at(parametric_latitude, a, b)\n+\n+# points\n+h_p = 0.05 * a\n+x_p0, y_p0 = angle_to_xy(parametric_latitude, a, b)\n+x_p = x_p0 + h_p * m_x\n+y_p = y_p0 + h_p * m_y\n+\n+ax.scatter(x_p0, y_p0, zorder=4)\n+ax.scatter(x_p, y_p, zorder=4)\n+\n+ax.annotate(\"$P$\", xy=(x_p, y_p), xytext=(x_p + 0.015 * a, y_p - 0.05 * b))\n+ax.annotate(\"$P_0$\", xy=(x_p0, y_p0), xytext=(x_p0 + 0.015 * a, y_p0))\n+ax.annotate(\"$h$\", xy=(x_p0, y_p0), xytext=(x_p0 + 0.05 * a, y_p0 + 0.05 * a))\n+\n+# tangent at P_0\n+t = np.linspace(-0.05, 0.05, 100)\n+x_t = x_p0 - m_y * t\n+y_t = y_p0 + m_x * t\n+ax.plot(x_t, y_t, linewidth=1, color=\"black\")\n+\n+# geographic latitude\n+t_y = -x_p / m_x\n+n = np.linspace(t_y, 0, 200)\n+x_geographic = x_p + m_x * n\n+y_geographic = y_p + m_y * n\n+ax.plot(x_geographic, y_geographic, linewidth=1, color=\"black\")\n+\n+t_x = -y_p / m_y\n+x_g0 = x_p + m_x * t_x\n+y_g0 = y_p + m_y * t_x\n+geographic_latitude = np.arctan(a / b * np.tan(parametric_latitude))\n+geographic_arc = Arc(\n+    (x_g0, y_g0),\n+    width=0.25 * a,\n+    height=0.25 * a,\n+    theta1=0,\n+    theta2=np.rad2deg(geographic_latitude),\n+)\n+ax.add_patch(geographic_arc)\n+ax.annotate(r\"$\\phi$\", xy=(0, 0), xytext=(0 + 0.4 * a, 0 + 0.02 * a))\n+\n+rectangular_on_tangent1 = Arc(\n+    (x_p0, y_p0), width=0.08 * a, height=0.08 * a, theta1=np.rad2deg(geographic_latitude), theta2=np.rad2deg(geographic_latitude) + 90,\n+    linewidth=0.5\n+)\n+rectangular_on_tangent2 = Arc(\n+    (x_p0, y_p0), width=0.095 * a, height=0.095 * a, theta1=np.rad2deg(geographic_latitude), theta2=np.rad2deg(geographic_latitude) + 90,\n+    linewidth=0.5\n+)\n+ax.add_patch(rectangular_on_tangent1)\n+ax.add_patch(rectangular_on_tangent2)\n+\n+# geocentric latitude\n+v = np.linspace(0, 1, 200)\n+x_geocentric = 0 + x_p0 * v\n+y_geocentric = 0 + y_p0 * v\n+ax.plot(x_geocentric, y_geocentric, linewidth=1, color=\"black\")\n+\n+geocentric_latitude = np.arctan(b**2 / a**2 * np.tan(geographic_latitude))\n+geocentric_arc = Arc(\n+    (0.0, 0.0),\n+    width=0.5 * a,\n+    height=0.5 * a,\n+    theta1=0,\n+    theta2=np.rad2deg(geocentric_latitude),\n+)\n+ax.add_patch(geocentric_arc)\n+ax.annotate(r\"$\\theta$\", xy=(0, 0), xytext=(0 + 0.19 * a, 0 + 0.02 * a))\n+\n+# reduced latitude\n+semi_major_circle = Arc(\n+    (0, 0),\n+    width=2 * a,\n+    height=2 * a,\n+    angle=0,\n+    theta1=0,\n+    theta2=90,\n+    linestyle=\"--\",\n+)\n+ax.add_patch(semi_major_circle)\n+ax.vlines(x=0, ymin=b, ymax=a, color=\"black\", linestyle=\"--\", linewidth=1)\n+x_r0 = x_p0\n+y_r0 = np.sqrt(a**2 - x_p0**2)\n+ax.scatter(x_r0, y_r0, zorder=4)\n+ax.annotate(r\"$P_\\beta$\", xy=(x_r0, y_r0), xytext=(x_r0 + 0.015 * a, y_r0))\n+\n+ax.vlines(x=x_r0, ymin=0, ymax=y_r0, color=\"black\", linestyle=\"--\", linewidth=1)\n+ax.plot([0, x_r0], [0, y_r0], color=\"black\", linewidth=1)\n+\n+reduced_arc = Arc(\n+    (0, 0),\n+    width=0.3 * a,\n+    height=0.3 * a,\n+    theta1=0,\n+    theta2=np.rad2deg(parametric_latitude),\n+)\n+ax.add_patch(reduced_arc)\n+ax.annotate(r\"$\\beta$\", xy=(0, 0), xytext=(0 + 0.07 * a, 0 + 0.02 * a))\n+\n+# authalic latitude\n+r_a = authalic_radius(a, e)\n+authalic_latitude = convert(geographic_latitude, e)\n+x_a = 0 + r_a * np.cos(authalic_latitude)\n+y_a = 0 + r_a * np.sin(authalic_latitude)\n+\n+authalic_arc = Arc(\n+    (0, 0),\n+    width=0.7 * a,\n+    height=0.7 * a,\n+    theta1=0,\n+    theta2=np.rad2deg(authalic_latitude),\n+)\n+ax.add_patch(authalic_arc)\n+\n+ax.scatter(x_a, y_a, zorder=4)\n+ax.annotate(r\"$P_\\xi$\", xy=(x_a, y_a), xytext=(x_a - 0.015 * a, y_a - 0.045 * a))\n+\n+ax.plot([0, x_a], [0, y_a], color=\"black\", linewidth=1)\n+ax.annotate(\n+    r\"$r_\\xi$\",\n+    xy=(\n+        0.5 * r_a * np.cos(authalic_latitude),\n+        0.5 * r_a * np.sin(authalic_latitude),\n+    ),\n+    xytext=(\n+        0.7 * r_a * np.cos(authalic_latitude) + 0.015 * a,\n+        0.7 * r_a * np.sin(authalic_latitude) - 0.015 * a,\n+    ),\n+)\n+\n+authalic_circle = Arc(\n+    (0, 0),\n+    width=2 * r_a,\n+    height=2 * r_a,\n+    angle=0,\n+    theta1=0,\n+    theta2=90,\n+    linestyle=\"--\",\n+)\n+ax.add_patch(authalic_circle)\n+ax.annotate(r\"$\\xi$\", xy=(0, 0), xytext=(0 + 0.29 * a, 0 + 0.02 * a))\n+\n+ax.axis(\"equal\")\n+ax.axis(\"off\");\n+fig.savefig(\"ellipsoidal_latitudes.png\", dpi=600, bbox_inches=\"tight\")\n+```\n+\n+In coordinate systems based on a ellipsoid of revolution, geographic coordinates of points are expressed as tuples of longitude, latitude, and height above ellipsoid: {math}`(\\lambda, \\phi, h)`. This is much like the spherical coordinate system, except that the local normal on the ellipsoid in general does not pass through the intersection of the rotational axis and the equatorial plane (the ellipsoid's center).\n+\n+```{figure} ellipsoidal_latitudes.png\n+The relation between the geographic latitude and the various auxiliary latitudes.\n+\n+The point $P$ has the coordinates $(\\lambda, \\phi, h)$ (only the latitude is shown). Setting the height to $0$ results in $P_0$, which is used to derive all auxiliary latitudes.\n+```\n+\n+In addition to the geographic latitude (also called the geodetic, astronomic, or common latitude), there are a range of auxiliary latitudes[^1], including:\n+\n+- the parametric (or reduced) latitude $\\beta$, which is the result of stretching the semi-minor axis $b$ to the length of the semi-major axis $a$, resulting in a sphere. This stretching displaces $P_0$ to $P_\\beta$. The conversion is\n+  ```{math}\n+  \\tan{\\beta} = \\frac{b}{a}\\tan{\\phi} = (1 - f)\\tan{\\phi} = \\sqrt{1 - e^2}\\tan{\\phi}\n+  ```\n+- the geocentric latitude $\\theta$, which is the spherical latitude for the local radius at $P_0$ (the distance between the center and $P_0$). The conversion is\n+  ```{math}\n+  \\tan{\\theta} = \\frac{b^2}{a^2} \\tan{\\phi} = (1 - e^2)\\tan{\\phi}\n+  ```\n+- the authalic latitude $\\xi$, which is the result of stretching $b$ and compressing $a$ such that the resulting sphere (the \"authalic sphere\") has the same surface area as the ellipsoid. In the process, $P_0$ is displaced to $P_\\xi$ to keep the surface area of faces on the authalic sphere the same as on the ellipsoid.\n+\n+  The conversion is\n+\n+  ```{math}\n+  q(\\phi) &= \\frac{(1-e^2)\\sin{\\phi}}{1 - e^2\\sin^2{\\phi}} - \\frac{1-e^2}{2e} \\ln{\\left(\\frac{1-e\\sin{\\phi}}{1 + e\\sin{\\phi}}\\right)} \\\\\n+  \\sin{\\xi} &= \\frac{q(\\phi)}{q(\\frac{\\pi}{2})}\n+  ```\n+\n+  And the inverse has to be computed iteratively or through a series expansion.\n+\n+Note that $\\beta$ and $\\xi$ are latitudes for auxiliary spheres.\n+\n+```{jupyter-execute}\n+---\n+hide-code: true\n+---\n+from rich.table import Table\n+import rich.jupyter\n+from rich.console import Console\n+\n+a = 6378137\n+f_ = 298.257223563\n+f = 1 / f_\n+e = np.sqrt(2 * f - f**2)\n+\n+b = a * (1 - f)\n+\n+geographic_latitude = 45.0\n+parametric_latitude = float(np.rad2deg(np.arctan(b / a * np.tan(np.deg2rad(geographic_latitude)))))\n+geocentric_latitude = float(np.rad2deg(np.arctan(b**2 / a**2 * np.tan(np.deg2rad(geographic_latitude)))))\n+authalic_latitude = float(np.rad2deg(convert(np.deg2rad(geographic_latitude), e)))\n+\n+table = Table(caption=f\"ellipsoidal latitudes for WGS84\\n(a = {a:01f}, f_inv = {f:03f})\")\n+table.add_column(\"Latitude\")\n+table.add_column(\"Value\", justify=\"right\")\n+table.add_column(\"x - ϕ\", justify=\"right\")\n+table.add_row(r\"Geographic (ϕ)\", f\"{geographic_latitude:.8f}\", f\"{geographic_latitude - geographic_latitude:.8f}\")\n+table.add_row(r\"Parametric (β)\", f\"{parametric_latitude:.8f}\", f\"{parametric_latitude - geographic_latitude:.8f}\")\n+table.add_row(r\"Geocentric (θ)\", f\"{geocentric_latitude:.8f}\", f\"{geocentric_latitude - geographic_latitude:.8f}\")\n+table.add_row(r\"Authalic (ξ)\", f\"{authalic_latitude:.8f}\", f\"{authalic_latitude - geographic_latitude:.8f}\")\n+\n+# rich.jupyter.print(table)\n+console = Console()\n+segments = console.render(table)\n+html = rich.jupyter._render_segments(segments)\n+text = console._render_buffer(segments)\n+rich.jupyter.JupyterRenderable(html, text)\n+```\n+\n+Karney, 2023[^2], describes conversion formulas that reduce the numerical round-off errors.\n+\n+[^1]: https://doi.org/10.3133/pp1395\n+\n+[^2]: https://doi.org/10.48550/arXiv.2212.05818",
+    "path": "docs/reference-system.md",
+    "commit_id": "acba0a25cdb416f866cb9b0eb71a57cfd189d081",
+    "original_commit_id": "f1cd9e658d4f230b95a173ac8769e12f947dd3a0",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "```suggestion\r\n[^2]: https://doi.org/10.1080/00396265.2023.2217604\r\n```",
+    "created_at": "2025-06-16T08:00:04Z",
+    "updated_at": "2025-06-16T08:00:04Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/33#discussion_r2149292194",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/33",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2149292194"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/33#discussion_r2149292194"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/33"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2149292194/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 303,
+    "side": "RIGHT",
+    "in_reply_to_id": 2149265871,
+    "author_association": "COLLABORATOR",
+    "original_position": 303,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2149265871",
+    "pull_request_review_id": 2930977716,
+    "id": 2149265871,
+    "node_id": "PRRC_kwDON3RSpc6AGzHP",
+    "diff_hunk": "@@ -0,0 +1,303 @@\n+# reference system\n+\n+Geographic data can be expressed in different coordinate systems:\n+\n+- 3D cartesian\n+- Spherical\n+- Ellipsoidal\n+- Projected\n+\n+3D cartesian coordinates are the simplest coordinates, but rather tricky to use to describe coordinates on earth's curved surface.\n+\n+Instead, the earth's surface is commonly approximated in first order as a sphere, and in second order as an ellipsoid.\n+\n+## Ellipsoidal coordinates\n+\n+```{jupyter-execute}\n+---\n+hide-code: true\n+hide-output: true\n+---\n+import matplotlib.pyplot as plt\n+from matplotlib.patches import Arc, Ellipse\n+import numpy as np\n+\n+a = 1\n+f_ = 3\n+f = 1 / f_\n+e = np.sqrt(2 * f - f**2)\n+\n+b = a * (1 - f)\n+\n+def angle_to_xy(angle, a, b):\n+    x = a * np.cos(angle)\n+    y = b * np.sin(angle)\n+\n+    return x, y\n+\n+def normal_at(angle_p, a, b):\n+    x_p, y_p = angle_to_xy(angle_p, a, b)\n+\n+    m_x = 2 * x_p / a**2\n+    m_y = 2 * y_p / b**2\n+\n+    return m_x, m_y\n+\n+def q(ϕ, e):\n+    # from USGS Professional Paper 1395, \"Map projections – A working manual\" by John P. Snyder\n+    return (1 - e**2) * (\n+        np.sin(ϕ) / (1 - e**2 * np.sin(ϕ) ** 2)\n+        - (1 / (2 * e)) * np.log((1 - e * np.sin(ϕ)) / (1 + e * np.sin(ϕ)))\n+    )\n+\n+def authalic_radius(a, e):\n+    q_p = q(np.pi / 2, e)\n+    return a * np.sqrt(q_p / 2)\n+\n+def convert(geographic, e):\n+    q_ = q(geographic, e)\n+    q_p = q(np.pi / 2, e)\n+    xi = np.arcsin(q_ / q_p)\n+\n+    return xi\n+\n+\n+fig, ax = plt.subplots(figsize=(12, 12))\n+# ellipse\n+ellipse = Ellipse(\n+    (0, 0),\n+    width=2 * a,\n+    height=2 * b,\n+    edgecolor=\"black\",\n+    linewidth=1,\n+    facecolor=\"none\"\n+)\n+ax.add_patch(ellipse)\n+\n+ax.hlines(y=0, xmin=-a, xmax=a, color=\"black\", linewidth=1)\n+ax.vlines(x=0, ymin=-b, ymax=b, color=\"black\", linewidth=1)\n+ax.annotate(\"a\", xy=(0.5 * a, 0), xytext=(0.5 * a, -0.05 * b))\n+ax.annotate(\"b\", xy=(0, 0.5 * b), xytext=(-0.04 * a, 0.5 * b))\n+\n+parametric_latitude = np.deg2rad(50)\n+m_x, m_y = normal_at(parametric_latitude, a, b)\n+\n+# points\n+h_p = 0.05 * a\n+x_p0, y_p0 = angle_to_xy(parametric_latitude, a, b)\n+x_p = x_p0 + h_p * m_x\n+y_p = y_p0 + h_p * m_y\n+\n+ax.scatter(x_p0, y_p0, zorder=4)\n+ax.scatter(x_p, y_p, zorder=4)\n+\n+ax.annotate(\"$P$\", xy=(x_p, y_p), xytext=(x_p + 0.015 * a, y_p - 0.05 * b))\n+ax.annotate(\"$P_0$\", xy=(x_p0, y_p0), xytext=(x_p0 + 0.015 * a, y_p0))\n+ax.annotate(\"$h$\", xy=(x_p0, y_p0), xytext=(x_p0 + 0.05 * a, y_p0 + 0.05 * a))\n+\n+# tangent at P_0\n+t = np.linspace(-0.05, 0.05, 100)\n+x_t = x_p0 - m_y * t\n+y_t = y_p0 + m_x * t\n+ax.plot(x_t, y_t, linewidth=1, color=\"black\")\n+\n+# geographic latitude\n+t_y = -x_p / m_x\n+n = np.linspace(t_y, 0, 200)\n+x_geographic = x_p + m_x * n\n+y_geographic = y_p + m_y * n\n+ax.plot(x_geographic, y_geographic, linewidth=1, color=\"black\")\n+\n+t_x = -y_p / m_y\n+x_g0 = x_p + m_x * t_x\n+y_g0 = y_p + m_y * t_x\n+geographic_latitude = np.arctan(a / b * np.tan(parametric_latitude))\n+geographic_arc = Arc(\n+    (x_g0, y_g0),\n+    width=0.25 * a,\n+    height=0.25 * a,\n+    theta1=0,\n+    theta2=np.rad2deg(geographic_latitude),\n+)\n+ax.add_patch(geographic_arc)\n+ax.annotate(r\"$\\phi$\", xy=(0, 0), xytext=(0 + 0.4 * a, 0 + 0.02 * a))\n+\n+rectangular_on_tangent1 = Arc(\n+    (x_p0, y_p0), width=0.08 * a, height=0.08 * a, theta1=np.rad2deg(geographic_latitude), theta2=np.rad2deg(geographic_latitude) + 90,\n+    linewidth=0.5\n+)\n+rectangular_on_tangent2 = Arc(\n+    (x_p0, y_p0), width=0.095 * a, height=0.095 * a, theta1=np.rad2deg(geographic_latitude), theta2=np.rad2deg(geographic_latitude) + 90,\n+    linewidth=0.5\n+)\n+ax.add_patch(rectangular_on_tangent1)\n+ax.add_patch(rectangular_on_tangent2)\n+\n+# geocentric latitude\n+v = np.linspace(0, 1, 200)\n+x_geocentric = 0 + x_p0 * v\n+y_geocentric = 0 + y_p0 * v\n+ax.plot(x_geocentric, y_geocentric, linewidth=1, color=\"black\")\n+\n+geocentric_latitude = np.arctan(b**2 / a**2 * np.tan(geographic_latitude))\n+geocentric_arc = Arc(\n+    (0.0, 0.0),\n+    width=0.5 * a,\n+    height=0.5 * a,\n+    theta1=0,\n+    theta2=np.rad2deg(geocentric_latitude),\n+)\n+ax.add_patch(geocentric_arc)\n+ax.annotate(r\"$\\theta$\", xy=(0, 0), xytext=(0 + 0.19 * a, 0 + 0.02 * a))\n+\n+# reduced latitude\n+semi_major_circle = Arc(\n+    (0, 0),\n+    width=2 * a,\n+    height=2 * a,\n+    angle=0,\n+    theta1=0,\n+    theta2=90,\n+    linestyle=\"--\",\n+)\n+ax.add_patch(semi_major_circle)\n+ax.vlines(x=0, ymin=b, ymax=a, color=\"black\", linestyle=\"--\", linewidth=1)\n+x_r0 = x_p0\n+y_r0 = np.sqrt(a**2 - x_p0**2)\n+ax.scatter(x_r0, y_r0, zorder=4)\n+ax.annotate(r\"$P_\\beta$\", xy=(x_r0, y_r0), xytext=(x_r0 + 0.015 * a, y_r0))\n+\n+ax.vlines(x=x_r0, ymin=0, ymax=y_r0, color=\"black\", linestyle=\"--\", linewidth=1)\n+ax.plot([0, x_r0], [0, y_r0], color=\"black\", linewidth=1)\n+\n+reduced_arc = Arc(\n+    (0, 0),\n+    width=0.3 * a,\n+    height=0.3 * a,\n+    theta1=0,\n+    theta2=np.rad2deg(parametric_latitude),\n+)\n+ax.add_patch(reduced_arc)\n+ax.annotate(r\"$\\beta$\", xy=(0, 0), xytext=(0 + 0.07 * a, 0 + 0.02 * a))\n+\n+# authalic latitude\n+r_a = authalic_radius(a, e)\n+authalic_latitude = convert(geographic_latitude, e)\n+x_a = 0 + r_a * np.cos(authalic_latitude)\n+y_a = 0 + r_a * np.sin(authalic_latitude)\n+\n+authalic_arc = Arc(\n+    (0, 0),\n+    width=0.7 * a,\n+    height=0.7 * a,\n+    theta1=0,\n+    theta2=np.rad2deg(authalic_latitude),\n+)\n+ax.add_patch(authalic_arc)\n+\n+ax.scatter(x_a, y_a, zorder=4)\n+ax.annotate(r\"$P_\\xi$\", xy=(x_a, y_a), xytext=(x_a - 0.015 * a, y_a - 0.045 * a))\n+\n+ax.plot([0, x_a], [0, y_a], color=\"black\", linewidth=1)\n+ax.annotate(\n+    r\"$r_\\xi$\",\n+    xy=(\n+        0.5 * r_a * np.cos(authalic_latitude),\n+        0.5 * r_a * np.sin(authalic_latitude),\n+    ),\n+    xytext=(\n+        0.7 * r_a * np.cos(authalic_latitude) + 0.015 * a,\n+        0.7 * r_a * np.sin(authalic_latitude) - 0.015 * a,\n+    ),\n+)\n+\n+authalic_circle = Arc(\n+    (0, 0),\n+    width=2 * r_a,\n+    height=2 * r_a,\n+    angle=0,\n+    theta1=0,\n+    theta2=90,\n+    linestyle=\"--\",\n+)\n+ax.add_patch(authalic_circle)\n+ax.annotate(r\"$\\xi$\", xy=(0, 0), xytext=(0 + 0.29 * a, 0 + 0.02 * a))\n+\n+ax.axis(\"equal\")\n+ax.axis(\"off\");\n+fig.savefig(\"ellipsoidal_latitudes.png\", dpi=600, bbox_inches=\"tight\")\n+```\n+\n+In coordinate systems based on a ellipsoid of revolution, geographic coordinates of points are expressed as tuples of longitude, latitude, and height above ellipsoid: {math}`(\\lambda, \\phi, h)`. This is much like the spherical coordinate system, except that the local normal on the ellipsoid in general does not pass through the intersection of the rotational axis and the equatorial plane (the ellipsoid's center).\n+\n+```{figure} ellipsoidal_latitudes.png\n+The relation between the geographic latitude and the various auxiliary latitudes.\n+\n+The point $P$ has the coordinates $(\\lambda, \\phi, h)$ (only the latitude is shown). Setting the height to $0$ results in $P_0$, which is used to derive all auxiliary latitudes.\n+```\n+\n+In addition to the geographic latitude (also called the geodetic, astronomic, or common latitude), there are a range of auxiliary latitudes[^1], including:\n+\n+- the parametric (or reduced) latitude $\\beta$, which is the result of stretching the semi-minor axis $b$ to the length of the semi-major axis $a$, resulting in a sphere. This stretching displaces $P_0$ to $P_\\beta$. The conversion is\n+  ```{math}\n+  \\tan{\\beta} = \\frac{b}{a}\\tan{\\phi} = (1 - f)\\tan{\\phi} = \\sqrt{1 - e^2}\\tan{\\phi}\n+  ```\n+- the geocentric latitude $\\theta$, which is the spherical latitude for the local radius at $P_0$ (the distance between the center and $P_0$). The conversion is\n+  ```{math}\n+  \\tan{\\theta} = \\frac{b^2}{a^2} \\tan{\\phi} = (1 - e^2)\\tan{\\phi}\n+  ```\n+- the authalic latitude $\\xi$, which is the result of stretching $b$ and compressing $a$ such that the resulting sphere (the \"authalic sphere\") has the same surface area as the ellipsoid. In the process, $P_0$ is displaced to $P_\\xi$ to keep the surface area of faces on the authalic sphere the same as on the ellipsoid.\n+\n+  The conversion is\n+\n+  ```{math}\n+  q(\\phi) &= \\frac{(1-e^2)\\sin{\\phi}}{1 - e^2\\sin^2{\\phi}} - \\frac{1-e^2}{2e} \\ln{\\left(\\frac{1-e\\sin{\\phi}}{1 + e\\sin{\\phi}}\\right)} \\\\\n+  \\sin{\\xi} &= \\frac{q(\\phi)}{q(\\frac{\\pi}{2})}\n+  ```\n+\n+  And the inverse has to be computed iteratively or through a series expansion.\n+\n+Note that $\\beta$ and $\\xi$ are latitudes for auxiliary spheres.\n+\n+```{jupyter-execute}\n+---\n+hide-code: true\n+---\n+from rich.table import Table\n+import rich.jupyter\n+from rich.console import Console\n+\n+a = 6378137\n+f_ = 298.257223563\n+f = 1 / f_\n+e = np.sqrt(2 * f - f**2)\n+\n+b = a * (1 - f)\n+\n+geographic_latitude = 45.0\n+parametric_latitude = float(np.rad2deg(np.arctan(b / a * np.tan(np.deg2rad(geographic_latitude)))))\n+geocentric_latitude = float(np.rad2deg(np.arctan(b**2 / a**2 * np.tan(np.deg2rad(geographic_latitude)))))\n+authalic_latitude = float(np.rad2deg(convert(np.deg2rad(geographic_latitude), e)))\n+\n+table = Table(caption=f\"ellipsoidal latitudes for WGS84\\n(a = {a:01f}, f_inv = {f:03f})\")\n+table.add_column(\"Latitude\")\n+table.add_column(\"Value\", justify=\"right\")\n+table.add_column(\"x - ϕ\", justify=\"right\")\n+table.add_row(r\"Geographic (ϕ)\", f\"{geographic_latitude:.8f}\", f\"{geographic_latitude - geographic_latitude:.8f}\")\n+table.add_row(r\"Parametric (β)\", f\"{parametric_latitude:.8f}\", f\"{parametric_latitude - geographic_latitude:.8f}\")\n+table.add_row(r\"Geocentric (θ)\", f\"{geocentric_latitude:.8f}\", f\"{geocentric_latitude - geographic_latitude:.8f}\")\n+table.add_row(r\"Authalic (ξ)\", f\"{authalic_latitude:.8f}\", f\"{authalic_latitude - geographic_latitude:.8f}\")\n+\n+# rich.jupyter.print(table)\n+console = Console()\n+segments = console.render(table)\n+html = rich.jupyter._render_segments(segments)\n+text = console._render_buffer(segments)\n+rich.jupyter.JupyterRenderable(html, text)\n+```\n+\n+Karney, 2023[^2], describes conversion formulas that reduce the numerical round-off errors.\n+\n+[^1]: https://doi.org/10.3133/pp1395\n+\n+[^2]: https://doi.org/10.48550/arXiv.2212.05818",
+    "path": "docs/reference-system.md",
+    "commit_id": "acba0a25cdb416f866cb9b0eb71a57cfd189d081",
+    "original_commit_id": "f1cd9e658d4f230b95a173ac8769e12f947dd3a0",
+    "user": {
+      "login": "allixender",
+      "id": 4483885,
+      "node_id": "MDQ6VXNlcjQ0ODM4ODU=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4483885?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/allixender",
+      "html_url": "https://github.com/allixender",
+      "followers_url": "https://api.github.com/users/allixender/followers",
+      "following_url": "https://api.github.com/users/allixender/following{/other_user}",
+      "gists_url": "https://api.github.com/users/allixender/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/allixender/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/allixender/subscriptions",
+      "organizations_url": "https://api.github.com/users/allixender/orgs",
+      "repos_url": "https://api.github.com/users/allixender/repos",
+      "events_url": "https://api.github.com/users/allixender/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/allixender/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Change doi to full paper: https://doi.org/10.1080/00396265.2023.2217604\r\n\r\naka: https://www.tandfonline.com/doi/full/10.1080/00396265.2023.2217604\r\n\r\n",
+    "created_at": "2025-06-16T07:46:22Z",
+    "updated_at": "2025-06-16T07:46:22Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/33#discussion_r2149265871",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/33",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2149265871"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/33#discussion_r2149265871"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/33"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2149265871/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 303,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 303,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2107609309",
+    "pull_request_review_id": 2868788568,
+    "id": 2107609309,
+    "node_id": "PRRC_kwDON3RSpc59n5Dd",
+    "diff_hunk": "@@ -1,15 +1,77 @@\n use cdshealpix as healpix;\n use cdshealpix::sph_geom::coo3d::{vec3_of, UnitVec3, UnitVect3};\n+use moc::moc::range::CellSelection;\n+use moc::moc::range::RangeMOC;\n+use moc::qty::Hpx;\n use ndarray::{s, Array1, Zip};\n-use numpy::{PyArrayDyn, PyArrayMethods};\n+use numpy::{PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArray1, PyReadonlyArray2};\n use pyo3::prelude::*;\n \n mod hierarchy;\n \n+fn degrees_to_radians(degrees: f64) -> f64 {\n+    degrees * (std::f64::consts::PI / 180.0)\n+}\n+\n #[pymodule]\n mod nested {\n     use super::*;\n \n+    /// Find the cells both in the list of provided cells and within a polygon\n+    ///\n+    /// A cell is considered within the polygon if its center point is within (so not the complete area has to be within).\n+    ///\n+    /// Parameters\n+    /// ----------\n+    ///     cell_ids: IDs of the cells to consider.\n+    ///     depth: Shared depth of the cells.\n+    ///     polygon: 2D array (2 rows, lon/lat), interpreted as a list of lon/lat coordinates that describe the polygon. The last item is assumed to be connected to the first.\n+    /// Returns\n+    /// -------\n+    ///     cells_in_polygon: IDs of the cells both in `cell_ids` and within the `polygon`.\n+    #[pyfunction]\n+    fn select_cells_in_polygon<'a>(\n+        py: Python<'a>,\n+        cell_ids: PyReadonlyArray1<u64>,\n+        depth: u8,\n+        polygon: PyReadonlyArray2<f64>,\n+    ) -> PyResult<Bound<'a, PyArray1<u64>>> {\n+        // Verify polygon array has 2 rows\n+        if polygon.as_array().shape()[1] != 2 {\n+            return Err(pyo3::exceptions::PyValueError::new_err(\n+                \"Expected shape (n, 2) for polygon\",\n+            ));\n+        }\n+\n+        // Convert cell ids to MOC\n+        let cell_ids_moc: RangeMOC<u64, Hpx<u64>> =\n+            RangeMOC::from_fixed_depth_cells(depth, cell_ids.as_slice()?.iter().copied(), None);\n+\n+        // Rasterize polygon as MOC\n+        let polygon_as_vec: Vec<(f64, f64)> = polygon\n+            .as_array()\n+            .rows()\n+            .into_iter()\n+            .map(|row| (degrees_to_radians(row[0]), degrees_to_radians(row[1])))\n+            .collect();\n+        assert!(\n+            polygon_as_vec.len() == polygon.as_array().shape()[0],\n+            \"Not the same items in polygon vector as in provided polygon from python {} vs {}\",\n+            polygon_as_vec.len(),\n+            polygon.as_array().shape()[0]\n+        );",
+    "path": "src/lib.rs",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "is the `assert!` for debugging purposes? If yes, we should remove that before merging, but if not I'd probably return some exception",
+    "created_at": "2025-05-26T16:05:33Z",
+    "updated_at": "2025-05-27T16:06:06Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2107609309",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2107609309"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2107609309"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2107609309/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": 57,
+    "original_start_line": 57,
+    "start_side": "RIGHT",
+    "line": 62,
+    "original_line": 62,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 63,
+    "position": 63,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2107578943",
+    "pull_request_review_id": 2868788568,
+    "id": 2107578943,
+    "node_id": "PRRC_kwDON3RSpc59nxo_",
+    "diff_hunk": "@@ -1,15 +1,77 @@\n use cdshealpix as healpix;\n use cdshealpix::sph_geom::coo3d::{vec3_of, UnitVec3, UnitVect3};\n+use moc::moc::range::CellSelection;\n+use moc::moc::range::RangeMOC;\n+use moc::qty::Hpx;\n use ndarray::{s, Array1, Zip};\n-use numpy::{PyArrayDyn, PyArrayMethods};\n+use numpy::{PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArray1, PyReadonlyArray2};\n use pyo3::prelude::*;\n \n mod hierarchy;\n \n+fn degrees_to_radians(degrees: f64) -> f64 {\n+    degrees * (std::f64::consts::PI / 180.0)\n+}\n+\n #[pymodule]\n mod nested {\n     use super::*;\n \n+    /// Find the cells both in the list of provided cells and within a polygon\n+    ///\n+    /// A cell is considered within the polygon if its center point is within (so not the complete area has to be within).\n+    ///\n+    /// Parameters\n+    /// ----------\n+    ///     cell_ids: IDs of the cells to consider.\n+    ///     depth: Shared depth of the cells.\n+    ///     polygon: 2D array (2 rows, lon/lat), interpreted as a list of lon/lat coordinates that describe the polygon. The last item is assumed to be connected to the first.\n+    /// Returns\n+    /// -------\n+    ///     cells_in_polygon: IDs of the cells both in `cell_ids` and within the `polygon`.\n+    #[pyfunction]\n+    fn select_cells_in_polygon<'a>(\n+        py: Python<'a>,\n+        cell_ids: PyReadonlyArray1<u64>,\n+        depth: u8,\n+        polygon: PyReadonlyArray2<f64>,\n+    ) -> PyResult<Bound<'a, PyArray1<u64>>> {\n+        // Verify polygon array has 2 rows\n+        if polygon.as_array().shape()[1] != 2 {\n+            return Err(pyo3::exceptions::PyValueError::new_err(\n+                \"Expected shape (n, 2) for polygon\",\n+            ));\n+        }\n+\n+        // Convert cell ids to MOC\n+        let cell_ids_moc: RangeMOC<u64, Hpx<u64>> =\n+            RangeMOC::from_fixed_depth_cells(depth, cell_ids.as_slice()?.iter().copied(), None);\n+\n+        // Rasterize polygon as MOC\n+        let polygon_as_vec: Vec<(f64, f64)> = polygon\n+            .as_array()\n+            .rows()\n+            .into_iter()\n+            .map(|row| (degrees_to_radians(row[0]), degrees_to_radians(row[1])))",
+    "path": "src/lib.rs",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "`f64` has a `to_degrees` method, so unless we define something that's more accurate numerically I think we should use that instead:\r\n```suggestion\r\n            .map(|row| (row[0].to_degrees(), row[1].to_degrees()))\r\n```",
+    "created_at": "2025-05-26T15:38:28Z",
+    "updated_at": "2025-05-27T16:06:06Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2107578943",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2107578943"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2107578943"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2107578943/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 55,
+    "original_line": 55,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 56,
+    "position": 56,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2101064215",
+    "pull_request_review_id": 2858967500,
+    "id": 2101064215,
+    "node_id": "PRRC_kwDON3RSpc59O7IX",
+    "diff_hunk": "@@ -1,11 +1,78 @@\n use cdshealpix as healpix;\n use cdshealpix::sph_geom::coo3d::{vec3_of, UnitVec3, UnitVect3};\n+use moc::moc::range::CellSelection;\n+use moc::moc::range::RangeMOC;\n+use moc::qty::Hpx;\n use ndarray::{s, Array1, Zip};\n-use numpy::{PyArrayDyn, PyArrayMethods};\n+use numpy::{PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArray1, PyReadonlyArray2};\n use pyo3::prelude::*;\n \n mod hierarchy;\n \n+fn degrees_to_radians(degrees: f64) -> f64 {\n+    degrees * (std::f64::consts::PI / 180.0)\n+}\n+\n+#[pymodule]\n+mod select {",
+    "path": "src/lib.rs",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "okay, thanks a lot. I'll have to check with the cdshealpix people on whether this is intentional",
+    "created_at": "2025-05-21T20:00:42Z",
+    "updated_at": "2025-05-21T20:00:42Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2101064215",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2101064215"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2101064215"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2101064215/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 17,
+    "side": "RIGHT",
+    "in_reply_to_id": 2093126442,
+    "author_association": "COLLABORATOR",
+    "original_position": 18,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100716497",
+    "pull_request_review_id": 2858430512,
+    "id": 2100716497,
+    "node_id": "PRRC_kwDON3RSpc59NmPR",
+    "diff_hunk": "@@ -1,11 +1,78 @@\n use cdshealpix as healpix;\n use cdshealpix::sph_geom::coo3d::{vec3_of, UnitVec3, UnitVect3};\n+use moc::moc::range::CellSelection;\n+use moc::moc::range::RangeMOC;\n+use moc::qty::Hpx;\n use ndarray::{s, Array1, Zip};\n-use numpy::{PyArrayDyn, PyArrayMethods};\n+use numpy::{PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArray1, PyReadonlyArray2};\n use pyo3::prelude::*;\n \n mod hierarchy;\n \n+fn degrees_to_radians(degrees: f64) -> f64 {\n+    degrees * (std::f64::consts::PI / 180.0)\n+}\n+\n+#[pymodule]\n+mod select {",
+    "path": "src/lib.rs",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "surgura",
+      "id": 10170564,
+      "node_id": "MDQ6VXNlcjEwMTcwNTY0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10170564?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/surgura",
+      "html_url": "https://github.com/surgura",
+      "followers_url": "https://api.github.com/users/surgura/followers",
+      "following_url": "https://api.github.com/users/surgura/following{/other_user}",
+      "gists_url": "https://api.github.com/users/surgura/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/surgura/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/surgura/subscriptions",
+      "organizations_url": "https://api.github.com/users/surgura/orgs",
+      "repos_url": "https://api.github.com/users/surgura/repos",
+      "events_url": "https://api.github.com/users/surgura/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/surgura/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "ok I was able to run your notebook. If I change the polygon to\r\n```\r\npolygon_ = np.array([[153.56946903, -43.63459726],\r\n       [153.56946902, -10.66818572],\r\n       [113.33895308, -10.66818573],\r\n       [113.33895309, -43.63459725],\r\n       [153.56946904, -43.63459724]])\r\npolygon_\r\n```\r\nthen indeed it works. So this is the same bug as I encountered before.\r\n",
+    "created_at": "2025-05-21T16:26:14Z",
+    "updated_at": "2025-05-21T16:26:42Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2100716497",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100716497"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2100716497"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100716497/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 17,
+    "side": "RIGHT",
+    "in_reply_to_id": 2093126442,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 18,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100658179",
+    "pull_request_review_id": 2858341868,
+    "id": 2100658179,
+    "node_id": "PRRC_kwDON3RSpc59NYAD",
+    "diff_hunk": "@@ -1,11 +1,78 @@\n use cdshealpix as healpix;\n use cdshealpix::sph_geom::coo3d::{vec3_of, UnitVec3, UnitVect3};\n+use moc::moc::range::CellSelection;\n+use moc::moc::range::RangeMOC;\n+use moc::qty::Hpx;\n use ndarray::{s, Array1, Zip};\n-use numpy::{PyArrayDyn, PyArrayMethods};\n+use numpy::{PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArray1, PyReadonlyArray2};\n use pyo3::prelude::*;\n \n mod hierarchy;\n \n+fn degrees_to_radians(degrees: f64) -> f64 {\n+    degrees * (std::f64::consts::PI / 180.0)\n+}\n+\n+#[pymodule]\n+mod select {",
+    "path": "src/lib.rs",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "surgura",
+      "id": 10170564,
+      "node_id": "MDQ6VXNlcjEwMTcwNTY0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10170564?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/surgura",
+      "html_url": "https://github.com/surgura",
+      "followers_url": "https://api.github.com/users/surgura/followers",
+      "following_url": "https://api.github.com/users/surgura/following{/other_user}",
+      "gists_url": "https://api.github.com/users/surgura/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/surgura/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/surgura/subscriptions",
+      "organizations_url": "https://api.github.com/users/surgura/orgs",
+      "repos_url": "https://api.github.com/users/surgura/repos",
+      "events_url": "https://api.github.com/users/surgura/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/surgura/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "About the crash, I forgot to note here. cds-healpix crashes whenever you use a polygon that has two sequential edges that have identical lons. @VeckoTheGecko and me wanted to open an issue but forgot about it. Is that the same problem you are encountering?\r\n\r\nSee the test\r\n\r\n```\r\n            (-23.6345972634, 80.338953078),  # lat lon\r\n            (-23.6345972634, 123.569469029),\r\n            (-0.6681857235, 123.569469030),\r\n            (-0.6681857235, 80.338953079),\r\n```\r\n`123.569469029` and `123.569469030`. If you make them both `123.569469029` it will crash inside healpix-cds.\r\n         ",
+    "created_at": "2025-05-21T15:58:16Z",
+    "updated_at": "2025-05-21T15:58:16Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2100658179",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100658179"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2100658179"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100658179/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 17,
+    "side": "RIGHT",
+    "in_reply_to_id": 2093126442,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 18,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100648975",
+    "pull_request_review_id": 2858332057,
+    "id": 2100648975,
+    "node_id": "PRRC_kwDON3RSpc59NVwP",
+    "diff_hunk": "@@ -1,11 +1,78 @@\n use cdshealpix as healpix;\n use cdshealpix::sph_geom::coo3d::{vec3_of, UnitVec3, UnitVect3};\n+use moc::moc::range::CellSelection;\n+use moc::moc::range::RangeMOC;\n+use moc::qty::Hpx;\n use ndarray::{s, Array1, Zip};\n-use numpy::{PyArrayDyn, PyArrayMethods};\n+use numpy::{PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArray1, PyReadonlyArray2};\n use pyo3::prelude::*;\n \n mod hierarchy;\n \n+fn degrees_to_radians(degrees: f64) -> f64 {\n+    degrees * (std::f64::consts::PI / 180.0)\n+}\n+\n+#[pymodule]\n+mod select {",
+    "path": "src/lib.rs",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "you need `pip install 'geoarrow-rust-core>=0.4.0b3'` to reproduce (but `geoarrow-pyarrow` would also work, just with maybe a different API)",
+    "created_at": "2025-05-21T15:56:48Z",
+    "updated_at": "2025-05-21T15:56:48Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2100648975",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100648975"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2100648975"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100648975/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 17,
+    "side": "RIGHT",
+    "in_reply_to_id": 2093126442,
+    "author_association": "COLLABORATOR",
+    "original_position": 18,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100644327",
+    "pull_request_review_id": 2858325519,
+    "id": 2100644327,
+    "node_id": "PRRC_kwDON3RSpc59NUnn",
+    "diff_hunk": "@@ -1,11 +1,78 @@\n use cdshealpix as healpix;\n use cdshealpix::sph_geom::coo3d::{vec3_of, UnitVec3, UnitVect3};\n+use moc::moc::range::CellSelection;\n+use moc::moc::range::RangeMOC;\n+use moc::qty::Hpx;\n use ndarray::{s, Array1, Zip};\n-use numpy::{PyArrayDyn, PyArrayMethods};\n+use numpy::{PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArray1, PyReadonlyArray2};\n use pyo3::prelude::*;\n \n mod hierarchy;\n \n+fn degrees_to_radians(degrees: f64) -> f64 {\n+    degrees * (std::f64::consts::PI / 180.0)\n+}\n+\n+#[pymodule]\n+mod select {",
+    "path": "src/lib.rs",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "surgura",
+      "id": 10170564,
+      "node_id": "MDQ6VXNlcjEwMTcwNTY0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10170564?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/surgura",
+      "html_url": "https://github.com/surgura",
+      "followers_url": "https://api.github.com/users/surgura/followers",
+      "following_url": "https://api.github.com/users/surgura/following{/other_user}",
+      "gists_url": "https://api.github.com/users/surgura/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/surgura/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/surgura/subscriptions",
+      "organizations_url": "https://api.github.com/users/surgura/orgs",
+      "repos_url": "https://api.github.com/users/surgura/repos",
+      "events_url": "https://api.github.com/users/surgura/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/surgura/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Ok, so I'm trying to run your notebook, but I don't have geoarrow and am not able to easily install it? (pip install geoarrow-pyarrow geoarrow-pandas)",
+    "created_at": "2025-05-21T15:54:41Z",
+    "updated_at": "2025-05-21T15:54:42Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2100644327",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100644327"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2100644327"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100644327/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 17,
+    "side": "RIGHT",
+    "in_reply_to_id": 2093126442,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 18,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100622132",
+    "pull_request_review_id": 2858290941,
+    "id": 2100622132,
+    "node_id": "PRRC_kwDON3RSpc59NPM0",
+    "diff_hunk": "@@ -1,11 +1,78 @@\n use cdshealpix as healpix;\n use cdshealpix::sph_geom::coo3d::{vec3_of, UnitVec3, UnitVect3};\n+use moc::moc::range::CellSelection;\n+use moc::moc::range::RangeMOC;\n+use moc::qty::Hpx;\n use ndarray::{s, Array1, Zip};\n-use numpy::{PyArrayDyn, PyArrayMethods};\n+use numpy::{PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArray1, PyReadonlyArray2};\n use pyo3::prelude::*;\n \n mod hierarchy;\n \n+fn degrees_to_radians(degrees: f64) -> f64 {\n+    degrees * (std::f64::consts::PI / 180.0)\n+}\n+\n+#[pymodule]\n+mod select {",
+    "path": "src/lib.rs",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "surgura",
+      "id": 10170564,
+      "node_id": "MDQ6VXNlcjEwMTcwNTY0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10170564?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/surgura",
+      "html_url": "https://github.com/surgura",
+      "followers_url": "https://api.github.com/users/surgura/followers",
+      "following_url": "https://api.github.com/users/surgura/following{/other_user}",
+      "gists_url": "https://api.github.com/users/surgura/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/surgura/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/surgura/subscriptions",
+      "organizations_url": "https://api.github.com/users/surgura/orgs",
+      "repos_url": "https://api.github.com/users/surgura/repos",
+      "events_url": "https://api.github.com/users/surgura/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/surgura/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "that makes sense. either that, or translate the cell ids to nested form",
+    "created_at": "2025-05-21T15:44:05Z",
+    "updated_at": "2025-05-21T15:44:05Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2100622132",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100622132"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2100622132"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2100622132/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 17,
+    "side": "RIGHT",
+    "in_reply_to_id": 2093126442,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 18,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093190894",
+    "pull_request_review_id": 2846858649,
+    "id": 2093190894,
+    "node_id": "PRRC_kwDON3RSpc58w47u",
+    "diff_hunk": "@@ -0,0 +1,146 @@\n+import numpy as np\n+\n+import healpix_geo\n+\n+\n+def test_cells_in_polygon():\n+    cell_ids = np.array(\n+        [\n+            1344,\n+            1345,\n+            1347,\n+            1348,\n+            1349,\n+            1350,\n+            1666,\n+            1672,\n+            1673,\n+            1674,\n+            2365,\n+            2366,\n+            2367,\n+            2402,\n+            2403,\n+            2404,\n+            2405,\n+            2406,\n+            2407,\n+            2408,\n+            2409,\n+            2410,\n+            2411,\n+            2412,\n+            2413,\n+            2414,\n+            2415,\n+            2418,\n+            2424,\n+            2425,\n+            2426,\n+            2427,\n+            2430,\n+            2447,\n+            2449,\n+            2451,\n+            2452,\n+            2453,\n+            2454,\n+            2455,\n+            2456,\n+            2457,\n+            2458,\n+            2459,\n+            2460,\n+            2461,\n+            2462,\n+            2463,\n+            2480,\n+            2481,\n+            2483,\n+            2484,\n+            2485,\n+            2486,\n+            2487,\n+            2492,\n+            2493,\n+            2495,\n+            2496,\n+            2497,\n+            2498,\n+            2499,\n+            2500,\n+            2501,\n+            2502,\n+            2503,\n+            2504,\n+            2505,\n+            2506,\n+            2507,\n+            2508,\n+            2509,\n+            2510,\n+            2511,\n+            2512,\n+            2513,\n+            2514,\n+            2515,\n+            2516,\n+            2517,\n+            2518,\n+            2519,\n+            2520,\n+            2521,\n+            2522,\n+            2523,\n+            2524,\n+            2525,\n+            2526,\n+            2527,\n+            2528,\n+            2529,\n+            2530,\n+            2531,\n+            2532,\n+            2533,\n+            2534,\n+            2535,\n+            2536,\n+            2537,\n+            2538,\n+            2539,\n+            2540,\n+            2541,\n+            2542,\n+            2543,\n+            2544,\n+            2545,\n+            2546,\n+            2547,\n+            2548,\n+            2549,\n+            2550,\n+            2552,\n+            2553,\n+            2554,\n+        ],\n+        dtype=\"uint64\",\n+    )  # fmt:off\n+\n+    polygon = np.array(\n+        [\n+            (-23.6345972634, 80.338953078),  # lat lon",
+    "path": "python/healpix_geo/tests/test_select.py",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "for now the test can stay an example test for partial overlaps between the dataset and the polygon (i.e. you explicitly construct the expected result), and for full overlaps we can compare with `polygon_search`",
+    "created_at": "2025-05-16T14:43:12Z",
+    "updated_at": "2025-05-16T14:47:49Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093190894",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093190894"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093190894"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093190894/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 131,
+    "side": "RIGHT",
+    "in_reply_to_id": 2092486447,
+    "author_association": "COLLABORATOR",
+    "original_position": 131,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093178319",
+    "pull_request_review_id": 2846839742,
+    "id": 2093178319,
+    "node_id": "PRRC_kwDON3RSpc58w13P",
+    "diff_hunk": "@@ -0,0 +1,146 @@\n+import numpy as np\n+\n+import healpix_geo\n+\n+\n+def test_cells_in_polygon():\n+    cell_ids = np.array(\n+        [\n+            1344,\n+            1345,\n+            1347,\n+            1348,\n+            1349,\n+            1350,\n+            1666,\n+            1672,\n+            1673,\n+            1674,\n+            2365,\n+            2366,\n+            2367,\n+            2402,\n+            2403,\n+            2404,\n+            2405,\n+            2406,\n+            2407,\n+            2408,\n+            2409,\n+            2410,\n+            2411,\n+            2412,\n+            2413,\n+            2414,\n+            2415,\n+            2418,\n+            2424,\n+            2425,\n+            2426,\n+            2427,\n+            2430,\n+            2447,\n+            2449,\n+            2451,\n+            2452,\n+            2453,\n+            2454,\n+            2455,\n+            2456,\n+            2457,\n+            2458,\n+            2459,\n+            2460,\n+            2461,\n+            2462,\n+            2463,\n+            2480,\n+            2481,\n+            2483,\n+            2484,\n+            2485,\n+            2486,\n+            2487,\n+            2492,\n+            2493,\n+            2495,\n+            2496,\n+            2497,\n+            2498,\n+            2499,\n+            2500,\n+            2501,\n+            2502,\n+            2503,\n+            2504,\n+            2505,\n+            2506,\n+            2507,\n+            2508,\n+            2509,\n+            2510,\n+            2511,\n+            2512,\n+            2513,\n+            2514,\n+            2515,\n+            2516,\n+            2517,\n+            2518,\n+            2519,\n+            2520,\n+            2521,\n+            2522,\n+            2523,\n+            2524,\n+            2525,\n+            2526,\n+            2527,\n+            2528,\n+            2529,\n+            2530,\n+            2531,\n+            2532,\n+            2533,\n+            2534,\n+            2535,\n+            2536,\n+            2537,\n+            2538,\n+            2539,\n+            2540,\n+            2541,\n+            2542,\n+            2543,\n+            2544,\n+            2545,\n+            2546,\n+            2547,\n+            2548,\n+            2549,\n+            2550,\n+            2552,\n+            2553,\n+            2554,\n+        ],\n+        dtype=\"uint64\",\n+    )  # fmt:off\n+\n+    polygon = np.array(\n+        [\n+            (-23.6345972634, 80.338953078),  # lat lon",
+    "path": "python/healpix_geo/tests/test_select.py",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "surgura",
+      "id": 10170564,
+      "node_id": "MDQ6VXNlcjEwMTcwNTY0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10170564?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/surgura",
+      "html_url": "https://github.com/surgura",
+      "followers_url": "https://api.github.com/users/surgura/followers",
+      "following_url": "https://api.github.com/users/surgura/following{/other_user}",
+      "gists_url": "https://api.github.com/users/surgura/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/surgura/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/surgura/subscriptions",
+      "organizations_url": "https://api.github.com/users/surgura/orgs",
+      "repos_url": "https://api.github.com/users/surgura/repos",
+      "events_url": "https://api.github.com/users/surgura/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/surgura/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Sure ill change that. How about tests? ",
+    "created_at": "2025-05-16T14:36:31Z",
+    "updated_at": "2025-05-16T14:36:31Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093178319",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093178319"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093178319"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093178319/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 131,
+    "side": "RIGHT",
+    "in_reply_to_id": 2092486447,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 131,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093126442",
+    "pull_request_review_id": 2846757035,
+    "id": 2093126442,
+    "node_id": "PRRC_kwDON3RSpc58wpMq",
+    "diff_hunk": "@@ -1,11 +1,78 @@\n use cdshealpix as healpix;\n use cdshealpix::sph_geom::coo3d::{vec3_of, UnitVec3, UnitVect3};\n+use moc::moc::range::CellSelection;\n+use moc::moc::range::RangeMOC;\n+use moc::qty::Hpx;\n use ndarray::{s, Array1, Zip};\n-use numpy::{PyArrayDyn, PyArrayMethods};\n+use numpy::{PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArray1, PyReadonlyArray2};\n use pyo3::prelude::*;\n \n mod hierarchy;\n \n+fn degrees_to_radians(degrees: f64) -> f64 {\n+    degrees * (std::f64::consts::PI / 180.0)\n+}\n+\n+#[pymodule]\n+mod select {",
+    "path": "src/lib.rs",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "if I understand MOCs correctly (which I may not be!), these are only defined for \"nested\", so instead of a separate module we'd need to merge `select` into `nested`",
+    "created_at": "2025-05-16T14:07:58Z",
+    "updated_at": "2025-05-16T14:16:37Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093126442",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093126442"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093126442"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093126442/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 17,
+    "side": "RIGHT",
+    "author_association": "COLLABORATOR",
+    "original_position": 18,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093099515",
+    "pull_request_review_id": 2846715236,
+    "id": 2093099515,
+    "node_id": "PRRC_kwDON3RSpc58win7",
+    "diff_hunk": "@@ -0,0 +1,146 @@\n+import numpy as np\n+\n+import healpix_geo\n+\n+\n+def test_cells_in_polygon():\n+    cell_ids = np.array(\n+        [\n+            1344,\n+            1345,\n+            1347,\n+            1348,\n+            1349,\n+            1350,\n+            1666,\n+            1672,\n+            1673,\n+            1674,\n+            2365,\n+            2366,\n+            2367,\n+            2402,\n+            2403,\n+            2404,\n+            2405,\n+            2406,\n+            2407,\n+            2408,\n+            2409,\n+            2410,\n+            2411,\n+            2412,\n+            2413,\n+            2414,\n+            2415,\n+            2418,\n+            2424,\n+            2425,\n+            2426,\n+            2427,\n+            2430,\n+            2447,\n+            2449,\n+            2451,\n+            2452,\n+            2453,\n+            2454,\n+            2455,\n+            2456,\n+            2457,\n+            2458,\n+            2459,\n+            2460,\n+            2461,\n+            2462,\n+            2463,\n+            2480,\n+            2481,\n+            2483,\n+            2484,\n+            2485,\n+            2486,\n+            2487,\n+            2492,\n+            2493,\n+            2495,\n+            2496,\n+            2497,\n+            2498,\n+            2499,\n+            2500,\n+            2501,\n+            2502,\n+            2503,\n+            2504,\n+            2505,\n+            2506,\n+            2507,\n+            2508,\n+            2509,\n+            2510,\n+            2511,\n+            2512,\n+            2513,\n+            2514,\n+            2515,\n+            2516,\n+            2517,\n+            2518,\n+            2519,\n+            2520,\n+            2521,\n+            2522,\n+            2523,\n+            2524,\n+            2525,\n+            2526,\n+            2527,\n+            2528,\n+            2529,\n+            2530,\n+            2531,\n+            2532,\n+            2533,\n+            2534,\n+            2535,\n+            2536,\n+            2537,\n+            2538,\n+            2539,\n+            2540,\n+            2541,\n+            2542,\n+            2543,\n+            2544,\n+            2545,\n+            2546,\n+            2547,\n+            2548,\n+            2549,\n+            2550,\n+            2552,\n+            2553,\n+            2554,\n+        ],\n+        dtype=\"uint64\",\n+    )  # fmt:off\n+\n+    polygon = np.array(\n+        [\n+            (-23.6345972634, 80.338953078),  # lat lon",
+    "path": "python/healpix_geo/tests/test_select.py",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "definitely, for now a array of lon, lat points should be fine",
+    "created_at": "2025-05-16T13:53:22Z",
+    "updated_at": "2025-05-16T13:53:22Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093099515",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093099515"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093099515"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093099515/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 131,
+    "side": "RIGHT",
+    "in_reply_to_id": 2092486447,
+    "author_association": "COLLABORATOR",
+    "original_position": 131,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093094595",
+    "pull_request_review_id": 2846707821,
+    "id": 2093094595,
+    "node_id": "PRRC_kwDON3RSpc58whbD",
+    "diff_hunk": "@@ -0,0 +1,146 @@\n+import numpy as np\n+\n+import healpix_geo\n+\n+\n+def test_cells_in_polygon():\n+    cell_ids = np.array(\n+        [\n+            1344,\n+            1345,\n+            1347,\n+            1348,\n+            1349,\n+            1350,\n+            1666,\n+            1672,\n+            1673,\n+            1674,\n+            2365,\n+            2366,\n+            2367,\n+            2402,\n+            2403,\n+            2404,\n+            2405,\n+            2406,\n+            2407,\n+            2408,\n+            2409,\n+            2410,\n+            2411,\n+            2412,\n+            2413,\n+            2414,\n+            2415,\n+            2418,\n+            2424,\n+            2425,\n+            2426,\n+            2427,\n+            2430,\n+            2447,\n+            2449,\n+            2451,\n+            2452,\n+            2453,\n+            2454,\n+            2455,\n+            2456,\n+            2457,\n+            2458,\n+            2459,\n+            2460,\n+            2461,\n+            2462,\n+            2463,\n+            2480,\n+            2481,\n+            2483,\n+            2484,\n+            2485,\n+            2486,\n+            2487,\n+            2492,\n+            2493,\n+            2495,\n+            2496,\n+            2497,\n+            2498,\n+            2499,\n+            2500,\n+            2501,\n+            2502,\n+            2503,\n+            2504,\n+            2505,\n+            2506,\n+            2507,\n+            2508,\n+            2509,\n+            2510,\n+            2511,\n+            2512,\n+            2513,\n+            2514,\n+            2515,\n+            2516,\n+            2517,\n+            2518,\n+            2519,\n+            2520,\n+            2521,\n+            2522,\n+            2523,\n+            2524,\n+            2525,\n+            2526,\n+            2527,\n+            2528,\n+            2529,\n+            2530,\n+            2531,\n+            2532,\n+            2533,\n+            2534,\n+            2535,\n+            2536,\n+            2537,\n+            2538,\n+            2539,\n+            2540,\n+            2541,\n+            2542,\n+            2543,\n+            2544,\n+            2545,\n+            2546,\n+            2547,\n+            2548,\n+            2549,\n+            2550,\n+            2552,\n+            2553,\n+            2554,\n+        ],\n+        dtype=\"uint64\",\n+    )  # fmt:off\n+\n+    polygon = np.array(\n+        [\n+            (-23.6345972634, 80.338953078),  # lat lon",
+    "path": "python/healpix_geo/tests/test_select.py",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "surgura",
+      "id": 10170564,
+      "node_id": "MDQ6VXNlcjEwMTcwNTY0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10170564?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/surgura",
+      "html_url": "https://github.com/surgura",
+      "followers_url": "https://api.github.com/users/surgura/followers",
+      "following_url": "https://api.github.com/users/surgura/following{/other_user}",
+      "gists_url": "https://api.github.com/users/surgura/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/surgura/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/surgura/subscriptions",
+      "organizations_url": "https://api.github.com/users/surgura/orgs",
+      "repos_url": "https://api.github.com/users/surgura/repos",
+      "events_url": "https://api.github.com/users/surgura/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/surgura/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I think that is a good idea, but can we leave that to a future PR?",
+    "created_at": "2025-05-16T13:50:44Z",
+    "updated_at": "2025-05-16T13:50:44Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093094595",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093094595"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093094595"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093094595/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 131,
+    "side": "RIGHT",
+    "in_reply_to_id": 2092486447,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 131,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093092382",
+    "pull_request_review_id": 2846704504,
+    "id": 2093092382,
+    "node_id": "PRRC_kwDON3RSpc58wg4e",
+    "diff_hunk": "@@ -0,0 +1,146 @@\n+import numpy as np\n+\n+import healpix_geo\n+\n+\n+def test_cells_in_polygon():\n+    cell_ids = np.array(\n+        [\n+            1344,\n+            1345,\n+            1347,\n+            1348,\n+            1349,\n+            1350,\n+            1666,\n+            1672,\n+            1673,\n+            1674,\n+            2365,\n+            2366,\n+            2367,\n+            2402,\n+            2403,\n+            2404,\n+            2405,\n+            2406,\n+            2407,\n+            2408,\n+            2409,\n+            2410,\n+            2411,\n+            2412,\n+            2413,\n+            2414,\n+            2415,\n+            2418,\n+            2424,\n+            2425,\n+            2426,\n+            2427,\n+            2430,\n+            2447,\n+            2449,\n+            2451,\n+            2452,\n+            2453,\n+            2454,\n+            2455,\n+            2456,\n+            2457,\n+            2458,\n+            2459,\n+            2460,\n+            2461,\n+            2462,\n+            2463,\n+            2480,\n+            2481,\n+            2483,\n+            2484,\n+            2485,\n+            2486,\n+            2487,\n+            2492,\n+            2493,\n+            2495,\n+            2496,\n+            2497,\n+            2498,\n+            2499,\n+            2500,\n+            2501,\n+            2502,\n+            2503,\n+            2504,\n+            2505,\n+            2506,\n+            2507,\n+            2508,\n+            2509,\n+            2510,\n+            2511,\n+            2512,\n+            2513,\n+            2514,\n+            2515,\n+            2516,\n+            2517,\n+            2518,\n+            2519,\n+            2520,\n+            2521,\n+            2522,\n+            2523,\n+            2524,\n+            2525,\n+            2526,\n+            2527,\n+            2528,\n+            2529,\n+            2530,\n+            2531,\n+            2532,\n+            2533,\n+            2534,\n+            2535,\n+            2536,\n+            2537,\n+            2538,\n+            2539,\n+            2540,\n+            2541,\n+            2542,\n+            2543,\n+            2544,\n+            2545,\n+            2546,\n+            2547,\n+            2548,\n+            2549,\n+            2550,\n+            2552,\n+            2553,\n+            2554,\n+        ],\n+        dtype=\"uint64\",\n+    )  # fmt:off\n+\n+    polygon = np.array(\n+        [\n+            (-23.6345972634, 80.338953078),  # lat lon",
+    "path": "python/healpix_geo/tests/test_select.py",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "VeckoTheGecko",
+      "id": 36369090,
+      "node_id": "MDQ6VXNlcjM2MzY5MDkw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36369090?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/VeckoTheGecko",
+      "html_url": "https://github.com/VeckoTheGecko",
+      "followers_url": "https://api.github.com/users/VeckoTheGecko/followers",
+      "following_url": "https://api.github.com/users/VeckoTheGecko/following{/other_user}",
+      "gists_url": "https://api.github.com/users/VeckoTheGecko/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/VeckoTheGecko/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/VeckoTheGecko/subscriptions",
+      "organizations_url": "https://api.github.com/users/VeckoTheGecko/orgs",
+      "repos_url": "https://api.github.com/users/VeckoTheGecko/repos",
+      "events_url": "https://api.github.com/users/VeckoTheGecko/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/VeckoTheGecko/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "> I agree, that might be better. Additionally, it might be desirable to allow passing `shapely.Polygon` objects (and later `spherely.Polygon` to denote spherical edges) instead of coordinate arrays.\n\nYes, doing so in a way that doesn't add the dependency (I assume)\n",
+    "created_at": "2025-05-16T13:49:31Z",
+    "updated_at": "2025-05-16T13:49:31Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093092382",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093092382"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093092382"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093092382/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 131,
+    "side": "RIGHT",
+    "in_reply_to_id": 2092486447,
+    "author_association": "NONE",
+    "original_position": 131,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093005716",
+    "pull_request_review_id": 2846566120,
+    "id": 2093005716,
+    "node_id": "PRRC_kwDON3RSpc58wLuU",
+    "diff_hunk": "@@ -0,0 +1,146 @@\n+import numpy as np\n+\n+import healpix_geo\n+\n+\n+def test_cells_in_polygon():\n+    cell_ids = np.array(\n+        [\n+            1344,\n+            1345,\n+            1347,\n+            1348,\n+            1349,\n+            1350,\n+            1666,\n+            1672,\n+            1673,\n+            1674,\n+            2365,\n+            2366,\n+            2367,\n+            2402,\n+            2403,\n+            2404,\n+            2405,\n+            2406,\n+            2407,\n+            2408,\n+            2409,\n+            2410,\n+            2411,\n+            2412,\n+            2413,\n+            2414,\n+            2415,\n+            2418,\n+            2424,\n+            2425,\n+            2426,\n+            2427,\n+            2430,\n+            2447,\n+            2449,\n+            2451,\n+            2452,\n+            2453,\n+            2454,\n+            2455,\n+            2456,\n+            2457,\n+            2458,\n+            2459,\n+            2460,\n+            2461,\n+            2462,\n+            2463,\n+            2480,\n+            2481,\n+            2483,\n+            2484,\n+            2485,\n+            2486,\n+            2487,\n+            2492,\n+            2493,\n+            2495,\n+            2496,\n+            2497,\n+            2498,\n+            2499,\n+            2500,\n+            2501,\n+            2502,\n+            2503,\n+            2504,\n+            2505,\n+            2506,\n+            2507,\n+            2508,\n+            2509,\n+            2510,\n+            2511,\n+            2512,\n+            2513,\n+            2514,\n+            2515,\n+            2516,\n+            2517,\n+            2518,\n+            2519,\n+            2520,\n+            2521,\n+            2522,\n+            2523,\n+            2524,\n+            2525,\n+            2526,\n+            2527,\n+            2528,\n+            2529,\n+            2530,\n+            2531,\n+            2532,\n+            2533,\n+            2534,\n+            2535,\n+            2536,\n+            2537,\n+            2538,\n+            2539,\n+            2540,\n+            2541,\n+            2542,\n+            2543,\n+            2544,\n+            2545,\n+            2546,\n+            2547,\n+            2548,\n+            2549,\n+            2550,\n+            2552,\n+            2553,\n+            2554,\n+        ],\n+        dtype=\"uint64\",\n+    )  # fmt:off\n+\n+    polygon = np.array(\n+        [\n+            (-23.6345972634, 80.338953078),  # lat lon",
+    "path": "python/healpix_geo/tests/test_select.py",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I agree, that might be better. Additionally, it might be desirable to allow passing `shapely.Polygon` objects (and later `spherely.Polygon` to denote spherical edges) instead of coordinate arrays.",
+    "created_at": "2025-05-16T13:01:33Z",
+    "updated_at": "2025-05-16T13:03:19Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093005716",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093005716"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2093005716"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2093005716/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 131,
+    "side": "RIGHT",
+    "in_reply_to_id": 2092486447,
+    "author_association": "COLLABORATOR",
+    "original_position": 131,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2092486447",
+    "pull_request_review_id": 2845743281,
+    "id": 2092486447,
+    "node_id": "PRRC_kwDON3RSpc58uM8v",
+    "diff_hunk": "@@ -0,0 +1,146 @@\n+import numpy as np\n+\n+import healpix_geo\n+\n+\n+def test_cells_in_polygon():\n+    cell_ids = np.array(\n+        [\n+            1344,\n+            1345,\n+            1347,\n+            1348,\n+            1349,\n+            1350,\n+            1666,\n+            1672,\n+            1673,\n+            1674,\n+            2365,\n+            2366,\n+            2367,\n+            2402,\n+            2403,\n+            2404,\n+            2405,\n+            2406,\n+            2407,\n+            2408,\n+            2409,\n+            2410,\n+            2411,\n+            2412,\n+            2413,\n+            2414,\n+            2415,\n+            2418,\n+            2424,\n+            2425,\n+            2426,\n+            2427,\n+            2430,\n+            2447,\n+            2449,\n+            2451,\n+            2452,\n+            2453,\n+            2454,\n+            2455,\n+            2456,\n+            2457,\n+            2458,\n+            2459,\n+            2460,\n+            2461,\n+            2462,\n+            2463,\n+            2480,\n+            2481,\n+            2483,\n+            2484,\n+            2485,\n+            2486,\n+            2487,\n+            2492,\n+            2493,\n+            2495,\n+            2496,\n+            2497,\n+            2498,\n+            2499,\n+            2500,\n+            2501,\n+            2502,\n+            2503,\n+            2504,\n+            2505,\n+            2506,\n+            2507,\n+            2508,\n+            2509,\n+            2510,\n+            2511,\n+            2512,\n+            2513,\n+            2514,\n+            2515,\n+            2516,\n+            2517,\n+            2518,\n+            2519,\n+            2520,\n+            2521,\n+            2522,\n+            2523,\n+            2524,\n+            2525,\n+            2526,\n+            2527,\n+            2528,\n+            2529,\n+            2530,\n+            2531,\n+            2532,\n+            2533,\n+            2534,\n+            2535,\n+            2536,\n+            2537,\n+            2538,\n+            2539,\n+            2540,\n+            2541,\n+            2542,\n+            2543,\n+            2544,\n+            2545,\n+            2546,\n+            2547,\n+            2548,\n+            2549,\n+            2550,\n+            2552,\n+            2553,\n+            2554,\n+        ],\n+        dtype=\"uint64\",\n+    )  # fmt:off\n+\n+    polygon = np.array(\n+        [\n+            (-23.6345972634, 80.338953078),  # lat lon",
+    "path": "python/healpix_geo/tests/test_select.py",
+    "commit_id": "19f3a00e9f14f3f663b4843f56046a556288e9f1",
+    "original_commit_id": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+    "user": {
+      "login": "VeckoTheGecko",
+      "id": 36369090,
+      "node_id": "MDQ6VXNlcjM2MzY5MDkw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36369090?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/VeckoTheGecko",
+      "html_url": "https://github.com/VeckoTheGecko",
+      "followers_url": "https://api.github.com/users/VeckoTheGecko/followers",
+      "following_url": "https://api.github.com/users/VeckoTheGecko/following{/other_user}",
+      "gists_url": "https://api.github.com/users/VeckoTheGecko/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/VeckoTheGecko/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/VeckoTheGecko/subscriptions",
+      "organizations_url": "https://api.github.com/users/VeckoTheGecko/orgs",
+      "repos_url": "https://api.github.com/users/VeckoTheGecko/repos",
+      "events_url": "https://api.github.com/users/VeckoTheGecko/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/VeckoTheGecko/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "On second thought I think lon lat would be better than lat lon (i.e., x,y instead of y,x - as I think other tooling is more likely to output in this format)",
+    "created_at": "2025-05-16T07:23:02Z",
+    "updated_at": "2025-05-16T07:23:02Z",
+    "html_url": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2092486447",
+    "pull_request_url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2092486447"
+      },
+      "html": {
+        "href": "https://github.com/GRID4EARTH/healpix-geo/pull/27#discussion_r2092486447"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/27"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/GRID4EARTH/healpix-geo/pulls/comments/2092486447/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 131,
+    "side": "RIGHT",
+    "author_association": "NONE",
+    "original_position": 131,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

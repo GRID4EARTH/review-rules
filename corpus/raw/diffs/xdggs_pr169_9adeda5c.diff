@@ -1,0 +1,198 @@
+diff --git a/pixi.lock b/pixi.lock
+index cfd650b2..9f089ecd 100644
+--- a/pixi.lock
++++ b/pixi.lock
+@@ -4031,7 +4031,7 @@ environments:
+         - conda: https://conda.anaconda.org/conda-forge/linux-64/zlib-1.3.1-hb9d3cd8_2.conda
+         - conda: https://conda.anaconda.org/conda-forge/linux-64/zstandard-0.23.0-py313h07c4f96_3.conda
+         - conda: https://conda.anaconda.org/conda-forge/linux-64/zstd-1.5.7-hb8e6e7a_2.conda
+-        - pypi: git+https://github.com/astropy/astropy.git#aebdc68ef3c4d94530eb23338c0b8c46981ab604
++        - pypi: git+https://github.com/astropy/astropy.git#b502a328acd635d4ad7dcaccadc53c609f709c61
+         - pypi: https://files.pythonhosted.org/packages/d3/4b/7392dd3f6d32d4a0cb329f63168c68039bdc562c9ae5026c33bee8aeb127/astropy_iers_data-0.2025.8.25.0.36.58-py3-none-any.whl
+         - pypi: git+https://github.com/cds-astro/cds-healpix-python.git#258cc3feeccb2742761995f5793608eac6870371
+         - pypi: git+https://github.com/keewis/h3ronpy.git?subdirectory=h3ronpy&rev=version#98fa563245092e2578cc6f1f0d860a9f511475f1
+@@ -4240,7 +4240,7 @@ environments:
+         - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-1.3.1-h8359307_2.conda
+         - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstandard-0.23.0-py313hcdf3177_3.conda
+         - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-h6491c7d_2.conda
+-        - pypi: git+https://github.com/astropy/astropy.git#aebdc68ef3c4d94530eb23338c0b8c46981ab604
++        - pypi: git+https://github.com/astropy/astropy.git#b502a328acd635d4ad7dcaccadc53c609f709c61
+         - pypi: https://files.pythonhosted.org/packages/d3/4b/7392dd3f6d32d4a0cb329f63168c68039bdc562c9ae5026c33bee8aeb127/astropy_iers_data-0.2025.8.25.0.36.58-py3-none-any.whl
+         - pypi: git+https://github.com/cds-astro/cds-healpix-python.git#258cc3feeccb2742761995f5793608eac6870371
+         - pypi: git+https://github.com/keewis/h3ronpy.git?subdirectory=h3ronpy&rev=version#98fa563245092e2578cc6f1f0d860a9f511475f1
+@@ -4441,7 +4441,7 @@ environments:
+         - conda: https://conda.anaconda.org/conda-forge/win-64/zlib-1.3.1-h2466b09_2.conda
+         - conda: https://conda.anaconda.org/conda-forge/win-64/zstandard-0.23.0-py313h5ea7bf4_3.conda
+         - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.7-hbeecb71_2.conda
+-        - pypi: git+https://github.com/astropy/astropy.git#aebdc68ef3c4d94530eb23338c0b8c46981ab604
++        - pypi: git+https://github.com/astropy/astropy.git#b502a328acd635d4ad7dcaccadc53c609f709c61
+         - pypi: https://files.pythonhosted.org/packages/d3/4b/7392dd3f6d32d4a0cb329f63168c68039bdc562c9ae5026c33bee8aeb127/astropy_iers_data-0.2025.8.25.0.36.58-py3-none-any.whl
+         - pypi: git+https://github.com/cds-astro/cds-healpix-python.git#258cc3feeccb2742761995f5793608eac6870371
+         - pypi: git+https://github.com/keewis/h3ronpy.git?subdirectory=h3ronpy&rev=version#98fa563245092e2578cc6f1f0d860a9f511475f1
+@@ -5090,9 +5090,9 @@ packages:
+       - pkg:pypi/arrow?source=hash-mapping
+     size: 99951
+     timestamp: 1733584345583
+-  - pypi: git+https://github.com/astropy/astropy.git#aebdc68ef3c4d94530eb23338c0b8c46981ab604
++  - pypi: git+https://github.com/astropy/astropy.git#b502a328acd635d4ad7dcaccadc53c609f709c61
+     name: astropy
+-    version: 7.2.dev486+gaebdc68ef
++    version: 7.2.dev489+gb502a328a
+     requires_dist:
+       - numpy>=1.24
+       - pyerfa>=2.0.1.1
+@@ -17587,7 +17587,7 @@ packages:
+     timestamp: 1755208520958
+   - pypi: ./
+     name: xdggs
+-    version: 0.2.2.dev10+g54988bb45
++    version: 0.2.2.dev13+gfd1fec804
+     sha256: 1ff1fee26ebd659edf34376fe67d929ce787f961ef39b6d05c54340d14314437
+     requires_dist:
+       - arro3-core>=0.4.0
+diff --git a/xdggs/accessor.py b/xdggs/accessor.py
+index 1852c981..40d0cb7e 100644
+--- a/xdggs/accessor.py
++++ b/xdggs/accessor.py
+@@ -119,6 +119,17 @@ def sel_latlon(
+         }
+         return self._obj.sel(cell_indexers)
+ 
++    def query(self, geom):
++        index, indexer = self._index.query(geom)
++
++        coords = xr.Coordinates.from_xindex(index)
++
++        return (
++            self._obj.drop_indexes(self._name)
++            .isel({self._index._dim: indexer})
++            .assign_coords(coords)
++        )
++
+     def assign_latlon_coords(self) -> xr.Dataset | xr.DataArray:
+         """Return a new Dataset or DataArray with new "latitude" and "longitude"
+         coordinates representing the grid cell centers."""
+diff --git a/xdggs/grid.py b/xdggs/grid.py
+index eab18437..553f3658 100644
+--- a/xdggs/grid.py
++++ b/xdggs/grid.py
+@@ -49,6 +49,9 @@ def geographic2cell_ids(self, lon, lat):
+     def cell_boundaries(self, cell_ids, backend="shapely"):
+         raise NotImplementedError()
+ 
++    def rasterize_geometry(self, geom, *, mode=None):
++        raise NotImplementedError()
++
+ 
+ def translate_parameters(mapping, translations):
+     def translate(name, value):
+diff --git a/xdggs/h3.py b/xdggs/h3.py
+index 04366254..7b6f5d3d 100644
+--- a/xdggs/h3.py
++++ b/xdggs/h3.py
+@@ -13,15 +13,19 @@
+ 
+ try:
+     from h3ronpy.vector import (
++        ContainmentMode,
+         cells_to_coordinates,
+         cells_to_wkb_polygons,
+         coordinates_to_cells,
++        geometry_to_cells,
+     )
+ except ImportError:
+     from h3ronpy.arrow.vector import (
++        ContainmentMode,
+         cells_to_coordinates,
+         cells_to_wkb_polygons,
+         coordinates_to_cells,
++        geometry_to_cells,
+     )
+ from xarray.indexes import PandasIndex
+ 
+@@ -201,6 +205,22 @@ def cell_boundaries(self, cell_ids, backend="shapely"):
+             raise ValueError(f"invalid backend: {backend!r}")
+         return backend_func(wkb)
+ 
++    def rasterize_geometry(self, geom, *, mode="contains_centroid"):
++        modes = {
++            "contains_centroid": ContainmentMode.ContainsCentroid,
++            "contains_boundary": ContainmentMode.ContainsBoundary,
++            "covers": ContainmentMode.Covers,
++            "intersects_boundary": ContainmentMode.IntersectsBoundary,
++        }
++        containment_mode = modes.get(mode)
++        if containment_mode is None:
++            raise ValueError(
++                f"invalid mode: {mode}."
++                f" Must be one of [{', '.join(repr(m) for m in modes)}]"
++            )
++
++        return geometry_to_cells(geom, resolution=self.level)
++
+ 
+ @register_dggs("h3")
+ class H3Index(DGGSIndex):
+diff --git a/xdggs/healpix.py b/xdggs/healpix.py
+index cbe7d919..7aeab92b 100644
+--- a/xdggs/healpix.py
++++ b/xdggs/healpix.py
+@@ -308,6 +308,29 @@ def cell_boundaries(self, cell_ids: Any, backend="shapely") -> np.ndarray:
+ 
+         return backend_func(vertices)
+ 
++    def rasterize_geometry(self, geom, *, mode=None):
++        from astropy.coordinates import Latitude, Longitude
++
++        if self.indexing_scheme != "nested":
++            raise ValueError(
++                "rasterizing geometries is only supported for the 'nested' scheme"
++            )
++
++        if geom.geom_type != "Polygon":
++            raise NotImplementedError(
++                f"geometries of type {geom.geom_type!r} are not supported, yet"
++            )
++
++        coords = np.asarray(geom.exterior.coords)
++        lon_ = Longitude(coords[:, 0], unit="deg")
++        lat_ = Latitude(coords[:, 1], unit="deg")
++
++        ipix, _, _ = cdshealpix.nested.polygon_search(
++            lon_, lat_, depth=self.level, flat=True
++        )
++
++        return ipix
++
+ 
+ @register_dggs("healpix")
+ class HealpixIndex(DGGSIndex):
+diff --git a/xdggs/index.py b/xdggs/index.py
+index 9b1fcef3..39191748 100644
+--- a/xdggs/index.py
++++ b/xdggs/index.py
+@@ -2,6 +2,7 @@
+ from typing import Any, Union
+ 
+ import numpy as np
++import pandas as pd
+ import xarray as xr
+ from xarray.indexes import Index, PandasIndex
+ 
+@@ -89,6 +90,16 @@ def sel(self, labels, method=None, tolerance=None):
+             raise ValueError("finding nearest grid cell has no meaning")
+         return self._pd_index.sel(labels, method=method, tolerance=tolerance)
+ 
++    def query(self, geom):
++        rasterized = self._grid.rasterize_geometry(geom)
++
++        geometry_index = pd.Index(rasterized)
++        new_index, _, indexer = geometry_index.join(
++            self._pd_index.index, how="inner", return_indexers=True
++        )
++
++        return self._replace(new_index), indexer
++
+     def _replace(self, new_pd_index: PandasIndex):
+         raise NotImplementedError()
+ 

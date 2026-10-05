@@ -1,0 +1,31 @@
+{
+ "id": "xdggs_pr95",
+ "repo": "xarray-contrib/xdggs",
+ "pr": 95,
+ "title": "acknowledge the funding",
+ "body": "@keewis @tinaok  it is necessary to acknowledge you received CNES fundings for this",
+ "snapshot_commit": "1a85a7392766b4a3a1728314807c9189f4f4f17e",
+ "base_sha": "556a14aaeb176da901085d8ceefcec328b20a534",
+ "diff": "diff --git a/README.md b/README.md\nindex 11bc14cd..7dd7730d 100644\n--- a/README.md\n+++ b/README.md\n@@ -84,3 +84,4 @@ We welcome contributions to `xdggs`! Please follow these steps to get involved:\n ## Acknowledgments\n \n This project was inspired by the increasing need for scalable geospatial data analysis using DGGS and is built upon the robust ecosystem of Xarray.\n+This project was funded by CNES (Centre National des Etudes Spatiales)\n",
+ "ground_truth": [
+  {
+   "path": "README.md",
+   "line": 86,
+   "side": "RIGHT",
+   "body": "To make the acknowledgements read better, we should not have multiple sentences starting with \"this project\". In particular, I'd actually remove this sentence since it does not add a lot of value in addition to the project description (but I'd be happy to be outvoted on this one):\r\n```suggestion\r\n```",
+   "diff_hunk": "@@ -84,3 +84,4 @@ We welcome contributions to `xdggs`! Please follow these steps to get involved:\n ## Acknowledgments\n \n This project was inspired by the increasing need for scalable geospatial data analysis using DGGS and is built upon the robust ecosystem of Xarray.",
+   "created_at": "2024-11-18T15:05:36Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/95#discussion_r1846747725"
+  },
+  {
+   "path": "README.md",
+   "line": 87,
+   "side": "RIGHT",
+   "body": "```suggestion\r\nThis project was initiated using funding from CNES (PANGEO IAOCEA, contract R&T R-S23/DU-0002-025-01) and the European Union (ERC, WaterSmartLand, 101125476, Interreg-BSR, HyTruck, #C031).\r\n```",
+   "diff_hunk": "@@ -84,3 +84,4 @@ We welcome contributions to `xdggs`! Please follow these steps to get involved:\n ## Acknowledgments\n \n This project was inspired by the increasing need for scalable geospatial data analysis using DGGS and is built upon the robust ecosystem of Xarray.\n+This project was funded by CNES (Centre National des Etudes Spatiales)",
+   "created_at": "2024-11-18T14:57:14Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/95#discussion_r1846733588"
+  }
+ ],
+ "other_rounds": []
+}

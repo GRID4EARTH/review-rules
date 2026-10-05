@@ -1,0 +1,119 @@
+{
+ "20": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "b0be9e7163ae6ab237e53f9b5b6e349fc144ac4b",
+  "base_sha": "96662620ab7c794a5030666b13331c52b2eb9e92",
+  "n_comments_at_snapshot": 13,
+  "n_comments_total": 13,
+  "title": "Design docs",
+  "merged": true
+ },
+ "28": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "9c73cda37cbfbe93cd96d54ddd966904a134a5f0",
+  "base_sha": "84b5ce4ed5707350e660dff944e650cd616c86d4",
+  "n_comments_at_snapshot": 2,
+  "n_comments_total": 2,
+  "title": "replace `h3` with `h3ronpy`",
+  "merged": true
+ },
+ "29": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "ff9db0b799d83060172fa8ef14abec78a6b5063f",
+  "base_sha": "649a1dd928e2412ee3a42153203b80242148f962",
+  "n_comments_at_snapshot": 1,
+  "n_comments_total": 1,
+  "title": "Add pypipublish github action",
+  "merged": true
+ },
+ "39": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "1fc298f826a01e74ddbc416e645f5f62a403587d",
+  "base_sha": "49882006bceef09afd61bce0f7df90354a1f6786",
+  "n_comments_at_snapshot": 2,
+  "n_comments_total": 3,
+  "title": "move towards grid objects",
+  "merged": true
+ },
+ "67": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "0c2dc44049e4699159de40b4ac5278fb9dc5665a",
+  "base_sha": "775c76be55c661cc8ceb5914fedefda0db5edb89",
+  "n_comments_at_snapshot": 9,
+  "n_comments_total": 13,
+  "title": "interactive plotting with `lonboard`",
+  "merged": true
+ },
+ "70": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "bf59ccee938efd1ca8f77e006c6615db3ee119ee",
+  "base_sha": "774821d03a40e5f11f7d39dd46099d4b53bf0a7f",
+  "n_comments_at_snapshot": 6,
+  "n_comments_total": 15,
+  "title": "Wrote a more user-friendly Readme file",
+  "merged": true
+ },
+ "88": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "e63ce922b13211a52f4c26a4db88ab93e7efefff",
+  "base_sha": "f4a6b80558c5009703148b0e14c4198239ed0b9c",
+  "n_comments_at_snapshot": 3,
+  "n_comments_total": 5,
+  "title": "citations file",
+  "merged": true
+ },
+ "95": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "1a85a7392766b4a3a1728314807c9189f4f4f17e",
+  "base_sha": "556a14aaeb176da901085d8ceefcec328b20a534",
+  "n_comments_at_snapshot": 2,
+  "n_comments_total": 2,
+  "title": "acknowledge the funding",
+  "merged": true
+ },
+ "137": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "d78fd3e0c6a77107ab699eeecc632b1acf305d36",
+  "base_sha": "a22be6b48837b2a1b90067e9fce69b7f4725dd70",
+  "n_comments_at_snapshot": 1,
+  "n_comments_total": 1,
+  "title": "Added gh button + fixed myst_nb + doc contributor guide",
+  "merged": true
+ },
+ "141": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "87d099e6c062f33106b9f5e34a68bcfdeb2574f7",
+  "base_sha": "a22be6b48837b2a1b90067e9fce69b7f4725dd70",
+  "n_comments_at_snapshot": 1,
+  "n_comments_total": 1,
+  "title": "Add `.downscale()`, `.upscale()`, and `.rescale()` methods",
+  "merged": false
+ },
+ "151": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+  "base_sha": "0c504983757b2fb6abe42f11dbe40c1fae561657",
+  "n_comments_at_snapshot": 6,
+  "n_comments_total": 6,
+  "title": "healpix moc index",
+  "merged": true
+ },
+ "169": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "9adeda5c54d68e1e9716febbcab70d25ddecfed9",
+  "base_sha": "598f7de9111057d5225c9f82c5a44cf6f1ecec67",
+  "n_comments_at_snapshot": 1,
+  "n_comments_total": 1,
+  "title": "support querying by geometries",
+  "merged": false
+ },
+ "260": {
+  "repo": "xarray-contrib/xdggs",
+  "snapshot_commit": "e2632cb2e5edbf7503465ef9575b76e5ec31195a",
+  "base_sha": "e55192b64a3569b2d202d4992b18504709113105",
+  "n_comments_at_snapshot": 4,
+  "n_comments_total": 10,
+  "title": "fix zarr convention",
+  "merged": true
+ }
+}

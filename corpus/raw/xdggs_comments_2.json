@@ -1,0 +1,2085 @@
+[
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2087621083",
+    "pull_request_review_id": 2838104617,
+    "id": 2087621083,
+    "node_id": "PRRC_kwDOKqC05s58bpHb",
+    "diff_hunk": "@@ -1,10 +1,11 @@\n+name: xdggs-docs\n channels:\n   - conda-forge\n dependencies:\n   - python=3.12\n   - sphinx\n-  - myst-parser",
+    "path": "ci/docs.yml",
+    "commit_id": "d32432adc8e65e8d4c23d86536a68a7ab12a35e9",
+    "original_commit_id": "d78fd3e0c6a77107ab699eeecc632b1acf305d36",
+    "user": {
+      "login": "jbusecke",
+      "id": 14314623,
+      "node_id": "MDQ6VXNlcjE0MzE0NjIz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14314623?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/jbusecke",
+      "html_url": "https://github.com/jbusecke",
+      "followers_url": "https://api.github.com/users/jbusecke/followers",
+      "following_url": "https://api.github.com/users/jbusecke/following{/other_user}",
+      "gists_url": "https://api.github.com/users/jbusecke/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/jbusecke/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/jbusecke/subscriptions",
+      "organizations_url": "https://api.github.com/users/jbusecke/orgs",
+      "repos_url": "https://api.github.com/users/jbusecke/repos",
+      "events_url": "https://api.github.com/users/jbusecke/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/jbusecke/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I think that this is redundant (since myst-nb requires parser). But in the extension list it is actully imperative to only **use one of the two**. Happy to revert this, but it doesnt really matter as you pointed out correctly.",
+    "created_at": "2025-05-13T20:56:05Z",
+    "updated_at": "2025-05-13T20:56:06Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/137#discussion_r2087621083",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/137",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2087621083"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/137#discussion_r2087621083"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/137"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2087621083/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 6,
+    "original_line": 6,
+    "side": "LEFT",
+    "in_reply_to_id": 2087571229,
+    "author_association": "CONTRIBUTOR",
+    "original_position": 7,
+    "position": 7,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2089368594",
+    "pull_request_review_id": 2840901109,
+    "id": 2089368594,
+    "node_id": "PRRC_kwDOKqC05s58iTwS",
+    "diff_hunk": "@@ -88,6 +91,26 @@ def center_around_prime_meridian(lon, lat):\n     return result\n \n \n+def downscale(\n+    obj: xr.DataArray | xr.Dataset,\n+    *,\n+    offset: int,\n+    agg: Callable,\n+    grid_info: HealpixInfo,\n+):\n+    if not grid_info.nest:\n+        raise NotImplementedError(\n+            \"Downscaling is only supported for nested Healpix grids.\"\n+        )\n+\n+    if offset == 0:\n+        return obj\n+\n+    upper_cell_membership = np.floor(obj.cell_ids / (4**offset))",
+    "path": "xdggs/healpix.py",
+    "commit_id": "87d099e6c062f33106b9f5e34a68bcfdeb2574f7",
+    "original_commit_id": "87d099e6c062f33106b9f5e34a68bcfdeb2574f7",
+    "user": {
+      "login": "VeckoTheGecko",
+      "id": 36369090,
+      "node_id": "MDQ6VXNlcjM2MzY5MDkw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36369090?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/VeckoTheGecko",
+      "html_url": "https://github.com/VeckoTheGecko",
+      "followers_url": "https://api.github.com/users/VeckoTheGecko/followers",
+      "following_url": "https://api.github.com/users/VeckoTheGecko/following{/other_user}",
+      "gists_url": "https://api.github.com/users/VeckoTheGecko/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/VeckoTheGecko/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/VeckoTheGecko/subscriptions",
+      "organizations_url": "https://api.github.com/users/VeckoTheGecko/orgs",
+      "repos_url": "https://api.github.com/users/VeckoTheGecko/repos",
+      "events_url": "https://api.github.com/users/VeckoTheGecko/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/VeckoTheGecko/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Hmm, not sure how expensive this line is with high offsets?",
+    "created_at": "2025-05-14T16:57:29Z",
+    "updated_at": "2025-05-14T16:57:29Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/141#discussion_r2089368594",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/141",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2089368594"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/141#discussion_r2089368594"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/141"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2089368594/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 109,
+    "original_line": 109,
+    "side": "RIGHT",
+    "author_association": "CONTRIBUTOR",
+    "original_position": 32,
+    "position": 32,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2093185560",
+    "pull_request_review_id": 2846850759,
+    "id": 2093185560,
+    "node_id": "PRRC_kwDOKqC05s58w3oY",
+    "diff_hunk": "@@ -88,6 +91,26 @@ def center_around_prime_meridian(lon, lat):\n     return result\n \n \n+def downscale(\n+    obj: xr.DataArray | xr.Dataset,\n+    *,\n+    offset: int,\n+    agg: Callable,\n+    grid_info: HealpixInfo,\n+):\n+    if not grid_info.nest:\n+        raise NotImplementedError(\n+            \"Downscaling is only supported for nested Healpix grids.\"\n+        )\n+\n+    if offset == 0:\n+        return obj\n+\n+    upper_cell_membership = np.floor(obj.cell_ids / (4**offset))",
+    "path": "xdggs/healpix.py",
+    "commit_id": "87d099e6c062f33106b9f5e34a68bcfdeb2574f7",
+    "original_commit_id": "87d099e6c062f33106b9f5e34a68bcfdeb2574f7",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "there should be a constant cost (a binary right-shift), so I wouldn't worry too much about it. This implementation doesn't do that, so I'd recommend switching to `healpix_geo.nested.zoom_to` (nothing for `ring`, as hierarchy operations don't really make sense there)",
+    "created_at": "2025-05-16T14:40:26Z",
+    "updated_at": "2025-05-16T14:40:27Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/141#discussion_r2093185560",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/141",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2093185560"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/141#discussion_r2093185560"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/141"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2093185560/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 109,
+    "original_line": 109,
+    "side": "RIGHT",
+    "in_reply_to_id": 2089368594,
+    "author_association": "MEMBER",
+    "original_position": 32,
+    "position": 32,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144916638",
+    "pull_request_review_id": 2924520734,
+    "id": 2144916638,
+    "node_id": "PRRC_kwDOKqC05s5_2NSe",
+    "diff_hunk": "@@ -38,7 +38,9 @@ classifiers = [\n requires-python = \">=3.10\"\n dependencies = [\n   \"xarray\",\n+  \"numpy>=2.0\",\n   \"cdshealpix\",\n+  \"healpix-geo>=0.0.3\",",
+    "path": "pyproject.toml",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "benbovy",
+      "id": 4160723,
+      "node_id": "MDQ6VXNlcjQxNjA3MjM=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4160723?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/benbovy",
+      "html_url": "https://github.com/benbovy",
+      "followers_url": "https://api.github.com/users/benbovy/followers",
+      "following_url": "https://api.github.com/users/benbovy/following{/other_user}",
+      "gists_url": "https://api.github.com/users/benbovy/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/benbovy/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/benbovy/subscriptions",
+      "organizations_url": "https://api.github.com/users/benbovy/orgs",
+      "repos_url": "https://api.github.com/users/benbovy/repos",
+      "events_url": "https://api.github.com/users/benbovy/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/benbovy/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Possible to make it an optional dependency? I'm concerned by the number of dependencies (compiled packages) xdggs would require as we add more support for various DGGS.",
+    "created_at": "2025-06-13T11:40:26Z",
+    "updated_at": "2025-06-13T12:07:10Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144916638",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144916638"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144916638"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144916638/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 43,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 6,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144936285",
+    "pull_request_review_id": 2924520734,
+    "id": 2144936285,
+    "node_id": "PRRC_kwDOKqC05s5_2SFd",
+    "diff_hunk": "@@ -39,6 +41,9 @@ def decode(self, grid_info=None, *, name=\"cell_ids\") -> xr.Dataset | xr.DataArra\n             the dataset.\n         name : str, default: \"cell_ids\"\n             The name of the coordinate containing the cell ids.\n+        index_kind : str, default: \"pandas\"",
+    "path": "xdggs/accessor.py",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "benbovy",
+      "id": 4160723,
+      "node_id": "MDQ6VXNlcjQxNjA3MjM=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4160723?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/benbovy",
+      "html_url": "https://github.com/benbovy",
+      "followers_url": "https://api.github.com/users/benbovy/followers",
+      "following_url": "https://api.github.com/users/benbovy/following{/other_user}",
+      "gists_url": "https://api.github.com/users/benbovy/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/benbovy/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/benbovy/subscriptions",
+      "organizations_url": "https://api.github.com/users/benbovy/orgs",
+      "repos_url": "https://api.github.com/users/benbovy/repos",
+      "events_url": "https://api.github.com/users/benbovy/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/benbovy/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I doubt that this argument will speak to many users of DGGS, and also there's chances that this will become too much mix and match for various things (e.g., I see that \"moc\" is also possible but it is not very discoverable from here and it is healpix only IIUC).\r\n\r\nWould it be possible instead to choose the best index kind depending on the input Xarray Dataset / DataArray and `grid_info`? That what I'd rather expect from a decode function.\r\n\r\nEither way I think this would require some more careful thinking about the API.",
+    "created_at": "2025-06-13T11:53:50Z",
+    "updated_at": "2025-06-13T12:07:10Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144936285",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144936285"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144936285"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144936285/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 44,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 15,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144941203",
+    "pull_request_review_id": 2924520734,
+    "id": 2144941203,
+    "node_id": "PRRC_kwDOKqC05s5_2TST",
+    "diff_hunk": "@@ -23,6 +23,9 @@ def decode(ds, grid_info=None, *, name=\"cell_ids\"):\n         the dataset.\n     name : str, default: \"cell_ids\"\n         The name of the coordinate containing the cell ids.\n+    index_kind : str, default: \"pandas\"",
+    "path": "xdggs/index.py",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "benbovy",
+      "id": 4160723,
+      "node_id": "MDQ6VXNlcjQxNjA3MjM=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4160723?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/benbovy",
+      "html_url": "https://github.com/benbovy",
+      "followers_url": "https://api.github.com/users/benbovy/followers",
+      "following_url": "https://api.github.com/users/benbovy/following{/other_user}",
+      "gists_url": "https://api.github.com/users/benbovy/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/benbovy/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/benbovy/subscriptions",
+      "organizations_url": "https://api.github.com/users/benbovy/orgs",
+      "repos_url": "https://api.github.com/users/benbovy/repos",
+      "events_url": "https://api.github.com/users/benbovy/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/benbovy/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Same comment than the one above.",
+    "created_at": "2025-06-13T11:57:06Z",
+    "updated_at": "2025-06-13T12:07:10Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144941203",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144941203"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144941203"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144941203/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 26,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 13,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144944652",
+    "pull_request_review_id": 2924520734,
+    "id": 2144944652,
+    "node_id": "PRRC_kwDOKqC05s5_2UIM",
+    "diff_hunk": "@@ -309,18 +317,202 @@ def cell_boundaries(self, cell_ids: Any, backend=\"shapely\") -> np.ndarray:\n         return backend_func(vertices)\n \n \n+def construct_chunk_ranges(chunks, until):\n+    start = 0\n+\n+    for chunksize in chunks:\n+        stop = start + chunksize\n+        if stop > until:\n+            stop = until\n+            if start == stop:\n+                break\n+\n+        if until - start < chunksize:\n+            chunksize = until - start\n+\n+        yield chunksize, slice(start, stop)\n+        start = stop\n+\n+\n+def subset_chunks(chunks, indexer):\n+    def _subset(offset, chunk, indexer):\n+        if offset >= indexer.stop or offset + chunk < indexer.start:\n+            # outside slice\n+            return 0\n+        elif offset >= indexer.start and offset + chunk < indexer.stop:\n+            # full chunk\n+            return chunk\n+        else:\n+            # partial chunk\n+            left_trim = indexer.start - offset\n+            right_trim = offset + chunk - indexer.stop\n+\n+            if left_trim < 0:\n+                left_trim = 0\n+\n+            if right_trim < 0:\n+                right_trim = 0\n+\n+            return chunk - left_trim - right_trim\n+\n+    if chunks is None:\n+        return None\n+\n+    chunk_offsets = np.cumulative_sum(chunks, include_initial=True)\n+    total_length = chunk_offsets[-1]\n+    concrete_slice = slice(*indexer.indices(total_length))\n+\n+    trimmed_chunks = tuple(\n+        _subset(offset, chunk, concrete_slice)\n+        for offset, chunk in zip(chunk_offsets[:-1], chunks)\n+    )\n+\n+    return tuple(int(chunk) for chunk in trimmed_chunks if chunk > 0)\n+\n+\n+def extract_chunk(index, slice_):\n+    return index.isel(slice_).cell_ids()\n+\n+\n+class HealpixMocIndex(xr.Index):",
+    "path": "xdggs/healpix.py",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "benbovy",
+      "id": 4160723,
+      "node_id": "MDQ6VXNlcjQxNjA3MjM=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4160723?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/benbovy",
+      "html_url": "https://github.com/benbovy",
+      "followers_url": "https://api.github.com/users/benbovy/followers",
+      "following_url": "https://api.github.com/users/benbovy/following{/other_user}",
+      "gists_url": "https://api.github.com/users/benbovy/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/benbovy/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/benbovy/subscriptions",
+      "organizations_url": "https://api.github.com/users/benbovy/orgs",
+      "repos_url": "https://api.github.com/users/benbovy/repos",
+      "events_url": "https://api.github.com/users/benbovy/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/benbovy/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Would be nice to have some docstrings here, and clarify `RangeMocIndex` vs. `HealpixMocIndex` vs. `HealpixIndex`. This would be useful for xdggs contributors.",
+    "created_at": "2025-06-13T11:59:36Z",
+    "updated_at": "2025-06-13T12:07:10Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144944652",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144944652"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144944652"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144944652/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 397,
+    "original_line": 377,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 98,
+    "position": 121,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144953329",
+    "pull_request_review_id": 2924520734,
+    "id": 2144953329,
+    "node_id": "PRRC_kwDOKqC05s5_2WPx",
+    "diff_hunk": "@@ -34,20 +37,20 @@ def decode(ds, grid_info=None, *, name=\"cell_ids\"):\n     xarray.Dataset.dggs.decode\n     xarray.DataArray.dggs.decode\n     \"\"\"\n-    return ds.dggs.decode(name=name, grid_info=grid_info)\n+    return ds.dggs.decode(name=name, grid_info=grid_info, index_kind=index_kind)\n \n \n class DGGSIndex(Index):\n     _dim: str\n-    _pd_index: PandasIndex\n+    _index: PandasIndex",
+    "path": "xdggs/index.py",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "benbovy",
+      "id": 4160723,
+      "node_id": "MDQ6VXNlcjQxNjA3MjM=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4160723?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/benbovy",
+      "html_url": "https://github.com/benbovy",
+      "followers_url": "https://api.github.com/users/benbovy/followers",
+      "following_url": "https://api.github.com/users/benbovy/following{/other_user}",
+      "gists_url": "https://api.github.com/users/benbovy/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/benbovy/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/benbovy/subscriptions",
+      "organizations_url": "https://api.github.com/users/benbovy/orgs",
+      "repos_url": "https://api.github.com/users/benbovy/repos",
+      "events_url": "https://api.github.com/users/benbovy/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/benbovy/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "It is a bit confusing (and potentially problematic) to define `_index` as a `PandasIndex` here, since in subclasses this might not be the case (i.e., HealpixIndex wrapping HealpixMocIndex).\r\n\r\nInstead of `PandasIndex` this might just be `xr.Index`. Or maybe make it a generic type?",
+    "created_at": "2025-06-13T12:05:36Z",
+    "updated_at": "2025-06-13T12:07:10Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144953329",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144953329"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144953329"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144953329/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 45,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 30,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144963005",
+    "pull_request_review_id": 2924594159,
+    "id": 2144963005,
+    "node_id": "PRRC_kwDOKqC05s5_2Ym9",
+    "diff_hunk": "@@ -34,20 +37,20 @@ def decode(ds, grid_info=None, *, name=\"cell_ids\"):\n     xarray.Dataset.dggs.decode\n     xarray.DataArray.dggs.decode\n     \"\"\"\n-    return ds.dggs.decode(name=name, grid_info=grid_info)\n+    return ds.dggs.decode(name=name, grid_info=grid_info, index_kind=index_kind)\n \n \n class DGGSIndex(Index):\n     _dim: str\n-    _pd_index: PandasIndex\n+    _index: PandasIndex",
+    "path": "xdggs/index.py",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I think I just missed that one, I've been changing the other declarations to `xr.Index`.\r\n\r\n```suggestion\r\n    _index: xr.Index\r\n```",
+    "created_at": "2025-06-13T12:10:58Z",
+    "updated_at": "2025-06-13T12:10:59Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144963005",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144963005"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144963005"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144963005/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 45,
+    "side": "RIGHT",
+    "in_reply_to_id": 2144953329,
+    "author_association": "MEMBER",
+    "original_position": 30,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144976180",
+    "pull_request_review_id": 2924615246,
+    "id": 2144976180,
+    "node_id": "PRRC_kwDOKqC05s5_2b00",
+    "diff_hunk": "@@ -38,7 +38,9 @@ classifiers = [\n requires-python = \">=3.10\"\n dependencies = [\n   \"xarray\",\n+  \"numpy>=2.0\",\n   \"cdshealpix\",\n+  \"healpix-geo>=0.0.3\",",
+    "path": "pyproject.toml",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "true, I think we should figure out how to resolve this. When we added plotting support we decided to install everything by default (it was easier that way), but that won't scale (see also #128). However, I think we should limit the builtin DGGS to just h3 and healpix, and have separate extension packages for others.\r\n\r\n`healpix-geo` is a bit special in that you will need it to support ellipsoidal healpix, so that may just stay required (or in the same extra as `cdshealpix`, should we modify the code to make `h3ronpy` and `cdshealpix` optional)",
+    "created_at": "2025-06-13T12:19:47Z",
+    "updated_at": "2025-06-13T12:19:48Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144976180",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144976180"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144976180"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144976180/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 43,
+    "side": "RIGHT",
+    "in_reply_to_id": 2144916638,
+    "author_association": "MEMBER",
+    "original_position": 6,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144989237",
+    "pull_request_review_id": 2924634977,
+    "id": 2144989237,
+    "node_id": "PRRC_kwDOKqC05s5_2fA1",
+    "diff_hunk": "@@ -39,6 +41,9 @@ def decode(self, grid_info=None, *, name=\"cell_ids\") -> xr.Dataset | xr.DataArra\n             the dataset.\n         name : str, default: \"cell_ids\"\n             The name of the coordinate containing the cell ids.\n+        index_kind : str, default: \"pandas\"",
+    "path": "xdggs/accessor.py",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I agree, this was more of a quick hack. However, I think the pandas index may still be more advantageous for some situations (e.g. a set of disconnected cells that fits into memory), so having that choice is important, I think. I don't really have a preference on how this choice is exposed, though, so if you can find a better way I'd be happy to take that.\r\n\r\nI also agree that the different values for that option are implementation specific and not very discoverable right now, but I think that's the same for any index option. However, I believe we can change that by improving the documentation, so I would punt that to a separate PR, if possible.",
+    "created_at": "2025-06-13T12:26:57Z",
+    "updated_at": "2025-06-13T12:26:58Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144989237",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144989237"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144989237"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144989237/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 44,
+    "side": "RIGHT",
+    "in_reply_to_id": 2144936285,
+    "author_association": "MEMBER",
+    "original_position": 15,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144992812",
+    "pull_request_review_id": 2924640343,
+    "id": 2144992812,
+    "node_id": "PRRC_kwDOKqC05s5_2f4s",
+    "diff_hunk": "@@ -309,18 +317,202 @@ def cell_boundaries(self, cell_ids: Any, backend=\"shapely\") -> np.ndarray:\n         return backend_func(vertices)\n \n \n+def construct_chunk_ranges(chunks, until):\n+    start = 0\n+\n+    for chunksize in chunks:\n+        stop = start + chunksize\n+        if stop > until:\n+            stop = until\n+            if start == stop:\n+                break\n+\n+        if until - start < chunksize:\n+            chunksize = until - start\n+\n+        yield chunksize, slice(start, stop)\n+        start = stop\n+\n+\n+def subset_chunks(chunks, indexer):\n+    def _subset(offset, chunk, indexer):\n+        if offset >= indexer.stop or offset + chunk < indexer.start:\n+            # outside slice\n+            return 0\n+        elif offset >= indexer.start and offset + chunk < indexer.stop:\n+            # full chunk\n+            return chunk\n+        else:\n+            # partial chunk\n+            left_trim = indexer.start - offset\n+            right_trim = offset + chunk - indexer.stop\n+\n+            if left_trim < 0:\n+                left_trim = 0\n+\n+            if right_trim < 0:\n+                right_trim = 0\n+\n+            return chunk - left_trim - right_trim\n+\n+    if chunks is None:\n+        return None\n+\n+    chunk_offsets = np.cumulative_sum(chunks, include_initial=True)\n+    total_length = chunk_offsets[-1]\n+    concrete_slice = slice(*indexer.indices(total_length))\n+\n+    trimmed_chunks = tuple(\n+        _subset(offset, chunk, concrete_slice)\n+        for offset, chunk in zip(chunk_offsets[:-1], chunks)\n+    )\n+\n+    return tuple(int(chunk) for chunk in trimmed_chunks if chunk > 0)\n+\n+\n+def extract_chunk(index, slice_):\n+    return index.isel(slice_).cell_ids()\n+\n+\n+class HealpixMocIndex(xr.Index):",
+    "path": "xdggs/healpix.py",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "sure. This will be something along the lines of\r\n- `RangeMOCIndex` is the implementation of the index concept (similar to `pd.Index`)\r\n- `HealpixMocIndex` is the `xarray` version of the `RangeMOCIndex` (similar to `xr.core.indexes.PandasIndex`)\r\n- `HealpixIndex` is the healpix-specific implementation of `xdggs.index.Index`\r\n\r\n(if you have better names I'd be open to changing the name of the first two)",
+    "created_at": "2025-06-13T12:28:57Z",
+    "updated_at": "2025-06-13T12:29:58Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144992812",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144992812"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2144992812"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2144992812/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 397,
+    "original_line": 377,
+    "side": "RIGHT",
+    "in_reply_to_id": 2144944652,
+    "author_association": "MEMBER",
+    "original_position": 98,
+    "position": 121,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145010840",
+    "pull_request_review_id": 2924670360,
+    "id": 2145010840,
+    "node_id": "PRRC_kwDOKqC05s5_2kSY",
+    "diff_hunk": "@@ -38,7 +38,9 @@ classifiers = [\n requires-python = \">=3.10\"\n dependencies = [\n   \"xarray\",\n+  \"numpy>=2.0\",\n   \"cdshealpix\",\n+  \"healpix-geo>=0.0.3\",",
+    "path": "pyproject.toml",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "benbovy",
+      "id": 4160723,
+      "node_id": "MDQ6VXNlcjQxNjA3MjM=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4160723?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/benbovy",
+      "html_url": "https://github.com/benbovy",
+      "followers_url": "https://api.github.com/users/benbovy/followers",
+      "following_url": "https://api.github.com/users/benbovy/following{/other_user}",
+      "gists_url": "https://api.github.com/users/benbovy/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/benbovy/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/benbovy/subscriptions",
+      "organizations_url": "https://api.github.com/users/benbovy/orgs",
+      "repos_url": "https://api.github.com/users/benbovy/repos",
+      "events_url": "https://api.github.com/users/benbovy/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/benbovy/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "> However, I think we should limit the builtin DGGS to just h3 and healpix\r\n\r\nYes we can limit builtin support to just a few DGGSs (S2 might probably also make sense), but even so users who may be interested in only H3 would need to download a few Healpix dependencies, which is probably not ideal.\r\n\r\nWe can address that later, though.",
+    "created_at": "2025-06-13T12:40:26Z",
+    "updated_at": "2025-06-13T12:40:27Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2145010840",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145010840"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2145010840"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145010840/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 43,
+    "side": "RIGHT",
+    "in_reply_to_id": 2144916638,
+    "author_association": "MEMBER",
+    "original_position": 6,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145020329",
+    "pull_request_review_id": 2924685495,
+    "id": 2145020329,
+    "node_id": "PRRC_kwDOKqC05s5_2mmp",
+    "diff_hunk": "@@ -39,6 +41,9 @@ def decode(self, grid_info=None, *, name=\"cell_ids\") -> xr.Dataset | xr.DataArra\n             the dataset.\n         name : str, default: \"cell_ids\"\n             The name of the coordinate containing the cell ids.\n+        index_kind : str, default: \"pandas\"",
+    "path": "xdggs/accessor.py",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "benbovy",
+      "id": 4160723,
+      "node_id": "MDQ6VXNlcjQxNjA3MjM=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4160723?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/benbovy",
+      "html_url": "https://github.com/benbovy",
+      "followers_url": "https://api.github.com/users/benbovy/followers",
+      "following_url": "https://api.github.com/users/benbovy/following{/other_user}",
+      "gists_url": "https://api.github.com/users/benbovy/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/benbovy/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/benbovy/subscriptions",
+      "organizations_url": "https://api.github.com/users/benbovy/orgs",
+      "repos_url": "https://api.github.com/users/benbovy/repos",
+      "events_url": "https://api.github.com/users/benbovy/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/benbovy/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "> I think the pandas index may still be more advantageous for some situations (e.g. a set of disconnected cells that fits into memory)\r\n\r\nOne option could be to provide some custom behavior via `Dataset.load()` / `Dataset.chunk()`, but it is not possible yet (see https://github.com/pydata/xarray/pull/8128).\r\n\r\nOtherwise, IMHO I'd leave `decode()` with some good default behavior that fit the majority of cases. If a user wants to override that specific behavior because it is more advantageous in some situations, it is still possible to do it manually / explicitly.",
+    "created_at": "2025-06-13T12:46:17Z",
+    "updated_at": "2025-06-13T12:46:18Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2145020329",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145020329"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2145020329"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145020329/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 44,
+    "side": "RIGHT",
+    "in_reply_to_id": 2144936285,
+    "author_association": "MEMBER",
+    "original_position": 15,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145034780",
+    "pull_request_review_id": 2924709914,
+    "id": 2145034780,
+    "node_id": "PRRC_kwDOKqC05s5_2qIc",
+    "diff_hunk": "@@ -39,6 +41,9 @@ def decode(self, grid_info=None, *, name=\"cell_ids\") -> xr.Dataset | xr.DataArra\n             the dataset.\n         name : str, default: \"cell_ids\"\n             The name of the coordinate containing the cell ids.\n+        index_kind : str, default: \"pandas\"",
+    "path": "xdggs/accessor.py",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I went with `index_kind` since I think it should be possible to write something similar for H3 (or any other DGGS that has integer cell ids). Fundamentally this is a index option (it's the DGGS index' task to create the wrapped index), so we could just add a parameter called `index_options` and pass that as kwargs on to the DGGS index. In the specific case this might be common enough to warrant an explicit kwarg, though.",
+    "created_at": "2025-06-13T12:54:39Z",
+    "updated_at": "2025-06-13T12:54:39Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2145034780",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145034780"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2145034780"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145034780/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 44,
+    "side": "RIGHT",
+    "in_reply_to_id": 2144936285,
+    "author_association": "MEMBER",
+    "original_position": 15,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145044384",
+    "pull_request_review_id": 2924726499,
+    "id": 2145044384,
+    "node_id": "PRRC_kwDOKqC05s5_2seg",
+    "diff_hunk": "@@ -39,6 +41,9 @@ def decode(self, grid_info=None, *, name=\"cell_ids\") -> xr.Dataset | xr.DataArra\n             the dataset.\n         name : str, default: \"cell_ids\"\n             The name of the coordinate containing the cell ids.\n+        index_kind : str, default: \"pandas\"",
+    "path": "xdggs/accessor.py",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "benbovy",
+      "id": 4160723,
+      "node_id": "MDQ6VXNlcjQxNjA3MjM=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4160723?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/benbovy",
+      "html_url": "https://github.com/benbovy",
+      "followers_url": "https://api.github.com/users/benbovy/followers",
+      "following_url": "https://api.github.com/users/benbovy/following{/other_user}",
+      "gists_url": "https://api.github.com/users/benbovy/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/benbovy/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/benbovy/subscriptions",
+      "organizations_url": "https://api.github.com/users/benbovy/orgs",
+      "repos_url": "https://api.github.com/users/benbovy/repos",
+      "events_url": "https://api.github.com/users/benbovy/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/benbovy/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "> so we could just add a parameter called index_options and pass that as kwargs on to the DGGS index\r\n\r\nI think I'd prefer this yes. This doesn't really solve discoverability (like in Xarray IO backends), but it is more flexible and we don't need to find some common API now (it will be easier to figure it out later).",
+    "created_at": "2025-06-13T13:00:15Z",
+    "updated_at": "2025-06-13T13:00:15Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2145044384",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145044384"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2145044384"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145044384/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 44,
+    "side": "RIGHT",
+    "in_reply_to_id": 2144936285,
+    "author_association": "MEMBER",
+    "original_position": 15,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145924558",
+    "pull_request_review_id": 2926103052,
+    "id": 2145924558,
+    "node_id": "PRRC_kwDOKqC05s5_6DXO",
+    "diff_hunk": "@@ -39,6 +41,9 @@ def decode(self, grid_info=None, *, name=\"cell_ids\") -> xr.Dataset | xr.DataArra\n             the dataset.\n         name : str, default: \"cell_ids\"\n             The name of the coordinate containing the cell ids.\n+        index_kind : str, default: \"pandas\"",
+    "path": "xdggs/accessor.py",
+    "commit_id": "a71c1a58dc55dbb6adcf52a70a19b58514cfbf9a",
+    "original_commit_id": "f88d55b3249d011fde2bf3f0f7b64b87193165b5",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "done. We now have `index_options` / `**index_kwargs`, which are forwarded as kwargs to `set_xindex`. `index_kind` still exists, but only on the `HealpixIndex`.",
+    "created_at": "2025-06-13T19:24:25Z",
+    "updated_at": "2025-06-13T19:24:26Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2145924558",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145924558"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/151#discussion_r2145924558"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/151"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2145924558/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 44,
+    "side": "RIGHT",
+    "in_reply_to_id": 2144936285,
+    "author_association": "MEMBER",
+    "original_position": 15,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2366964645",
+    "pull_request_review_id": 3250945289,
+    "id": 2366964645,
+    "node_id": "PRRC_kwDOKqC05s6NFQOl",
+    "diff_hunk": "@@ -49,6 +49,9 @@ def geographic2cell_ids(self, lon, lat):\n     def cell_boundaries(self, cell_ids, backend=\"shapely\"):\n         raise NotImplementedError()\n \n+    def rasterize_geometry(self, geom, *, mode=None):",
+    "path": "xdggs/grid.py",
+    "commit_id": "2e673a2c30d1588dbf954f284440cd3bf59717ce",
+    "original_commit_id": "9adeda5c54d68e1e9716febbcab70d25ddecfed9",
+    "user": {
+      "login": "benbovy",
+      "id": 4160723,
+      "node_id": "MDQ6VXNlcjQxNjA3MjM=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4160723?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/benbovy",
+      "html_url": "https://github.com/benbovy",
+      "followers_url": "https://api.github.com/users/benbovy/followers",
+      "following_url": "https://api.github.com/users/benbovy/following{/other_user}",
+      "gists_url": "https://api.github.com/users/benbovy/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/benbovy/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/benbovy/subscriptions",
+      "organizations_url": "https://api.github.com/users/benbovy/orgs",
+      "repos_url": "https://api.github.com/users/benbovy/repos",
+      "events_url": "https://api.github.com/users/benbovy/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/benbovy/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "The name `rasterize_geometry` is misleading here. This function basically converts an arbitrary geometry to cell ids so I would suggest a name like `geometry2cells_ids` that is consistent with the other methods of `DGGSInfo`.\r\n\r\nAdding type hints would help too. Is this method intended to support multiple geometries in the future?\r\n\r\nThe name `mode` is a bit too generic. Shall we use `containment_mode` like h3ronpy?",
+    "created_at": "2025-09-22T07:26:51Z",
+    "updated_at": "2025-09-22T07:26:51Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/169#discussion_r2366964645",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/169",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2366964645"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/169#discussion_r2366964645"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/169"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2366964645/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 52,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 4,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2373250240",
+    "pull_request_review_id": 3259318416,
+    "id": 2373250240,
+    "node_id": "PRRC_kwDOKqC05s6NdOzA",
+    "diff_hunk": "@@ -49,6 +49,9 @@ def geographic2cell_ids(self, lon, lat):\n     def cell_boundaries(self, cell_ids, backend=\"shapely\"):\n         raise NotImplementedError()\n \n+    def rasterize_geometry(self, geom, *, mode=None):",
+    "path": "xdggs/grid.py",
+    "commit_id": "2e673a2c30d1588dbf954f284440cd3bf59717ce",
+    "original_commit_id": "9adeda5c54d68e1e9716febbcab70d25ddecfed9",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "Unless you assume \"raster\" to equal 2D image (I understand \"rasterize\" as \"to discretize onto a grid\") I don't see how the name would be misleading. However, you have a point with the consistency argument.\r\n\r\n> Adding type hints would help too.\r\n\r\nWe currently don't have type hints on any of the methods, so we'd have to figure out common type hints, first. Maybe in a new PR?\r\n\r\n> Is this method intended to support multiple geometries in the future?\r\n\r\nPotentially, although I'd say querying by a single geometry covers at least 90% of the use-cases for `query` (and I'm currently not planning to vectorize it).\r\n\r\n> The name `mode` is a bit too generic. Shall we use `containment_mode` like h3ronpy?\r\n\r\nIndeed, but `containment_mode` is also quite the mouthful. I'd argue that in the context of rasterization / conversion to cell ids the word `mode` is unambiguous, but if that doesn't convince you we can just remove the word `mode` and use `containment=\"center\"` or `containment=\"overlap\"` or something similar, like `contained=...`.",
+    "created_at": "2025-09-23T19:23:39Z",
+    "updated_at": "2025-09-23T19:31:04Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/169#discussion_r2373250240",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/169",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2373250240"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/169#discussion_r2373250240"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/169"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/2373250240/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 52,
+    "side": "RIGHT",
+    "in_reply_to_id": 2366964645,
+    "author_association": "MEMBER",
+    "original_position": 4,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3950940906",
+    "pull_request_review_id": 5133459676,
+    "id": 3950940906,
+    "node_id": "PRRC_kwDOKqC05s7rfpLq",
+    "diff_hunk": "@@ -105,13 +123,27 @@ def decode(\n         if spatial_dimension is None:\n             raise DecoderError(\"Required field `spatial_dimension` is missing or null.\")\n \n-        # optional, but required for now\n+        if \"refinement_level\" not in metadata:\n+            raise DecoderError(\"Required field `refinement_level` is missing.\")\n+\n+        # optional\n         coordinate = metadata.pop(\"coordinate\", None)\n+        if name is not None:\n+            # name takes precedence over coordinate\n+            coordinate = name\n         if coordinate is None:\n-            raise NotImplementedError(\"missing coordinate is not supported for now\")\n+            if \"cell_ids\" in ds.keys():\n+                raise DecoderError(\n+                    \"Coordinate not given, but cannot overwrite existing variable 'cell_ids'.\"\n+                )\n+            # create a memory-efficient range index\n+            ds = ds.assign_coords(cell_ids=pd.RangeIndex(ds.sizes[spatial_dimension]))\n+            coordinate = \"cell_ids\"\n+        elif coordinate not in ds.keys():\n+            raise DecoderError(f\"Coordinate variable {coordinate}, does not exist.\")",
+    "path": "xdggs/conventions/zarr.py",
+    "commit_id": "ee522ba477ac08e751ba3aba94daf504638cf9eb",
+    "original_commit_id": "ee522ba477ac08e751ba3aba94daf504638cf9eb",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "this is DGGS-specific (as implemented it only works for healpix) so I believe this should be handled by the index (e.g. HealpixIndex). As such, it may be best to move this to a separate PR.",
+    "created_at": "2026-09-07T15:09:59Z",
+    "updated_at": "2026-09-07T15:17:01Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3950940906",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3950940906"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3950940906"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3950940906/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 135,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 143,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 82,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3950959164",
+    "pull_request_review_id": 5133459676,
+    "id": 3950959164,
+    "node_id": "PRRC_kwDOKqC05s7rfto8",
+    "diff_hunk": "@@ -305,6 +324,37 @@ def test_decode(self, grid_info, cell_ids, name, dim):\n         xr.testing.assert_identical(actual, expected)\n         assert_indexes_equal(actual[name].xindexes, expected[name].xindexes)\n \n+    def test_decode_no_coordinate(self, healpix_dataset):\n+        healpix_dataset.pipe(xdggs.decode, convention=\"zarr\")",
+    "path": "xdggs/tests/test_conventions.py",
+    "commit_id": "ee522ba477ac08e751ba3aba94daf504638cf9eb",
+    "original_commit_id": "ee522ba477ac08e751ba3aba94daf504638cf9eb",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "these tests should use `convention.decode` instead of going through `xdggs.decode` (to avoid testing the dispatching logic as well)",
+    "created_at": "2026-09-07T15:12:34Z",
+    "updated_at": "2026-09-07T15:17:01Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3950959164",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3950959164"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3950959164"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3950959164/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 328,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 31,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3950971666",
+    "pull_request_review_id": 5133459676,
+    "id": 3950971666,
+    "node_id": "PRRC_kwDOKqC05s7rfwsS",
+    "diff_hunk": "@@ -23,6 +23,7 @@ classifiers = [\n requires-python = \">=3.12\"\n dependencies = [\n   \"xarray\",\n+  \"pandas\",",
+    "path": "pyproject.toml",
+    "commit_id": "884cea0c0bc918c998552a50ce83deec00b0a11e",
+    "original_commit_id": "ee522ba477ac08e751ba3aba94daf504638cf9eb",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "for a separate PR most likely, but if you use `xr.indexes.RangeIndex` we don't have to list `pandas` as a direct dependency (`xarray` already depends on it so it will always be around, but that way we don't have to maintain that dependency)",
+    "created_at": "2026-09-07T15:14:27Z",
+    "updated_at": "2026-09-07T15:17:01Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3950971666",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3950971666"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3950971666"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3950971666/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 26,
+    "original_line": 26,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 4,
+    "position": 4,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3965438366",
+    "pull_request_review_id": 5150723934,
+    "id": 3965438366,
+    "node_id": "PRRC_kwDOKqC05s7sW8me",
+    "diff_hunk": "@@ -23,6 +23,7 @@ classifiers = [\n requires-python = \">=3.12\"\n dependencies = [\n   \"xarray\",\n+  \"pandas\",",
+    "path": "pyproject.toml",
+    "commit_id": "884cea0c0bc918c998552a50ce83deec00b0a11e",
+    "original_commit_id": "ee522ba477ac08e751ba3aba94daf504638cf9eb",
+    "user": {
+      "login": "benbovy",
+      "id": 4160723,
+      "node_id": "MDQ6VXNlcjQxNjA3MjM=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4160723?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/benbovy",
+      "html_url": "https://github.com/benbovy",
+      "followers_url": "https://api.github.com/users/benbovy/followers",
+      "following_url": "https://api.github.com/users/benbovy/following{/other_user}",
+      "gists_url": "https://api.github.com/users/benbovy/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/benbovy/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/benbovy/subscriptions",
+      "organizations_url": "https://api.github.com/users/benbovy/orgs",
+      "repos_url": "https://api.github.com/users/benbovy/repos",
+      "events_url": "https://api.github.com/users/benbovy/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/benbovy/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "`xr.indexes.RangeIndex` is more for floating-point values, which isn't supported in Pandas. For integers it is best to use the default `xr.indexes.PandasIndex` backed by a `pd.RangeIndex`.",
+    "created_at": "2026-09-09T06:48:45Z",
+    "updated_at": "2026-09-09T06:48:45Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3965438366",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3965438366"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3965438366"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3965438366/reactions",
+      "total_count": 1,
+      "+1": 1,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": 26,
+    "original_line": 26,
+    "side": "RIGHT",
+    "in_reply_to_id": 3950971666,
+    "author_association": "MEMBER",
+    "original_position": 4,
+    "position": 4,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3979864626",
+    "pull_request_review_id": 5168048835,
+    "id": 3979864626,
+    "node_id": "PRRC_kwDOKqC05s7tN-oy",
+    "diff_hunk": "@@ -756,6 +757,38 @@ def from_variables(\n \n         return cls(var.data, dim, name, grid_info, index_kind=index_kind)\n \n+    @classmethod\n+    def from_level(\n+        cls: type[DGGSIndex],\n+        level: int,\n+        dim: str,\n+        name: str,\n+        *,\n+        options: Mapping[str, Any],\n+    ) -> DGGSIndex:\n+        \"\"\"Create the index for the complete domain of the given level\"\"\"\n+        size = 12 * 4**level\n+        indexing_scheme = options.get(\"indexing_scheme\", \"nested\")\n+        if indexing_scheme == \"zuniq\":\n+            start = 1 << 2 * (29 - level)\n+            step = start << 1\n+            stop = size * step\n+            cell_ids = xr.indexes.PandasIndex(\n+                pd.RangeIndex(start, stop, step, name=name), dim\n+            )\n+        elif indexing_scheme == \"nuniq\":\n+            start = 4 ** (1 + level)\n+            stop = start + size\n+            cell_ids = xr.indexes.PandasIndex(\n+                pd.RangeIndex(start, stop, name=name), dim\n+            )",
+    "path": "xdggs/healpix.py",
+    "commit_id": "3f7b70cb56c2c95784bc61704878b018246e5d62",
+    "original_commit_id": "6428cbe5c20bd2b43836bd6c6fb45fe3166c6bf6",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I don't think we support `\"nuniq\"` in `healpix-geo` yet, so naturally this will fail for now (but possibly we can keep it commented out)",
+    "created_at": "2026-09-10T14:00:30Z",
+    "updated_at": "2026-09-10T14:14:26Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3979864626",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3979864626"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3979864626"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3979864626/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 779,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 784,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 36,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3979865816",
+    "pull_request_review_id": 5168048835,
+    "id": 3979865816,
+    "node_id": "PRRC_kwDOKqC05s7tN-7Y",
+    "diff_hunk": "@@ -756,6 +757,38 @@ def from_variables(\n \n         return cls(var.data, dim, name, grid_info, index_kind=index_kind)\n \n+    @classmethod\n+    def from_level(",
+    "path": "xdggs/healpix.py",
+    "commit_id": "3f7b70cb56c2c95784bc61704878b018246e5d62",
+    "original_commit_id": "6428cbe5c20bd2b43836bd6c6fb45fe3166c6bf6",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "maybe call this `full_domain` (or at least, that's what I've called this for the `RangeMOCIndex`)?\n\nThis will also need to account for `index_kind=\"moc\"`, which I believe should just forward to the moc index and `RangeMOCIndex.full_domain`.",
+    "created_at": "2026-09-10T14:00:37Z",
+    "updated_at": "2026-09-10T14:14:26Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3979865816",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3979865816"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3979865816"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3979865816/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 761,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 13,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3979923523",
+    "pull_request_review_id": 5168048835,
+    "id": 3979923523,
+    "node_id": "PRRC_kwDOKqC05s7tONBD",
+    "diff_hunk": "@@ -756,6 +757,38 @@ def from_variables(\n \n         return cls(var.data, dim, name, grid_info, index_kind=index_kind)\n \n+    @classmethod\n+    def from_level(\n+        cls: type[DGGSIndex],",
+    "path": "xdggs/healpix.py",
+    "commit_id": "3f7b70cb56c2c95784bc61704878b018246e5d62",
+    "original_commit_id": "6428cbe5c20bd2b43836bd6c6fb45fe3166c6bf6",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "according to https://typing.python.org/en/latest/spec/annotations.html#annotating-instance-and-class-methods you don't need to annotate `cls`, or if you do you can annotate it as `type[Self]` (and annotate the return type of the class method as `Self`)",
+    "created_at": "2026-09-10T14:06:26Z",
+    "updated_at": "2026-09-10T14:14:26Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3979923523",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3979923523"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r3979923523"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/3979923523/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 762,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 14,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/4061047734",
+    "pull_request_review_id": 5265248543,
+    "id": 4061047734,
+    "node_id": "PRRC_kwDOKqC05s7yDqu2",
+    "diff_hunk": "@@ -76,6 +77,41 @@ def from_variables(\n \n         return cls(var.data, dim=dim, name=name, grid_info=grid_info, **options_)\n \n+    @classmethod\n+    def full_domain(\n+        cls,\n+        level: int,\n+        dim: str,\n+        name: str,\n+        *,\n+        options: Mapping[str, Any],\n+    ) -> Self:\n+        \"\"\"Create the index for the complete domain of the given level\"\"\"\n+        size = 12 * 4**level\n+        indexing_scheme = options.get(\"indexing_scheme\", \"nested\")\n+        if indexing_scheme == \"zuniq\":\n+            start = 1 << 2 * (29 - level)\n+            step = start << 1\n+            stop = size * step\n+            cell_ids = pd.RangeIndex(start, stop, step)\n+            # Note: I do not understand why level must be None for zuniq\n+            # with H3 we also use a multi-level index for a fixed level\n+            level = None",
+    "path": "xdggs/healpix/index.py",
+    "commit_id": "e2632cb2e5edbf7503465ef9575b76e5ec31195a",
+    "original_commit_id": "e2632cb2e5edbf7503465ef9575b76e5ec31195a",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "it may be fine to relax this and allow setting `level` to indicate that all cells have the same size. I think the enforcing of `level=None` is there for historical reasons.\n\nMight be better in a separate PR, though.",
+    "created_at": "2026-09-21T10:01:37Z",
+    "updated_at": "2026-09-21T15:24:09Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r4061047734",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/4061047734"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r4061047734"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/4061047734/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 99,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 31,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/4063353144",
+    "pull_request_review_id": 5265248543,
+    "id": 4063353144,
+    "node_id": "PRRC_kwDOKqC05s7yMdk4",
+    "diff_hunk": "@@ -76,6 +77,41 @@ def from_variables(\n \n         return cls(var.data, dim=dim, name=name, grid_info=grid_info, **options_)\n \n+    @classmethod\n+    def full_domain(\n+        cls,\n+        level: int,\n+        dim: str,\n+        name: str,\n+        *,\n+        options: Mapping[str, Any],\n+    ) -> Self:\n+        \"\"\"Create the index for the complete domain of the given level\"\"\"\n+        size = 12 * 4**level\n+        indexing_scheme = options.get(\"indexing_scheme\", \"nested\")\n+        if indexing_scheme == \"zuniq\":\n+            start = 1 << 2 * (29 - level)\n+            step = start << 1\n+            stop = size * step\n+            cell_ids = pd.RangeIndex(start, stop, step)\n+            # Note: I do not understand why level must be None for zuniq\n+            # with H3 we also use a multi-level index for a fixed level\n+            level = None\n+        # not yet supported\n+        # elif indexing_scheme == \"nuniq\":\n+        #    start = 4 ** (1 + level)\n+        #    stop = start + size\n+        #    cell_ids = pd.RangeIndex(start, stop)\n+        else:\n+            cell_ids = pd.RangeIndex(size)",
+    "path": "xdggs/healpix/index.py",
+    "commit_id": "e2632cb2e5edbf7503465ef9575b76e5ec31195a",
+    "original_commit_id": "e2632cb2e5edbf7503465ef9575b76e5ec31195a",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I believe this is the place to create the `HealpixMocIndex` instance, otherwise the code will try to go through the `from_cell_ids` route, which loads the cell ids into memory. For that, we probably need a `HealpixMocIndex.full_domain` method that calls `RangeMOCIndex.full_domain`.\n\n(This kind of nesting always feels a bit silly to, but I view this as `RangeMOCIndex` being equivalent to `pd.Index`, and `HealpixMocIndex` being equivalent to `PandasIndex`)",
+    "created_at": "2026-09-21T14:56:44Z",
+    "updated_at": "2026-09-21T15:24:09Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r4063353144",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/4063353144"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r4063353144"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/4063353144/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 106,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 38,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/4063508107",
+    "pull_request_review_id": 5265248543,
+    "id": 4063508107,
+    "node_id": "PRRC_kwDOKqC05s7yNDaL",
+    "diff_hunk": "@@ -284,6 +284,16 @@ def test_from_variables(variable_name, variable, options):\n     assert np.all(index._index.index.values == variable.data)\n \n \n+def test_full_domain():\n+    level = 2\n+    dim = \"cells\"\n+    name = \"cell_ids\"\n+    index = h3.H3Index.full_domain(level, dim, name, options={})\n+    assert index._index.index.size == 5882",
+    "path": "xdggs/tests/test_h3.py",
+    "commit_id": "e2632cb2e5edbf7503465ef9575b76e5ec31195a",
+    "original_commit_id": "e2632cb2e5edbf7503465ef9575b76e5ec31195a",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "side comment: possibly it might be good to have a `size` property on all index implementations to hide this kind of code",
+    "created_at": "2026-09-21T15:13:40Z",
+    "updated_at": "2026-09-21T15:24:09Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r4063508107",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/4063508107"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r4063508107"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/4063508107/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": null,
+    "start_side": null,
+    "line": null,
+    "original_line": 292,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 9,
+    "position": 1,
+    "subject_type": "line"
+  },
+  {
+    "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/4063589306",
+    "pull_request_review_id": 5265248543,
+    "id": 4063589306,
+    "node_id": "PRRC_kwDOKqC05s7yNXO6",
+    "diff_hunk": "@@ -107,38 +107,63 @@ def decode(\n         if grid_name is None:\n             raise DecoderError(\"Required field `name` is missing or null.\")\n \n+        try:\n+            index_cls = GRID_REGISTRY[grid_name]\n+        except KeyError:\n+            raise DecoderError(f\"Unknown grid name: {grid_name}\") from None\n+\n         spatial_dimension = metadata.pop(\"spatial_dimension\", None)\n         if spatial_dimension is None:\n             raise DecoderError(\"Required field `spatial_dimension` is missing or null.\")\n \n-        # optional, but required for now\n-        coordinate = metadata.pop(\"coordinate\", None)\n-        if coordinate is None:\n-            raise NotImplementedError(\"missing coordinate is not supported for now\")\n+        if \"refinement_level\" not in metadata:\n+            raise DecoderError(\"Required field `refinement_level` is missing.\")\n \n         # optional, but required to be `\"none\"` for now\n         compression = metadata.pop(\"compression\", \"none\")\n+\n+        coordinate = metadata.pop(\"coordinate\", None)\n+        if name in ds.keys():\n+            # name takes precedence over coordinate\n+            coordinate = name\n+        else:\n+            # name becomes the new coordinate\n+            name = name or \"cell_ids\"",
+    "path": "xdggs/conventions/zarr.py",
+    "commit_id": "e2632cb2e5edbf7503465ef9575b76e5ec31195a",
+    "original_commit_id": "e2632cb2e5edbf7503465ef9575b76e5ec31195a",
+    "user": {
+      "login": "keewis",
+      "id": 14808389,
+      "node_id": "MDQ6VXNlcjE0ODA4Mzg5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14808389?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/keewis",
+      "html_url": "https://github.com/keewis",
+      "followers_url": "https://api.github.com/users/keewis/followers",
+      "following_url": "https://api.github.com/users/keewis/following{/other_user}",
+      "gists_url": "https://api.github.com/users/keewis/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/keewis/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/keewis/subscriptions",
+      "organizations_url": "https://api.github.com/users/keewis/orgs",
+      "repos_url": "https://api.github.com/users/keewis/repos",
+      "events_url": "https://api.github.com/users/keewis/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/keewis/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "body": "I don't really understand what this is doing.\n\nTo really make the default work, we'd need:\n\n- a variable that contains the name of the indexed coordinate (output)\n- a variable that contains the name of the input coordinate (input)\n\nI _think_ `name` is used as the output and `coordinate` as the input (but this doesn't feel very consistent, not sure why). Maybe instead of reusing the two we should be explicit? I.e. convert `coordinate` and `name` into `input_coordinate` and `output_coordinate` (or `coordinate` and `index_coordinate`, or something else that feels appropriate). That might make this easier to follow.\n\nTo be fair, the existing code already had the inconsistent naming, but at this point we might as well clean up.",
+    "created_at": "2026-09-21T15:22:47Z",
+    "updated_at": "2026-09-21T15:24:09Z",
+    "html_url": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r4063589306",
+    "pull_request_url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/4063589306"
+      },
+      "html": {
+        "href": "https://github.com/xarray-contrib/xdggs/pull/260#discussion_r4063589306"
+      },
+      "pull_request": {
+        "href": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/260"
+      }
+    },
+    "reactions": {
+      "url": "https://api.github.com/repos/xarray-contrib/xdggs/pulls/comments/4063589306/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "start_line": null,
+    "original_start_line": 129,
+    "start_side": "RIGHT",
+    "line": null,
+    "original_line": 131,
+    "side": "RIGHT",
+    "author_association": "MEMBER",
+    "original_position": 29,
+    "position": 1,
+    "subject_type": "line"
+  }
+]

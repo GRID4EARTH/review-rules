@@ -1,0 +1,457 @@
+diff --git a/python/healpix-geo/docs/api/nested.rst b/python/healpix-geo/docs/api/nested.rst
+index 06980234..038b4f0e 100644
+--- a/python/healpix-geo/docs/api/nested.rst
++++ b/python/healpix-geo/docs/api/nested.rst
+@@ -51,6 +51,7 @@ Navigation in the hierarchical structure of HEALPix.
+ 
+    kth_neighbours
+    kth_neighbourhood
++   neighbours
+    zoom_to
+    siblings
+ 
+diff --git a/python/healpix-geo/python/healpix_geo/nested.py b/python/healpix-geo/python/healpix_geo/nested.py
+index 12beb011..e0f40ab5 100644
+--- a/python/healpix-geo/python/healpix_geo/nested.py
++++ b/python/healpix-geo/python/healpix_geo/nested.py
+@@ -1,6 +1,6 @@
+ from __future__ import annotations
+ 
+-from typing import TYPE_CHECKING
++from typing import TYPE_CHECKING, Literal
+ 
+ import marray
+ import numpy as np
+@@ -551,6 +551,51 @@ def bilinear_interpolation(
+     return xp.asarray(ipix, mask=mask), xp.asarray(weights, mask=mask)
+ 
+ 
++def neighbours(
++    ipix,
++    depth,
++    *,
++    connectivity: Literal["edge", "edge_or_vertex"] = "edge_or_vertex",
++    num_threads=0,
++):
++    """Get direction-preserving immediate neighbours of NESTED HEALPix cells.
++
++    Parameters
++    ----------
++    ipix : `numpy.ndarray`
++        The NESTED HEALPix cell indexes.
++    depth : int
++        The depth of the HEALPix cells.
++    connectivity : {"edge", "edge_or_vertex"}, optional
++        ``"edge"`` returns the four edge-sharing neighbours in ``SW, NW,
++        NE, SE`` order. ``"edge_or_vertex"`` returns all eight directional
++        positions in ``SW, W, NW, N, NE, E, SE, S`` order.
++    num_threads : int, optional
++        Number of threads. The default, 0, uses the Rayon global thread pool
++        for sufficiently large inputs and a sequential path for small inputs.
++
++    Returns
++    -------
++    neighbours : `numpy.ndarray`
++        An ``np.int64`` array with shape ``ipix.shape + (4,)`` for edge
++        connectivity or ``ipix.shape + (8,)`` for edge-or-vertex
++        connectivity. Scalar inputs are normalized to one-dimensional input,
++        producing shape ``(1, 4)`` or ``(1, 8)``. Missing directional
++        positions are represented by ``-1`` and never shift other positions.
++    """
++    _check_depth(depth)
++
++    if connectivity not in ("edge", "edge_or_vertex"):
++        raise ValueError("connectivity must be 'edge' or 'edge_or_vertex'")
++
++    ipix = np.atleast_1d(ipix)
++    _check_ipixels(data=ipix, depth=depth)
++    ipix = ipix.astype(np.uint64)
++
++    num_threads = np.uint16(num_threads)
++    return healpix_geo.nested.neighbours(depth, ipix, connectivity, num_threads)
++
++
+ def kth_neighbours(ipix, depth, ring, num_threads=0):
+     """Get the kth ring of neighbouring cells around some HEALPix cells at a given depth.
+ 
+diff --git a/python/healpix-geo/python/healpix_geo/tests/test_neighbours.py b/python/healpix-geo/python/healpix_geo/tests/test_neighbours.py
+index d898467a..589d05fb 100644
+--- a/python/healpix-geo/python/healpix_geo/tests/test_neighbours.py
++++ b/python/healpix-geo/python/healpix_geo/tests/test_neighbours.py
+@@ -320,3 +320,150 @@ def test_kth_neighbours(depth, cell_ids, ring, indexing_scheme, expected):
+     actual = func(cell_ids)
+     print(repr(actual))
+     np.testing.assert_equal(actual, expected)
++
++
++@pytest.mark.parametrize(
++    ("connectivity", "expected"),
++    [
++        pytest.param(
++            "edge",
++            np.array([[111, 21, 43, 40]], dtype="int64"),
++            id="edge",
++        ),
++        pytest.param(
++            "edge_or_vertex",
++            np.array(
++                [[111, -1, 21, 23, 43, 41, 40, 109]],
++                dtype="int64",
++            ),
++            id="edge-or-vertex",
++        ),
++    ],
++)
++def test_direction_preserving_neighbours(connectivity, expected):
++    actual = healpix_geo.nested.neighbours(
++        np.array([42], dtype="uint64"),
++        depth=2,
++        connectivity=connectivity,
++        num_threads=1,
++    )
++
++    np.testing.assert_equal(actual, expected)
++    assert actual.flags.c_contiguous
++
++
++@pytest.mark.parametrize(
++    ("connectivity", "width"),
++    [
++        pytest.param("edge", 4, id="edge"),
++        pytest.param("edge_or_vertex", 8, id="edge-or-vertex"),
++    ],
++)
++def test_neighbours_preserves_input_shape(connectivity, width):
++    cells = np.array([[42, 43], [44, 45]], dtype="uint64")
++
++    result = healpix_geo.nested.neighbours(
++        cells,
++        depth=2,
++        connectivity=connectivity,
++    )
++
++    assert result.shape == cells.shape + (width,)
++    assert result.dtype == np.dtype("int64")
++    assert result.flags.c_contiguous
++
++
++@pytest.mark.parametrize(
++    ("connectivity", "width"),
++    [
++        pytest.param("edge", 4, id="edge"),
++        pytest.param("edge_or_vertex", 8, id="edge-or-vertex"),
++    ],
++)
++def test_neighbours_scalar_and_empty_shapes(connectivity, width):
++    scalar = healpix_geo.nested.neighbours(
++        42,
++        depth=2,
++        connectivity=connectivity,
++    )
++    empty = healpix_geo.nested.neighbours(
++        np.array([], dtype="uint64"),
++        depth=2,
++        connectivity=connectivity,
++    )
++
++    assert scalar.shape == (1, width)
++    assert empty.shape == (0, width)
++    assert scalar.flags.c_contiguous
++    assert empty.flags.c_contiguous
++
++
++def test_neighbours_rejects_invalid_connectivity():
++    with pytest.raises(
++        ValueError,
++        match="connectivity must be 'edge' or 'edge_or_vertex'",
++    ):
++        healpix_geo.nested.neighbours(
++            np.array([42], dtype="uint64"),
++            depth=2,
++            connectivity="invalid",
++        )
++
++
++@pytest.mark.parametrize("depth", range(6))
++def test_edge_neighbour_topology_for_every_cell(depth):
++    cells = np.arange(12 * 4**depth, dtype="uint64")
++    edge = healpix_geo.nested.neighbours(
++        cells,
++        depth=depth,
++        connectivity="edge",
++    )
++    full = healpix_geo.nested.neighbours(
++        cells,
++        depth=depth,
++        connectivity="edge_or_vertex",
++    )
++
++    assert edge.shape == (cells.size, 4)
++    assert np.all(edge >= 0)
++    assert np.all(edge < cells.size)
++
++    # Each edge neighbour must be present in the full neighbourhood.
++    assert np.all(np.any(edge[:, :, None] == full[:, None, :], axis=2))
++
++    # Edge adjacency is symmetric for every cell, including singularities.
++    for direction in range(edge.shape[1]):
++        neighbour_rows = edge[edge[:, direction]]
++        assert np.all(np.any(neighbour_rows == cells[:, None], axis=1))
++
++    valid_full_count = np.count_nonzero(full >= 0, axis=1)
++    if depth == 0:
++        assert np.all(valid_full_count == 6)
++    else:
++        assert np.all((valid_full_count == 7) | (valid_full_count == 8))
++
++
++def test_neighbours_threading_paths_agree():
++    cells = np.arange(12_000, dtype="uint64")
++
++    sequential = healpix_geo.nested.neighbours(
++        cells,
++        depth=5,
++        connectivity="edge_or_vertex",
++        num_threads=1,
++    )
++    automatic = healpix_geo.nested.neighbours(
++        cells,
++        depth=5,
++        connectivity="edge_or_vertex",
++        num_threads=0,
++    )
++    explicit_parallel = healpix_geo.nested.neighbours(
++        cells,
++        depth=5,
++        connectivity="edge_or_vertex",
++        num_threads=2,
++    )
++
++    np.testing.assert_equal(automatic, sequential)
++    np.testing.assert_equal(explicit_parallel, sequential)
+diff --git a/python/healpix-geo/src/indexing_schemes/nested/hierarchy.rs b/python/healpix-geo/src/indexing_schemes/nested/hierarchy.rs
+index 1a9bb828..7474e68a 100644
+--- a/python/healpix-geo/src/indexing_schemes/nested/hierarchy.rs
++++ b/python/healpix-geo/src/indexing_schemes/nested/hierarchy.rs
+@@ -1,9 +1,46 @@
+ use cdshealpix as healpix;
+ use numpy::{PyArray1, PyArray2, PyArrayDyn, PyArrayMethods, PyUntypedArrayMethods};
++use pyo3::exceptions::PyValueError;
+ use pyo3::prelude::*;
+ 
+ use healpix_geo_core::vectorized::nested::hierarchy as vectorized;
+ 
++/// Return immediate neighbours in fixed directional positions.
++#[pyfunction]
++pub(crate) fn neighbours<'py>(
++    py: Python<'py>,
++    depth: u8,
++    ipix: &Bound<'py, PyArrayDyn<u64>>,
++    connectivity: &str,
++    nthreads: u16,
++) -> PyResult<Bound<'py, PyArrayDyn<i64>>> {
++    let input_shape = ipix.shape();
++    let ipix_ = ipix.readonly();
++    let layer = healpix::nested::get(depth);
++
++    let directions = match connectivity {
++        "edge" => &healpix_geo_core::scalar::nested::hierarchy::EDGE_DIRECTIONS[..],
++        "edge_or_vertex" => {
++            &healpix_geo_core::scalar::nested::hierarchy::EDGE_OR_VERTEX_DIRECTIONS[..]
++        }
++        _ => {
++            return Err(PyValueError::new_err(
++                "connectivity must be 'edge' or 'edge_or_vertex'",
++            ));
++        }
++    };
++
++    let result = vectorized::neighbours(ipix_.as_slice()?, layer, directions, nthreads as usize);
++
++    let output_shape: Vec<usize> = input_shape
++        .iter()
++        .copied()
++        .chain([directions.len()])
++        .collect();
++
++    PyArray1::from_vec(py, result).reshape(output_shape.as_slice())
++}
++
+ /// Wrapper of `kth_neighbours`
+ #[pyfunction]
+ pub(crate) fn kth_neighbours<'py>(
+diff --git a/python/healpix-geo/src/indexing_schemes/nested/mod.rs b/python/healpix-geo/src/indexing_schemes/nested/mod.rs
+index 621e7a63..dd74a5eb 100644
+--- a/python/healpix-geo/src/indexing_schemes/nested/mod.rs
++++ b/python/healpix-geo/src/indexing_schemes/nested/mod.rs
+@@ -13,6 +13,8 @@ pub(crate) use self::coordinates::{
+ pub(crate) use self::coverage::{
+     box_coverage, cone_coverage, elliptical_cone_coverage, polygon_coverage, zone_coverage,
+ };
+-pub(crate) use self::hierarchy::{kth_neighbourhood, kth_neighbours, siblings, zoom_to};
++pub(crate) use self::hierarchy::{
++    kth_neighbourhood, kth_neighbours, neighbours, siblings, zoom_to,
++};
+ pub(crate) use self::mesh::vertex_indices;
+ pub(crate) use self::sets::internal_boundary;
+diff --git a/python/healpix-geo/src/lib.rs b/python/healpix-geo/src/lib.rs
+index 2108348b..037e78ae 100644
+--- a/python/healpix-geo/src/lib.rs
++++ b/python/healpix-geo/src/lib.rs
+@@ -17,8 +17,9 @@ mod nested {
+     use crate::indexing_schemes::nested::{
+         angular_distances, bilinear_interpolation, box_coverage, cartesian_to_healpix,
+         cone_coverage, elliptical_cone_coverage, healpix_to_cartesian, healpix_to_lonlat,
+-        internal_boundary, kth_neighbourhood, kth_neighbours, lonlat_to_healpix, polygon_coverage,
+-        siblings, to_ring, to_zuniq, vertex_indices, vertices, zone_coverage, zoom_to,
++        internal_boundary, kth_neighbourhood, kth_neighbours, lonlat_to_healpix, neighbours,
++        polygon_coverage, siblings, to_ring, to_zuniq, vertex_indices, vertices, zone_coverage,
++        zoom_to,
+     };
+ }
+ 
+diff --git a/rust/healpix-geo-core/src/scalar/nested/hierarchy.rs b/rust/healpix-geo-core/src/scalar/nested/hierarchy.rs
+index f2610e80..b12734cb 100644
+--- a/rust/healpix-geo-core/src/scalar/nested/hierarchy.rs
++++ b/rust/healpix-geo-core/src/scalar/nested/hierarchy.rs
+@@ -1,4 +1,33 @@
+-use cdshealpix::nested::Layer;
++use cdshealpix::{compass_point::MainWind, nested::Layer};
++
++pub const EDGE_DIRECTIONS: [MainWind; 4] = [MainWind::SW, MainWind::NW, MainWind::NE, MainWind::SE];
++
++pub const EDGE_OR_VERTEX_DIRECTIONS: [MainWind; 8] = [
++    MainWind::SW,
++    MainWind::W,
++    MainWind::NW,
++    MainWind::N,
++    MainWind::NE,
++    MainWind::E,
++    MainWind::SE,
++    MainWind::S,
++];
++
++/// Write immediate neighbours into fixed directional positions.
++///
++/// Missing directions are represented by `-1`. Unlike `kth_neighbours`,
++/// this function never compacts the remaining values when a direction is
++/// missing.
++pub fn write_neighbours(hash: &u64, layer: &Layer, directions: &[MainWind], output: &mut [i64]) {
++    debug_assert_eq!(directions.len(), output.len());
++
++    let neighbours = layer.neighbours(*hash, false);
++    for (value, direction) in output.iter_mut().zip(directions) {
++        *value = neighbours
++            .get(*direction)
++            .map_or(-1, |neighbour| *neighbour as i64);
++    }
++}
+ 
+ pub fn kth_neighbours(hash: &u64, layer: &Layer, ring: &u32) -> Vec<i64> {
+     let r = *ring;
+@@ -28,3 +57,28 @@ pub fn kth_neighbourhood(hash: &u64, layer: &Layer, ring: &u32) -> Vec<i64> {
+ 
+     neighbours
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn test_write_edge_neighbours() {
++        let layer = cdshealpix::nested::get(2);
++        let mut result = [-1; 4];
++
++        write_neighbours(&42, layer, &EDGE_DIRECTIONS, &mut result);
++
++        assert_eq!(result, [111, 21, 43, 40]);
++    }
++
++    #[test]
++    fn test_write_full_neighbours_preserves_missing_direction() {
++        let layer = cdshealpix::nested::get(2);
++        let mut result = [-1; 8];
++
++        write_neighbours(&42, layer, &EDGE_OR_VERTEX_DIRECTIONS, &mut result);
++
++        assert_eq!(result, [111, -1, 21, 23, 43, 41, 40, 109]);
++    }
++}
+diff --git a/rust/healpix-geo-core/src/vectorized/nested/hierarchy.rs b/rust/healpix-geo-core/src/vectorized/nested/hierarchy.rs
+index 71bdad0e..b2e1fa97 100644
+--- a/rust/healpix-geo-core/src/vectorized/nested/hierarchy.rs
++++ b/rust/healpix-geo-core/src/vectorized/nested/hierarchy.rs
+@@ -2,11 +2,72 @@
+ use rayon::prelude::*;
+ 
+ use cdshealpix as healpix;
++use cdshealpix::compass_point::MainWind;
+ use cdshealpix::nested::Layer;
+ 
+ use crate::maybe_parallelize;
+ use crate::scalar::nested::hierarchy as scalar;
+ 
++/// Below this size, creating or scheduling parallel work is generally more
++/// expensive than the immediate-neighbour calculation itself.
++const AUTO_PARALLEL_THRESHOLD: usize = 32_768;
++
++/// Return immediate neighbours without losing their directional positions.
++///
++/// The result is a flat row-major buffer with `directions.len()` values per
++/// input cell. Missing positions are represented by `-1`.
++pub fn neighbours(
++    ipix: &[u64],
++    layer: &Layer,
++    directions: &[MainWind],
++    nthreads: usize,
++) -> Vec<i64> {
++    let width = directions.len();
++    debug_assert!(width > 0);
++
++    let mut result = vec![-1; ipix.len() * width];
++
++    #[cfg(not(target_arch = "wasm32"))]
++    {
++        let write_parallel = |output: &mut [i64]| {
++            output
++                .par_chunks_mut(width)
++                .zip(ipix.par_iter())
++                .for_each(|(row, hash)| scalar::write_neighbours(hash, layer, directions, row));
++        };
++
++        match nthreads {
++            1 => result
++                .chunks_mut(width)
++                .zip(ipix)
++                .for_each(|(row, hash)| scalar::write_neighbours(hash, layer, directions, row)),
++            0 if ipix.len() < AUTO_PARALLEL_THRESHOLD => result
++                .chunks_mut(width)
++                .zip(ipix)
++                .for_each(|(row, hash)| scalar::write_neighbours(hash, layer, directions, row)),
++            0 => write_parallel(&mut result),
++            _ => {
++                let pool = rayon::ThreadPoolBuilder::new()
++                    .num_threads(nthreads)
++                    .build()
++                    .unwrap();
++                pool.install(|| write_parallel(&mut result));
++            }
++        }
++    }
++
++    #[cfg(target_arch = "wasm32")]
++    {
++        let _ = nthreads;
++        result
++            .chunks_mut(width)
++            .zip(ipix)
++            .for_each(|(row, hash)| scalar::write_neighbours(hash, layer, directions, row));
++    }
++
++    result
++}
++
+ pub fn kth_neighbours(ipix: &[u64], layer: &Layer, ring: &u32, nthreads: usize) -> Vec<Vec<i64>> {
+     let mut result = Vec::<Vec<i64>>::with_capacity(ipix.len());
+ 

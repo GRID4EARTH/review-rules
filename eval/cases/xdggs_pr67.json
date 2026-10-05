@@ -1,0 +1,131 @@
+{
+ "id": "xdggs_pr67",
+ "repo": "xarray-contrib/xdggs",
+ "pr": 67,
+ "title": "interactive plotting with `lonboard`",
+ "body": "- [x] towards #11\r\n\r\nAs described in #11, this allows us to plot a single map using `lonboard`. This works by computing the cell boundaries in advance, then use `lonboard.SolidPolygonLayer` to visualize them.\r\n\r\nIn the future, we might be able to extend this by attaching sliders for any additional dimensions, as `lonboard` is really fast when it comes to changing the color of the polygons.\r\n\r\nAlso, as a future task, we should try to allow making use of the native support for H3 cell ids in `deck.gl` (and extend that to support `healpix` and maybe other DGGS), which should get rid of a lot of the data transfer between the python kernel and the browser, and computing cell boundaries is also very expensive.\r\n\r\nStill missing:\r\n- [x] tests",
+ "snapshot_commit": "0c2dc44049e4699159de40b4ac5278fb9dc5665a",
+ "base_sha": "775c76be55c661cc8ceb5914fedefda0db5edb89",
+ "diff": "diff --git a/xdggs/accessor.py b/xdggs/accessor.py\nindex 8dbf9e64..513ff0b8 100644\n--- a/xdggs/accessor.py\n+++ b/xdggs/accessor.py\n@@ -3,6 +3,7 @@\n \n from xdggs.grid import DGGSInfo\n from xdggs.index import DGGSIndex\n+from xdggs.plotting import explore\n \n \n @xr.register_dataset_accessor(\"dggs\")\n@@ -115,3 +116,40 @@ def cell_boundaries(self):\n         return xr.DataArray(\n             boundaries, coords={self._name: self.cell_ids}, dims=self.cell_ids.dims\n         )\n+\n+    def explore(\n+        self, *, cell_boundaries=\"cell_boundaries\", cmap=\"viridis\", center=None\n+    ):\n+        \"\"\"interactively explore the data using `lonboard`\n+\n+        Requires `geopandas`, `matplotlib`, and `lonboard` to be installed.\n+\n+        Parameters\n+        ----------\n+        cell_boundaries : str\n+            The name of the coordinate containing the pre-computed cell boundary polygons.\n+        cmap : str\n+            The name of the color map to use\n+        center : int or float, optional\n+            If set, will choose this as the center point for a diverging color map.\n+\n+        Returns\n+        -------\n+        map : lonboard.Map\n+            The rendered map.\n+\n+        Notes\n+        -----\n+        Plotting currently is restricted to `DataArray` objects.\n+        \"\"\"\n+        if isinstance(self._obj, xr.Dataset):\n+            raise ValueError(\"does not work with Dataset objects, yet\")\n+\n+        cell_dim = self._obj[self._name].dims[0]\n+        return explore(\n+            self._obj,\n+            cell_boundaries=cell_boundaries,\n+            cell_dim=cell_dim,\n+            cmap=cmap,\n+            center=center,\n+        )\ndiff --git a/xdggs/plotting.py b/xdggs/plotting.py\nnew file mode 100644\nindex 00000000..715ee718\n--- /dev/null\n+++ b/xdggs/plotting.py\n@@ -0,0 +1,53 @@\n+import numpy as np\n+\n+\n+def explore(\n+    arr,\n+    cell_boundaries=\"cell_boundaries\",\n+    cell_dim=\"cells\",\n+    cmap=\"viridis\",\n+    center=None,\n+):\n+    import geopandas as gpd\n+    import lonboard\n+    from lonboard import SolidPolygonLayer\n+    from lonboard.colormap import apply_continuous_cmap\n+    from matplotlib import colormaps\n+    from matplotlib.colors import CenteredNorm, Normalize\n+\n+    if len(arr.dims) != 1 or cell_dim not in arr.dims:\n+        raise ValueError(\n+            f\"exploration only works with a single dimension ('{cell_dim}')\"\n+        )\n+\n+    if cell_boundaries not in arr.coords:\n+        raise ValueError(\n+            f\"cannot find the cell boundaries coordinate: '{cell_boundaries}'\"\n+        )\n+\n+    name = arr.name or \"__temporary_name__\"\n+\n+    gdf = (\n+        arr.to_dataset(name=name)\n+        .to_pandas()\n+        .pipe(gpd.GeoDataFrame, geometry=cell_boundaries, crs=4326)\n+    )\n+\n+    data = gdf[name]\n+\n+    if center is None:\n+        vmin = data.min(skipna=True)\n+        vmax = data.max(skipna=True)\n+        normalizer = Normalize(vmin=vmin, vmax=vmax)\n+    else:\n+        halfrange = np.abs(data).max(skipna=True)\n+        normalizer = CenteredNorm(vcenter=center, halfrange=halfrange)\n+\n+    normalized_data = normalizer(data)\n+\n+    colormap = colormaps[cmap]\n+    colors = apply_continuous_cmap(normalized_data, colormap)\n+\n+    layer = SolidPolygonLayer.from_geopandas(gdf, filled=True, get_fill_color=colors)\n+\n+    return lonboard.Map(layer)\n",
+ "ground_truth": [
+  {
+   "path": "xdggs/accessor.py",
+   "line": 125,
+   "side": "RIGHT",
+   "body": "thanks for the warning, I'll extend this list here, or we can try to work around geopandas (see below)",
+   "diff_hunk": "@@ -115,3 +116,40 @@ def cell_boundaries(self):\n         return xr.DataArray(\n             boundaries, coords={self._name: self.cell_ids}, dims=self.cell_ids.dims\n         )\n+\n+    def explore(\n+        self, *, cell_boundaries=\"cell_boundaries\", cmap=\"viridis\", center=None\n+    ):\n+        \"\"\"interactively explore the data using `lonboard`\n+\n+        Requires `geopandas`, `matplotlib`, and `lonboard` to be installed.",
+   "created_at": "2024-10-02T17:03:44Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1784914275"
+  },
+  {
+   "path": "xdggs/accessor.py",
+   "line": 138,
+   "side": "RIGHT",
+   "body": "thanks for the hint. I'll probably use `sphinx` to set up the docs, so I'll definitely make use of that!",
+   "diff_hunk": "@@ -115,3 +116,40 @@ def cell_boundaries(self):\n         return xr.DataArray(\n             boundaries, coords={self._name: self.cell_ids}, dims=self.cell_ids.dims\n         )\n+\n+    def explore(\n+        self, *, cell_boundaries=\"cell_boundaries\", cmap=\"viridis\", center=None\n+    ):\n+        \"\"\"interactively explore the data using `lonboard`\n+\n+        Requires `geopandas`, `matplotlib`, and `lonboard` to be installed.\n+\n+        Parameters\n+        ----------\n+        cell_boundaries : str\n+            The name of the coordinate containing the pre-computed cell boundary polygons.\n+        cmap : str\n+            The name of the color map to use\n+        center : int or float, optional\n+            If set, will choose this as the center point for a diverging color map.\n+\n+        Returns\n+        -------\n+        map : lonboard.Map",
+   "created_at": "2024-10-02T17:05:13Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1784916024"
+  },
+  {
+   "path": "xdggs/plotting.py",
+   "line": 11,
+   "side": "RIGHT",
+   "body": "I'd definitely be interested.\r\n\r\nRight now, what we're doing is ask the user to pre-compute cell vertices from the cell ids (which can have various forms for different DGGS, but most often are `int64` or `uint64` arrays), then convert them into `shapely` polygons. This is one of the things that take the longest other than converting to `geopandas` and constructing the `SolidPolygonLayer`, so if we could instead extend `deck.gl` to directly support them (like it supports H3 ids), that would be best. However, I suppose that will either take a long time and require someone to actually do the work, especially since there's so many different kinds of DGGS (and I'm not confident in my TypeScript / JavaScript skills so I won't be able to work on this myself anytime soon).\r\n\r\nSo as the next best step, should we construct `geoarrow` polygons from the cell vertex coordinates, possibly using `arro3`? If you have any examples I'd be happy to try figuring out how to do that.",
+   "diff_hunk": "@@ -0,0 +1,53 @@\n+import numpy as np\n+\n+\n+def explore(\n+    arr,\n+    cell_boundaries=\"cell_boundaries\",\n+    cell_dim=\"cells\",\n+    cmap=\"viridis\",\n+    center=None,\n+):\n+    import geopandas as gpd",
+   "created_at": "2024-10-02T17:18:36Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1784930704"
+  },
+  {
+   "path": "xdggs/plotting.py",
+   "line": 11,
+   "side": "RIGHT",
+   "body": "> In the longer term, I'd like to update https://github.com/nmandery/h3ronpy to have a fast way to convert from h3 cell ids to GeoArrow polygon array\r\n\r\n`h3ronpy` has `h3ronpy.arrow.vector.cells_to_wkb_polygons` which would require you to decode WKB, so not sure if that's better.\r\n\r\nIn any case, I've translated my example from #11 to use your example (while borrowing code from `lonboard.viz` to construct the arrow table and construct a `SolidPolygonLayer`):\r\n```python\r\nimport xarray as xr\r\nimport arro3.core\r\nimport healpy as hp\r\nimport lonboard\r\nimport numpy as np\r\nfrom matplotlib import colormaps\r\nfrom arro3.core import Array, Field, fixed_size_list_array, list_array, Schema, Table, ChunkedArray\r\n\r\nresolution = 10\r\n\r\nds = (\r\n    xr.Dataset(\r\n        coords={\r\n            \"cell_ids\": (\r\n                \"cells\",\r\n                np.arange(12 * 4**resolution),\r\n                {\r\n                    \"grid_name\": \"healpix\",\r\n                    \"resolution\": resolution,\r\n                    \"indexing_scheme\": \"nested\",\r\n                },\r\n            )\r\n        }\r\n    )\r\n    .pipe(xdggs.decode)\r\n    .pipe(lambda ds: ds.merge(ds.dggs.cell_centers()))\r\n    .assign(data=lambda ds: np.sin(np.radians(ds[\"latitude\"])))\r\n)\r\n\r\nlevel = 10\r\ncell_ids = np.arange(12 * 4**level)\r\n\r\n\r\ndef cell_ids2vertices(cell_ids, level, indexing_scheme):\r\n    nest = indexing_scheme == \"nested\"\r\n    nside = 2**level\r\n\r\n    boundary_vectors = hp.boundaries(nside, cell_ids, step=1, nest=nest)\r\n    lon, lat = hp.vec2ang(np.moveaxis(boundary_vectors, 1, -1), lonlat=True)\r\n    lon_ = (lon + 180) % 360 - 180\r\n    boundaries = np.reshape(np.stack((lon_, lat), axis=-1), (-1, 4, 2))\r\n\r\n    # fix the dateline / prime meridian issue\r\n    lon_ = boundaries[..., 0]\r\n    to_fix = abs(np.max(lon_, axis=-1) - np.min(lon_, axis=-1)) > 300\r\n    fixed_lon = lon_[to_fix, :] + 360\r\n    boundaries[to_fix, :, 0] = fixed_lon\r\n\r\n    return boundaries\r\n\r\n\r\ndef cell_ids2cell_boundaries_geoarrow(cell_ids, level, indexing_scheme):\r\n    vertices = cell_ids2vertices(cell_ids, level, indexing_scheme)\r\n    boundaries = np.concatenate([vertices, vertices[:, :1, :]], axis=1)\r\n    \r\n    coords = np.reshape(boundaries, (-1, 2))\r\n    coords_per_pixel = boundaries.shape[1]\r\n    geom_offsets = np.arange(cell_ids.size + 1, dtype=\"int32\")\r\n    ring_offsets = geom_offsets * coords_per_pixel\r\n\r\n    polygon_array = list_array(geom_offsets, list_array(ring_offsets, coords))\r\n    # We need to tag the array with extension metadata (`geoarrow.polygon`) so that Lonboard knows that this is a geospatial column.\r\n    polygon_array_with_geo_meta = polygon_array.cast(\r\n        polygon_array.field.with_metadata({\"ARROW:extension:name\": \"geoarrow.polygon\"})\r\n    )\r\n    return polygon_array_with_geo_meta\r\n\r\npolygons = cell_ids2cell_boundaries_geoarrow(cell_ids, level=level, indexing_scheme=\"nested\")\r\nvalues = np.linspace(0, 1, cell_ids.size)\r\ncmap = colormaps[\"viridis\"]\r\ncolors = apply_continuous_cmap(values, cmap)\r\n\r\narray = Array.from_arrow(polygons)\r\nfield = array.field.with_name(\"geometry\")\r\nschema = Schema([field])\r\ntable = Table.from_arrays([array], schema=schema)\r\n\r\nnum_rows = len(array)\r\nif num_rows <= np.iinfo(np.uint8).max:\r\n    arange_col = Array.from_numpy(np.arange(num_rows, dtype=np.uint8))\r\nelif num_rows <= np.iinfo(np.uint16).max:\r\n    arange_col = Array.from_numpy(np.arange(num_rows, dtype=np.uint16))\r\nelif num_rows <= np.iinfo(np.uint32).max:\r\n    arange_col = Array.from_numpy(np.arange(num_rows, dtype=np.uint32))\r\nelse:\r\n    arange_col = Array.from_numpy(np.arange(num_rows, dtype=np.uint64))\r\n\r\ntable = table.append_column(\"row_index\", ChunkedArray([arange_col])).append_column(\"values\", ChunkedArray([Array.from_numpy(values)]))\r\n\r\nlayer = lonboard.SolidPolygonLayer(table=table, get_fill_color=colors)\r\nmap = lonboard.Map(layer)\r\n```\r\n(this also doesn't fully resolve the dateline issue)\r\n\r\nwhich takes ~19 s to complete, plus about 10s to render. The version that converts to geopandas takes ~54s plus another ~10s to render, so this is a huge improvement.",
+   "diff_hunk": "@@ -0,0 +1,53 @@\n+import numpy as np\n+\n+\n+def explore(\n+    arr,\n+    cell_boundaries=\"cell_boundaries\",\n+    cell_dim=\"cells\",\n+    cmap=\"viridis\",\n+    center=None,\n+):\n+    import geopandas as gpd",
+   "created_at": "2024-10-03T14:53:07Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1786374809"
+  },
+  {
+   "path": "xdggs/plotting.py",
+   "line": 11,
+   "side": "RIGHT",
+   "body": "> How many cell ids is this?\r\n\r\n`12 * 4**10` cell ids (roughly 12.5M)\r\n\r\n> I'm not sure this will work. I don't know if deck.gl will render coordinates outside of [-180, 180].\r\n\r\n`deck.gl` does render coordinates outside of `[-180, 180]` but has the snapping issue we talked about in #11.\r\n\r\nAnd it's true the dateline issue is almost but not quite resolved: the cells crossing over the dateline now go from slightly more than 180 to slightly less than 480, so I'm missing a modulo somewhere.\r\n\r\n> Can you check which part of the 19s is in which part?\r\n\r\nI'll start profiling then.",
+   "diff_hunk": "@@ -0,0 +1,53 @@\n+import numpy as np\n+\n+\n+def explore(\n+    arr,\n+    cell_boundaries=\"cell_boundaries\",\n+    cell_dim=\"cells\",\n+    cmap=\"viridis\",\n+    center=None,\n+):\n+    import geopandas as gpd",
+   "created_at": "2024-10-03T16:39:20Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1786530193"
+  },
+  {
+   "path": "xdggs/plotting.py",
+   "line": 11,
+   "side": "RIGHT",
+   "body": "yeah, I just came to the same conclusion. Here's the output of `pyinstrument`:\r\n```python\r\n19.600 <module>  lonboard_example.py:1\r\n├─ 11.166 SolidPolygonLayer.__init__  lonboard/_layer.py:1498\r\n│     [26 frames hidden]  lonboard, ipywidgets, pyarrow, <__arr...\r\n│        8.384 ParquetWriter.write_table  pyarrow/parquet/core.py:1084\r\n├─ 6.762 cell_ids2cell_boundaries_geoarrow  lonboard_example.py:36\r\n│  ├─ 6.479 cell_ids2vertices  lonboard_example.py:18\r\n│  │  ├─ 3.559 [self]  lonboard_example.py\r\n│  │  ├─ 1.913 vec2ang  healpy/pixelfunc.py:730\r\n│  │  │     [7 frames hidden]  healpy, <__array_function__ internals...\r\n│  │  ├─ 0.411 amin  <__array_function__ internals>:177\r\n│  │  │     [3 frames hidden]  numpy, <built-in>\r\n│  │  └─ 0.408 amax  <__array_function__ internals>:177\r\n│  │        [3 frames hidden]  numpy, <built-in>\r\n│  └─ 0.253 concatenate  <__array_function__ internals>:177\r\n│        [1 frames hidden]  <built-in>\r\n├─ 0.845 <module>  healpy/__init__.py:1\r\n│     [4 frames hidden]  healpy, astropy\r\n└─ 0.585 <module>  lonboard/__init__.py:1\r\n      [5 frames hidden]  lonboard, ipywidgets, IPython, pandas\r\n```",
+   "diff_hunk": "@@ -0,0 +1,53 @@\n+import numpy as np\n+\n+\n+def explore(\n+    arr,\n+    cell_boundaries=\"cell_boundaries\",\n+    cell_dim=\"cells\",\n+    cmap=\"viridis\",\n+    center=None,\n+):\n+    import geopandas as gpd",
+   "created_at": "2024-10-03T17:16:53Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1786583522"
+  },
+  {
+   "path": "xdggs/plotting.py",
+   "line": 11,
+   "side": "RIGHT",
+   "body": "> Was it a one-line thing to create that?\r\n\r\nit has different modes for how you can run it (see the [user guide](https://pyinstrument.readthedocs.io/en/latest/guide.html)). I put the code above in a python script, then ran it with `python -m pyinstrument lonboard_example.py`, but you could also use the context manager:\r\n```python\r\nwith pyinstrument.profile():\r\n    ...\r\n```\r\nor the jupyter / ipython cell magic `%%pyinstrument` (load first with `%load_ext pyinstrument`)",
+   "diff_hunk": "@@ -0,0 +1,53 @@\n+import numpy as np\n+\n+\n+def explore(\n+    arr,\n+    cell_boundaries=\"cell_boundaries\",\n+    cell_dim=\"cells\",\n+    cmap=\"viridis\",\n+    center=None,\n+):\n+    import geopandas as gpd",
+   "created_at": "2024-10-03T18:04:09Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1786652476"
+  },
+  {
+   "path": "xdggs/plotting.py",
+   "line": 11,
+   "side": "RIGHT",
+   "body": "> I'm curious what those other frames are. It still shouldn't be 3 seconds of overhead\r\n\r\nthe ones beneath `SolidPolygonLayer`? Here you go:\r\n```\r\n├─ 11.018 SolidPolygonLayer.__init__  lonboard/_layer.py:1498\r\n│  └─ 11.018 SolidPolygonLayer.__init__  lonboard/_layer.py:266\r\n│     ├─ 9.058 SolidPolygonLayer.__init__  lonboard/_layer.py:80\r\n│     │  └─ 9.058 SolidPolygonLayer.__init__  lonboard/_base.py:16\r\n│     │     └─ 9.058 SolidPolygonLayer.__init__  ipywidgets/widgets/widget.py:500\r\n│     │           [1 frames hidden]  ipywidgets\r\n│     │              8.991 SolidPolygonLayer.get_state  ipywidgets/widgets/widget.py:589\r\n│     │              ├─ 8.330 serialize_table  lonboard/_serialization.py:72\r\n│     │              │  └─ 8.330 serialize_table_to_parquet  lonboard/_serialization.py:25\r\n│     │              │     └─ 8.321 ParquetWriter.write_batch  pyarrow/parquet/core.py:1068\r\n│     │              │           [0 frames hidden]  \r\n│     │              │              8.321 ParquetWriter.write_table  pyarrow/parquet/core.py:1084\r\n│     │              └─ 0.661 serialize_accessor  lonboard/_serialization.py:58\r\n│     │                 └─ 0.661 serialize_pyarrow_column  lonboard/_serialization.py:52\r\n│     │                    └─ 0.661 serialize_table_to_parquet  lonboard/_serialization.py:25\r\n│     │                       └─ 0.641 ParquetWriter.write_batch  pyarrow/parquet/core.py:1068\r\n│     │                             [1 frames hidden]  pyarrow\r\n│     └─ 1.958 default_geoarrow_viewport  lonboard/_layer.py:215\r\n│        └─ 1.865 total_bounds  lonboard/_geoarrow/ops/bbox.py:36\r\n│           └─ 1.865 _total_bounds_nest_2  lonboard/_geoarrow/ops/bbox.py:80\r\n│              └─ 1.865 _coords_bbox  lonboard/_geoarrow/ops/bbox.py:55\r\n│                 ├─ 0.939 amax  <__array_function__ internals>:177\r\n│                 │     [3 frames hidden]  numpy, <built-in>\r\n│                 └─ 0.926 amin  <__array_function__ internals>:177\r\n│                       [3 frames hidden]  numpy, <built-in>\r\n```",
+   "diff_hunk": "@@ -0,0 +1,53 @@\n+import numpy as np\n+\n+\n+def explore(\n+    arr,\n+    cell_boundaries=\"cell_boundaries\",\n+    cell_dim=\"cells\",\n+    cmap=\"viridis\",\n+    center=None,\n+):\n+    import geopandas as gpd",
+   "created_at": "2024-10-03T18:10:42Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1786659267"
+  },
+  {
+   "path": "xdggs/plotting.py",
+   "line": 11,
+   "side": "RIGHT",
+   "body": "the most recent commits integrate the code we talked about into `xdggs`. If you have time to look at I'd appreciate another review, but either way thanks for all the help, this is already so much faster than the code I had before.",
+   "diff_hunk": "@@ -0,0 +1,53 @@\n+import numpy as np\n+\n+\n+def explore(\n+    arr,\n+    cell_boundaries=\"cell_boundaries\",\n+    cell_dim=\"cells\",\n+    cmap=\"viridis\",\n+    center=None,\n+):\n+    import geopandas as gpd",
+   "created_at": "2024-10-08T14:03:41Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1791947645"
+  }
+ ],
+ "other_rounds": [
+  {
+   "path": "xdggs/h3.py",
+   "line": 42,
+   "side": "RIGHT",
+   "body": "that's good to know. I've switched to using `pyproj.CRS.from_epsg(4326).to_json()` for now, but I definitely support abbreviating that field, PROJJSON is so much longer than the epsg string.",
+   "diff_hunk": "@@ -22,6 +21,32 @@\n from xdggs.utils import _extract_cell_id_variable, register_dggs\n \n \n+def polygons_shapely(wkb):\n+    import shapely\n+\n+    return shapely.from_wkb(wkb)\n+\n+\n+def polygons_geoarrow(wkb):\n+    import shapely\n+    from arro3.core import list_array\n+\n+    polygons = shapely.from_wkb(wkb)\n+    _, coords, (geom_offsets, ring_offsets) = shapely.to_ragged_array(polygons)\n+\n+    polygon_array = list_array(geom_offsets, list_array(ring_offsets, coords))\n+    polygon_array_with_geo_meta = polygon_array.cast(\n+        polygon_array.field.with_metadata(\n+            {\n+                \"ARROW:extension:name\": \"geoarrow.polygon\",\n+                \"ARROW:extension:metadata\": '{\"crs\": \"epsg:4326\"}',",
+   "created_at": "2024-10-08T18:06:11Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1792300692"
+  },
+  {
+   "path": "xdggs/h3.py",
+   "line": 45,
+   "side": "RIGHT",
+   "body": "or `f'{{\"crs\": {CRS.to_json()}}}'`, I suppose. Thanks for catching this!",
+   "diff_hunk": "@@ -22,6 +21,40 @@\n from xdggs.utils import _extract_cell_id_variable, register_dggs\n \n \n+def polygons_shapely(wkb):\n+    import shapely\n+\n+    return shapely.from_wkb(wkb)\n+\n+\n+def polygons_geoarrow(wkb):\n+    import pyproj\n+    import shapely\n+    from arro3.core import list_array\n+\n+    polygons = shapely.from_wkb(wkb)\n+    crs = pyproj.CRS.from_epsg(4326)\n+\n+    geometry_type, coords, (geom_offsets, ring_offsets) = shapely.to_ragged_array(\n+        polygons\n+    )\n+\n+    if geometry_type != \"Polygon\":\n+        raise ValueError(f\"unsupported geometry type found: {geometry_type}\")\n+\n+    polygon_array = list_array(geom_offsets, list_array(ring_offsets, coords))",
+   "created_at": "2024-10-08T18:21:47Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1792320174"
+  },
+  {
+   "path": "xdggs/h3.py",
+   "line": 50,
+   "side": "RIGHT",
+   "body": "in this case this is probably fine, the json-encoded string looks something like this: `{\"$schema\": ...}`. Inserting that into a another json object is then really just a string insert. (Either way I'll have to write tests for this, so far I only checked manually).\r\n\r\nI'll have to figure out whether I'd consider the simplicity / speed more important than the guaranteed consistency of `json.dumps`. A third option would be to store the entire string somewhere, and reference that for any of the implementations.",
+   "diff_hunk": "@@ -47,7 +47,7 @@ def polygons_geoarrow(wkb):\n         polygon_array.field.with_metadata(\n             {\n                 \"ARROW:extension:name\": \"geoarrow.polygon\",\n-                \"ARROW:extension:metadata\": crs.to_json(),\n+                \"ARROW:extension:metadata\": f'{{\"crs\": {crs.to_json()}}}',",
+   "created_at": "2024-10-08T18:43:08Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1792349247"
+  },
+  {
+   "path": "xdggs/h3.py",
+   "line": 50,
+   "side": "RIGHT",
+   "body": "in the end I went with `json.dumps` because this allows us to set additional metadata when necessary",
+   "diff_hunk": "@@ -47,7 +47,7 @@ def polygons_geoarrow(wkb):\n         polygon_array.field.with_metadata(\n             {\n                 \"ARROW:extension:name\": \"geoarrow.polygon\",\n-                \"ARROW:extension:metadata\": crs.to_json(),\n+                \"ARROW:extension:metadata\": f'{{\"crs\": {crs.to_json()}}}',",
+   "created_at": "2024-10-12T17:19:50Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/67#discussion_r1797735225"
+  }
+ ]
+}

@@ -1,0 +1,119 @@
+{
+ "27": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "e2bd9878e836c1092b11a5e775c06604c39e5bf4",
+  "base_sha": "13f494e5b67327559c48b1dcf0200b7a213695b7",
+  "n_comments_at_snapshot": 6,
+  "n_comments_total": 8,
+  "title": "Select cells by polygon [WIP]",
+  "merged": false
+ },
+ "32": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "e048ff239c12b401d4c4f5514f7ffe4ab95316c9",
+  "base_sha": "6b075a23530e5d154a227ac9b2066bb99bac01dd",
+  "n_comments_at_snapshot": 1,
+  "n_comments_total": 1,
+  "title": "healpix levels ",
+  "merged": false
+ },
+ "33": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "f1cd9e658d4f230b95a173ac8769e12f947dd3a0",
+  "base_sha": "d98083a11f17bbd91a5a7defd57af47e0d82e730",
+  "n_comments_at_snapshot": 1,
+  "n_comments_total": 1,
+  "title": "draft documentation and schema of different latitudes",
+  "merged": true
+ },
+ "45": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "57749ab8e4dedf6d33d48dd1dcd7eded1e848a6f",
+  "base_sha": "375dfcc68c2df452baf149a828697b117ac9dbc9",
+  "n_comments_at_snapshot": 6,
+  "n_comments_total": 8,
+  "title": "Add documentation on HEALPix extension to ellipsoids",
+  "merged": true
+ },
+ "128": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "e80e48cdb32ae7d6e99aced73519bef2ffd0341e",
+  "base_sha": "dc19532c8b566cd600ebd8d02d1127ab74a8ee9a",
+  "n_comments_at_snapshot": 10,
+  "n_comments_total": 16,
+  "title": "New version of healpix-geo documentation",
+  "merged": true
+ },
+ "134": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "e0b9fb66c5cf969090ea1f7332d58287c025e7cf",
+  "base_sha": "9cf847929ed10278cc6b6ecde6b03d88bd29b38c",
+  "n_comments_at_snapshot": 5,
+  "n_comments_total": 5,
+  "title": "geodesic distance function",
+  "merged": false
+ },
+ "137": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "f062054f58e6f3963c2d11cb96aa54614ba64ad7",
+  "base_sha": "9cf847929ed10278cc6b6ecde6b03d88bd29b38c",
+  "n_comments_at_snapshot": 6,
+  "n_comments_total": 8,
+  "title": "More docs",
+  "merged": true
+ },
+ "185": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "3c6deb49b08f120d477590fa90d9998b04687c6b",
+  "base_sha": "2b0484967efdf541017e866a7dfe4af57889260e",
+  "n_comments_at_snapshot": 1,
+  "n_comments_total": 1,
+  "title": "fill in the copyright",
+  "merged": true
+ },
+ "234": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "dd051f014219839da4031f53130f7894b6749564",
+  "base_sha": "ec5af4e1a5c9e77f17cd556e5762c99da00e9b46",
+  "n_comments_at_snapshot": 8,
+  "n_comments_total": 19,
+  "title": "js: reusable `Ellipsoid` handle, `createGrid`, and bulk typed-array APIs",
+  "merged": true
+ },
+ "248": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "10e04049e7bdd0bbde82520398bc5eac4d5d662e",
+  "base_sha": "ec5af4e1a5c9e77f17cd556e5762c99da00e9b46",
+  "n_comments_at_snapshot": 2,
+  "n_comments_total": 2,
+  "title": "Document integration workflow and Zenodo creator metadata",
+  "merged": false
+ },
+ "250": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "3115982b6719b2b44ea447eb035e493b7a2707c9",
+  "base_sha": "871201d9816d4190d0b0f6241f74a6e22153043f",
+  "n_comments_at_snapshot": 6,
+  "n_comments_total": 6,
+  "title": "Issue 246 directional neighbours",
+  "merged": true
+ },
+ "251": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "e6993cceb00a65422378085155d8eeb1505a3c2e",
+  "base_sha": "a26d80401b3ce3b2223f75871621c2c7897bc34e",
+  "n_comments_at_snapshot": 9,
+  "n_comments_total": 9,
+  "title": "Issue 243 face xy topology",
+  "merged": true
+ },
+ "252": {
+  "repo": "grid4earth/healpix-geo",
+  "snapshot_commit": "d5b441349e71ad46be706bdea0acd86397772e21",
+  "base_sha": "76594745ee779c1306112ac25d1e176f36b6df98",
+  "n_comments_at_snapshot": 1,
+  "n_comments_total": 1,
+  "title": "Perf/batched cone coverage",
+  "merged": false
+ }
+}

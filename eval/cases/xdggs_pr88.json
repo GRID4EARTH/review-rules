@@ -1,0 +1,59 @@
+{
+ "id": "xdggs_pr88",
+ "repo": "xarray-contrib/xdggs",
+ "pr": 88,
+ "title": "citations file",
+ "body": "- [x] follow-up to #80\r\n\r\nThis adds a `CITATION.cff` file, together with a `pre-commit` hook that validates it. Note that this is an initial draft, so feel free to suggest changes.",
+ "snapshot_commit": "e63ce922b13211a52f4c26a4db88ab93e7efefff",
+ "base_sha": "f4a6b80558c5009703148b0e14c4198239ed0b9c",
+ "diff": "diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml\nindex 9661511d..39e54e08 100644\n--- a/.pre-commit-config.yaml\n+++ b/.pre-commit-config.yaml\n@@ -27,6 +27,10 @@ repos:\n       - id: blackdoc\n         additional_dependencies: [\"black==24.10.0\"]\n       - id: blackdoc-autoupdate-black\n+  - repo: https://github.com/citation-file-format/cffconvert\n+    rev: b6045d78aac9e02b039703b030588d54d53262ac\n+    hooks:\n+      - id: validate-cff\n   - repo: https://github.com/kynan/nbstripout\n     rev: 0.7.1\n     hooks:\ndiff --git a/CITATION.cff b/CITATION.cff\nnew file mode 100644\nindex 00000000..44ee68c3\n--- /dev/null\n+++ b/CITATION.cff\n@@ -0,0 +1,44 @@\n+cff-version: 1.2.0\n+title: xdggs\n+message: \"If you use this software, please cite it as below.\"\n+type: software\n+authors:\n+  - family-names: \"Magin\"\n+    given-names: \"Justus\"\n+    orcid: \"https://orcid.org/0000-0002-4254-8002\"\n+  - family-names: \"Bovy\"\n+    given-names: \"Benoît\"\n+    orcid: \"https://orcid.org/0009-0001-4011-3574\"\n+  - family-names: \"Kmoch\"\n+    given-names: \"Alexander\"\n+    orcid: \"https://orcid.org/0000-0003-4386-4450\"\n+  - family-names: \"Abernathey\"\n+    given-names: \"Ryan\"\n+    orcid: \"https://orcid.org/0000-0001-5999-4917\"\n+  - family-names: \"Coca-Castro\"\n+    given-names: \"Alejandro\"\n+    orcid: \"https://orcid.org/0000-0002-9264-1539\"\n+  - family-names: \"Strobl\"\n+    given-names: \"Peter\"\n+    orcid: \"https://orcid.org/0000-0003-2733-1822\"\n+  - family-names: \"Fouilloux\"\n+    given-names: \"Anne\"\n+    orcid: \"https://orcid.org/0000-0002-1784-2920\"\n+  - family-names: \"Loos\"\n+    given-names: \"Daniel\"\n+    orcid: \"https://orcid.org/0000-0002-4024-4443\"\n+  - family-names: \"Chan\"\n+    given-names: \"Wai Tik\"\n+  - family-names: \"Delouis\"\n+    given-names: \"Jean-Marc\"\n+    orcid: \"https://orcid.org/0000-0002-0713-1658\"\n+  - family-names: \"Odaka\"\n+    given-names: \"Tina\"\n+    orcid: \"https://orcid.org/0000-0002-1500-0156\"\n+repository-code: \"https://github.com/xarray-contrib/xdggs\"\n+url: \"https://xdggs.readthedocs.io\"\n+keywords:\n+  - xarray\n+  - discrete global grid systems\n+  - dggs\n+license: Apache-2.0\n",
+ "ground_truth": [
+  {
+   "path": "CITATION.cff",
+   "line": 31,
+   "side": "RIGHT",
+   "body": "cc @allixender @tik65536",
+   "diff_hunk": "@@ -0,0 +1,44 @@\n+cff-version: 1.2.0\n+title: xdggs\n+message: \"If you use this software, please cite it as below.\"\n+type: software\n+authors:\n+  - family-names: \"Magin\"\n+    given-names: \"Justus\"\n+    orcid: \"https://orcid.org/0000-0002-4254-8002\"\n+  - family-names: \"Bovy\"\n+    given-names: \"Benoît\"\n+    orcid: \"https://orcid.org/0009-0001-4011-3574\"\n+  - family-names: \"Kmoch\"\n+    given-names: \"Alexander\"\n+    orcid: \"https://orcid.org/0000-0003-4386-4450\"\n+  - family-names: \"Abernathey\"\n+    given-names: \"Ryan\"\n+    orcid: \"https://orcid.org/0000-0001-5999-4917\"\n+  - family-names: \"Coca-Castro\"\n+    given-names: \"Alejandro\"\n+    orcid: \"https://orcid.org/0000-0002-9264-1539\"\n+  - family-names: \"Strobl\"\n+    given-names: \"Peter\"\n+    orcid: \"https://orcid.org/0000-0003-2733-1822\"\n+  - family-names: \"Fouilloux\"\n+    given-names: \"Anne\"\n+    orcid: \"https://orcid.org/0000-0002-1784-2920\"\n+  - family-names: \"Loos\"\n+    given-names: \"Daniel\"\n+    orcid: \"https://orcid.org/0000-0002-4024-4443\"\n+  - family-names: \"Chan\"\n+    given-names: \"Wai Tik\"",
+   "created_at": "2024-11-14T21:28:26Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/88#discussion_r1842909832"
+  },
+  {
+   "path": "CITATION.cff",
+   "line": 31,
+   "side": "RIGHT",
+   "body": "Do you want to add your orcid (if you have one)? Otherwise I'll merge as-is.",
+   "diff_hunk": "@@ -0,0 +1,44 @@\n+cff-version: 1.2.0\n+title: xdggs\n+message: \"If you use this software, please cite it as below.\"\n+type: software\n+authors:\n+  - family-names: \"Magin\"\n+    given-names: \"Justus\"\n+    orcid: \"https://orcid.org/0000-0002-4254-8002\"\n+  - family-names: \"Bovy\"\n+    given-names: \"Benoît\"\n+    orcid: \"https://orcid.org/0009-0001-4011-3574\"\n+  - family-names: \"Kmoch\"\n+    given-names: \"Alexander\"\n+    orcid: \"https://orcid.org/0000-0003-4386-4450\"\n+  - family-names: \"Abernathey\"\n+    given-names: \"Ryan\"\n+    orcid: \"https://orcid.org/0000-0001-5999-4917\"\n+  - family-names: \"Coca-Castro\"\n+    given-names: \"Alejandro\"\n+    orcid: \"https://orcid.org/0000-0002-9264-1539\"\n+  - family-names: \"Strobl\"\n+    given-names: \"Peter\"\n+    orcid: \"https://orcid.org/0000-0003-2733-1822\"\n+  - family-names: \"Fouilloux\"\n+    given-names: \"Anne\"\n+    orcid: \"https://orcid.org/0000-0002-1784-2920\"\n+  - family-names: \"Loos\"\n+    given-names: \"Daniel\"\n+    orcid: \"https://orcid.org/0000-0002-4024-4443\"\n+  - family-names: \"Chan\"\n+    given-names: \"Wai Tik\"",
+   "created_at": "2024-11-15T09:39:21Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/88#discussion_r1843483687"
+  },
+  {
+   "path": "CITATION.cff",
+   "line": 31,
+   "side": "RIGHT",
+   "body": "```suggestion\r\n  - family-names: \"Chan\"\r\n    given-names: \"Wai Tik\"\r\n    orcid: \"0009-0005-3779-139X\"\r\n```",
+   "diff_hunk": "@@ -0,0 +1,44 @@\n+cff-version: 1.2.0\n+title: xdggs\n+message: \"If you use this software, please cite it as below.\"\n+type: software\n+authors:\n+  - family-names: \"Magin\"\n+    given-names: \"Justus\"\n+    orcid: \"https://orcid.org/0000-0002-4254-8002\"\n+  - family-names: \"Bovy\"\n+    given-names: \"Benoît\"\n+    orcid: \"https://orcid.org/0009-0001-4011-3574\"\n+  - family-names: \"Kmoch\"\n+    given-names: \"Alexander\"\n+    orcid: \"https://orcid.org/0000-0003-4386-4450\"\n+  - family-names: \"Abernathey\"\n+    given-names: \"Ryan\"\n+    orcid: \"https://orcid.org/0000-0001-5999-4917\"\n+  - family-names: \"Coca-Castro\"\n+    given-names: \"Alejandro\"\n+    orcid: \"https://orcid.org/0000-0002-9264-1539\"\n+  - family-names: \"Strobl\"\n+    given-names: \"Peter\"\n+    orcid: \"https://orcid.org/0000-0003-2733-1822\"\n+  - family-names: \"Fouilloux\"\n+    given-names: \"Anne\"\n+    orcid: \"https://orcid.org/0000-0002-1784-2920\"\n+  - family-names: \"Loos\"\n+    given-names: \"Daniel\"\n+    orcid: \"https://orcid.org/0000-0002-4024-4443\"\n+  - family-names: \"Chan\"\n+    given-names: \"Wai Tik\"",
+   "created_at": "2024-11-15T12:28:13Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/88#discussion_r1843691557"
+  }
+ ],
+ "other_rounds": [
+  {
+   "path": "CITATION.cff",
+   "line": 27,
+   "side": "RIGHT",
+   "body": "```suggestion\r\n  - family-names: \"Loos\"\r\n    given-names: \"Daniel\"\r\n    orcid: \"https://orcid.org/0000-0002-4024-4443\"\r\n```",
+   "diff_hunk": "@@ -0,0 +1,42 @@\n+cff-version: 1.2.0\n+title: xdggs\n+message: \"If you use this software, please cite it as below.\"\n+type: software\n+authors:\n+  - family-names: \"Magin\"\n+    given-names: \"Justus\"\n+    orcid: \"https://orcid.org/0000-0002-4254-8002\"\n+  - family-names: \"Bovy\"\n+    given-names: \"Benoît\"\n+  - family-names: \"Kmoch\"\n+    given-names: \"Alexander\"\n+    orcid: \"https://orcid.org/0000-0003-4386-4450\"\n+  - family-names: \"Abernathey\"\n+    given-names: \"Ryan\"\n+    orcid: \"https://orcid.org/0000-0001-5999-4917\"\n+  - family-names: \"Coca-Castro\"\n+    given-names: \"Alejandro\"\n+    orcid: \"https://orcid.org/0000-0002-9264-1539\"\n+  - family-names: \"Strobl\"\n+    given-names: \"Peter\"\n+    orcid: \"https://orcid.org/0000-0003-2733-1822\"\n+  - family-names: \"Fouilloux\"\n+    given-names: \"Anne\"\n+    orcid: \"https://orcid.org/0000-0002-1784-2920\"\n+  - family-names: \"Loos\"\n+    given-names: \"Daniel\"",
+   "created_at": "2024-11-14T21:10:26Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/88#discussion_r1842892038"
+  },
+  {
+   "path": "CITATION.cff",
+   "line": 10,
+   "side": "RIGHT",
+   "body": "```suggestion\r\n  - family-names: \"Bovy\"\r\n    given-names: \"Benoît\"\r\n    orcid: \"https://orcid.org/0009-0001-4011-3574\"\r\n```",
+   "diff_hunk": "@@ -0,0 +1,42 @@\n+cff-version: 1.2.0\n+title: xdggs\n+message: \"If you use this software, please cite it as below.\"\n+type: software\n+authors:\n+  - family-names: \"Magin\"\n+    given-names: \"Justus\"\n+    orcid: \"https://orcid.org/0000-0002-4254-8002\"\n+  - family-names: \"Bovy\"\n+    given-names: \"Benoît\"",
+   "created_at": "2024-11-14T21:10:48Z",
+   "url": "https://github.com/xarray-contrib/xdggs/pull/88#discussion_r1842892338"
+  }
+ ]
+}

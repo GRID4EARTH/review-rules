@@ -1,0 +1,86 @@
+{
+ "id": "healpix-geo_pr45",
+ "repo": "grid4earth/healpix-geo",
+ "pr": 45,
+ "title": "Add documentation on HEALPix extension to ellipsoids",
+ "body": "PR to add a new documentation page describing how to extend the HEALPix pixelation to an ellipsoid.\r\n\r\n### What's included\r\n- `ellipsoidal-extension.md`: explains the area-preserving transformation from ellipsoid to authalic sphere.\r\n- `elliposid_schema.png`: illustration of the mapping process.\r\n- Link to the new page added in `docs/healpix/index.md`.\r\n\r\n### Motivation\r\nStandard HEALPix assumes a spherical Earth. This extension enables its use on ellipsoidal models (e.g., WGS84) while preserving its key properties: equal area, isolatitude, and hierarchy.\r\n\r\n### TODO\r\n- add a link to `ellipsoidal-extension.md` in `docs/healpix/reference-system.md` when added to the doc. \r\n\r\n@keewis feel free to review!",
+ "snapshot_commit": "57749ab8e4dedf6d33d48dd1dcd7eded1e848a6f",
+ "base_sha": "375dfcc68c2df452baf149a828697b117ac9dbc9",
+ "diff": "diff --git a/docs/healpix/ellipsoid_schema.png b/docs/healpix/ellipsoid_schema.png\nnew file mode 100644\nindex 00000000..0ea3aaac\nBinary files /dev/null and b/docs/healpix/ellipsoid_schema.png differ\ndiff --git a/docs/healpix/ellipsoidal-extension.md b/docs/healpix/ellipsoidal-extension.md\nnew file mode 100644\nindex 00000000..b32c7965\n--- /dev/null\n+++ b/docs/healpix/ellipsoidal-extension.md\n@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.\n+\n+```{figure} ellipsoid_schema.png\n+Ellipsoidal to Authalic Mapping\n+```\n+\n+## Why Extend HEALPix?\n+\n+Standard HEALPix is defined on the sphere and provides:\n+\n+- Hierarchical structure\n+- Isolatitude grid\n+- Equal-area pixels\n+\n+However, many geospatial applications use **ellipsoidal models** (e.g. WGS84). To maintain HEALPix's properties on an ellipsoid, it is mapped to an **authalic sphere**-a sphere with the same surface area.\n+\n+## Overview\n+\n+1. **Authalic Mapping**\n+   Geodetic latitudes ($\\phi$) on the ellipsoid are mapped to authalic latitudes ($\\xi$) on the sphere via an area-preserving transformation.\n+\n+2. **HEALPix on the Sphere**\n+   Standard HEALPix is applied on the (authalic) sphere using latitude $\\xi$ and longitude $\\lambda$.\n+\n+3. **Optional Reverse Mapping**\n+   Pixel centers or boundaries can be projected back to ellipsoidal coordinates if needed.\n+\n+Authalic mappings:\n+\n+- Forward: $\\phi \\to \\xi$ (ellipsoid $\\to$ sphere)\n+- Reverse: $\\xi \\to \\phi$ (sphere $\\to$ ellipsoid)\n+\n+## Ellipsoidal Pixelation\n+\n+This method results in an **distorted HEALPix grid** on the ellipsoid, preserving equal-area properties. It is ideal for satellite data, climate grids, and DGGS applications that need to account for Earth's flattening.\n+\n+## See Also\n+\n+- 📄 [Reference System – HEALPix-Geo Documentation](../reference-system.md)\ndiff --git a/docs/healpix/index.md b/docs/healpix/index.md\nindex c9217182..e2bf9520 100644\n--- a/docs/healpix/index.md\n+++ b/docs/healpix/index.md\n@@ -5,6 +5,7 @@\n hidden: true\n ---\n levels\n+ellipsoidal-extension\n ```\n \n HEALPix was originally defined for use in astronomy by [Gorski et al., 2005]. It has several important properties:\n@@ -25,4 +26,8 @@ Based on `nested`, there are two more schemes that also encode the refinement le\n - `nunique`, which represents all cells in the hierarchy breadth-first, i.e. cells of a refinement level are close numerically.\n - `zunique`, which represents all cells in the hierarchy depth-first, i.e. descendant cells of a given cell are close numerically.\n \n+## Extensions\n+\n+- [HEALPix Extension to Ellipsoids](ellipsoidal-extension.md): Apply HEALPix to ellipsoidal Earth models via an area-preserving mapping to an authalic sphere.\n+\n [Gorski et al., 2005]: https://doi.org/10.1086/427976\n",
+ "ground_truth": [
+  {
+   "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+   "line": 3,
+   "side": "RIGHT",
+   "body": "after searching for that, I found a reference to the \"equiareal map\" in differential geometry, which works for any kind of surface. With that, your sentence makes much more sense, but I think we can make it a lot less confusing. Linking to a description of the differential geometry term elsewhere could be one way to make the intention much clearer, but I think we can also make the sentence easier to understand that way.",
+   "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.",
+   "created_at": "2025-06-27T09:26:35Z",
+   "url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2171381176"
+  },
+  {
+   "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+   "line": 3,
+   "side": "RIGHT",
+   "body": "I think what I'm trying to get at is that (as far as I know) the authalic sphere is defined as \"a sphere that has the same surface area as an ellipsoid\", so that limits us in how general we can be",
+   "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.",
+   "created_at": "2025-06-27T09:14:08Z",
+   "url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2171349934"
+  },
+  {
+   "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+   "line": 3,
+   "side": "RIGHT",
+   "body": "```suggestion\r\nThis page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves the surface area of the ellipsoid.\r\n```",
+   "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.",
+   "created_at": "2025-06-26T13:20:02Z",
+   "url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2169058927"
+  },
+  {
+   "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+   "line": 17,
+   "side": "RIGHT",
+   "body": "Additionally, it might make sense to move to the second sentence to the next section, which is more along the lines of \"how?\" than \"overview\" (so maybe we should rename it?)",
+   "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.\n+\n+```{figure} ellipsoid_schema.png\n+Ellipsoidal to Authalic Mapping\n+```\n+\n+## Why Extend HEALPix?\n+\n+Standard HEALPix is defined on the sphere and provides:\n+\n+- Hierarchical structure\n+- Isolatitude grid\n+- Equal-area pixels\n+\n+However, many geospatial applications use **ellipsoidal models** (e.g. WGS84). To maintain HEALPix's properties on an ellipsoid, it is mapped to an **authalic sphere**-a sphere with the same surface area.",
+   "created_at": "2025-06-26T13:26:57Z",
+   "url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2169074915"
+  },
+  {
+   "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+   "line": 17,
+   "side": "RIGHT",
+   "body": "This feels a bit off... what we want to say here is that the ellipsoid is mapped to the authalic sphere, which is then pixelated and transformed back to the ellipsoid. I will most likely need a bit more time to find the right words for this, but either way I think the wording should reference the figure you created.",
+   "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.\n+\n+```{figure} ellipsoid_schema.png\n+Ellipsoidal to Authalic Mapping\n+```\n+\n+## Why Extend HEALPix?\n+\n+Standard HEALPix is defined on the sphere and provides:\n+\n+- Hierarchical structure\n+- Isolatitude grid\n+- Equal-area pixels\n+\n+However, many geospatial applications use **ellipsoidal models** (e.g. WGS84). To maintain HEALPix's properties on an ellipsoid, it is mapped to an **authalic sphere**-a sphere with the same surface area.",
+   "created_at": "2025-06-26T13:24:35Z",
+   "url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2169069344"
+  },
+  {
+   "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+   "line": 41,
+   "side": "RIGHT",
+   "body": "I'd change this to use `myst`'s [referencing syntax](https://myst-parser.readthedocs.io/en/latest/syntax/cross-referencing.html) somewhere in the previews sections (like hyperlinks). For that we'd probably need to create a label in \"reference system\"",
+   "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.\n+\n+```{figure} ellipsoid_schema.png\n+Ellipsoidal to Authalic Mapping\n+```\n+\n+## Why Extend HEALPix?\n+\n+Standard HEALPix is defined on the sphere and provides:\n+\n+- Hierarchical structure\n+- Isolatitude grid\n+- Equal-area pixels\n+\n+However, many geospatial applications use **ellipsoidal models** (e.g. WGS84). To maintain HEALPix's properties on an ellipsoid, it is mapped to an **authalic sphere**-a sphere with the same surface area.\n+\n+## Overview\n+\n+1. **Authalic Mapping**\n+   Geodetic latitudes ($\\phi$) on the ellipsoid are mapped to authalic latitudes ($\\xi$) on the sphere via an area-preserving transformation.\n+\n+2. **HEALPix on the Sphere**\n+   Standard HEALPix is applied on the (authalic) sphere using latitude $\\xi$ and longitude $\\lambda$.\n+\n+3. **Optional Reverse Mapping**\n+   Pixel centers or boundaries can be projected back to ellipsoidal coordinates if needed.\n+\n+Authalic mappings:\n+\n+- Forward: $\\phi \\to \\xi$ (ellipsoid $\\to$ sphere)\n+- Reverse: $\\xi \\to \\phi$ (sphere $\\to$ ellipsoid)\n+\n+## Ellipsoidal Pixelation\n+\n+This method results in an **distorted HEALPix grid** on the ellipsoid, preserving equal-area properties. It is ideal for satellite data, climate grids, and DGGS applications that need to account for Earth's flattening.\n+\n+## See Also\n+\n+- 📄 [Reference System – HEALPix-Geo Documentation](../reference-system.md)",
+   "created_at": "2025-06-26T13:29:03Z",
+   "url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2169080107"
+  }
+ ],
+ "other_rounds": [
+  {
+   "path": "python/healpix-geo/docs/healpix/ellipsoidal-extension.md",
+   "line": 17,
+   "side": "RIGHT",
+   "body": "Not sure if this fits, but I'd use\r\n\r\n```suggestion\r\nHowever, many geospatial applications require **ellipsoidal models** (e.g. WGS84). As a consequence, to be viable for these HEALPix needs to be mapped to ellipsoids of revolution.\r\n```\r\n\r\n(note, \"ellipsoid of revolution\" is intentional, as there are \"triaxial ellipsoids\" that we want to exclude here)",
+   "diff_hunk": "@@ -0,0 +1,43 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**: a mapping to a sphere that preserves the surface area.\n+\n+```{figure} ellipsoid_schema.png\n+Ellipsoidal to Authalic Mapping\n+```\n+\n+## Why Extend HEALPix?\n+\n+Standard HEALPix is defined on the sphere and provides:\n+\n+- Hierarchical structure\n+- Isolatitude grid\n+- Equal-area pixels\n+\n+However, many geospatial applications require **ellipsoidal models** (e.g. WGS84).",
+   "created_at": "2026-04-17T15:00:33Z",
+   "url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r3101247222"
+  },
+  {
+   "path": "docs/healpix/ellipsoidal-extension.md",
+   "line": 19,
+   "side": "RIGHT",
+   "body": "other options would be \"Procedure\", \"Details\", \"Ellipsoidal extension\" (and plenty more, I'm sure)",
+   "diff_hunk": "@@ -0,0 +1,41 @@\n+# HEALPix Extension to Ellipsoids\n+\n+This page outlines an extension of the HEALPix pixelation scheme to ellipsoidal Earth models using an **authalic transformation**-a mapping to a sphere that preserves surface area.\n+\n+```{figure} ellipsoid_schema.png\n+Ellipsoidal to Authalic Mapping\n+```\n+\n+## Why Extend HEALPix?\n+\n+Standard HEALPix is defined on the sphere and provides:\n+\n+- Hierarchical structure\n+- Isolatitude grid\n+- Equal-area pixels\n+\n+However, many geospatial applications use **ellipsoidal models** (e.g. WGS84). To maintain HEALPix's properties on an ellipsoid, it is mapped to an **authalic sphere**-a sphere with the same surface area.\n+\n+## Overview",
+   "created_at": "2026-03-06T16:35:57Z",
+   "url": "https://github.com/GRID4EARTH/healpix-geo/pull/45#discussion_r2896731742"
+  }
+ ]
+}

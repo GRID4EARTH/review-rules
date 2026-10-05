@@ -1,0 +1,35 @@
+diff --git a/.github/workflows/pypipublish.yml b/.github/workflows/pypipublish.yml
+new file mode 100644
+index 00000000..ae7cadf5
+--- /dev/null
++++ b/.github/workflows/pypipublish.yml
+@@ -0,0 +1,29 @@
++name: Upload Python Package on PyPI
++
++on:
++  release:
++    types: [published]
++
++jobs:
++  deploy:
++    runs-on: ubuntu-latest
++    environment:
++      name: pypi
++      url: https://pypi.org/p/xdggs
++    permissions:
++      id-token: write
++    steps:
++      - name: Checkout
++        uses: actions/checkout@v4
++      - name: Set up Python 3.9
++        uses: actions/setup-python@v4
++        with:
++          python-version: "3.9"
++      - name: Install publish dependencies
++        run: python -m pip install build
++      - name: Build package
++        run: python -m build . -o py_dist
++      - name: Publish package to PyPI
++        uses: pypa/gh-action-pypi-publish@release/v1
++        with:
++          packages-dir: py_dist/

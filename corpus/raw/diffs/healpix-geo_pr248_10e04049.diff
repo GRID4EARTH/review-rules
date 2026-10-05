@@ -1,0 +1,231 @@
+diff --git a/.zenodo.json b/.zenodo.json
+new file mode 100644
+index 00000000..b5526f13
+--- /dev/null
++++ b/.zenodo.json
+@@ -0,0 +1,46 @@
++{
++  "title": "healpix-geo",
++  "upload_type": "software",
++  "license": "Apache-2.0",
++  "grants": [
++    {
++      "id": "10.13039/501100000844::4000147951/25/I-NS"
++    }
++  ],
++  "creators": [
++    {
++      "name": "Magin, Justus",
++      "orcid": "0000-0002-4254-8002"
++    },
++    {
++      "name": "Richard, Pablo",
++      "orcid": "0000-0002-5441-8213"
++    },
++    {
++      "name": "Fouilloux, Anne",
++      "orcid": "0000-0002-1784-2920"
++    },
++    {
++      "name": "Odaka, Tina Erica",
++      "orcid": "0000-0002-1500-0156"
++    },
++    {
++      "name": "Gueguen, Camille",
++      "orcid": "0009-0008-3748-9395"
++    },
++    {
++      "name": "Kmoch, Alexander",
++      "orcid": "0000-0003-4386-4450"
++    },
++    {
++      "name": "Stuurman, Aart"
++    }
++  ],
++  "contributors": [
++    {
++      "name": "Cap, Etienne",
++      "orcid": "0009-0007-0360-0692",
++      "type": "ProjectMember"
++    }
++  ]
++}
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+index b38c8f7b..b64e92ac 100644
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -1,27 +1,34 @@
+ # Contributing to healpix-geo
+ 
+-Thank you for your interest in contributing! This project is licensed under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0), and all contributions are under this license.
++Thank you for your interest in contributing. GRID4EARTH development is primarily supported by
++ESA-funded activities, and external contributions are welcome.
+ 
+-## How to Contribute
++## How to contribute
+ 
+-- Report bugs or request features via [GitHub Issues](https://github.com/GRID4EARTH/healpix-geo/issues).
+-- For all non-trivial contributions, please start a discussion with the maintainers by opening an [issue](https://github.com/GRID4EARTH/healpix-geo/issues/new) to ensure alignment with project goals and future plans.
++- Report bugs or request features through
++  [GitHub Issues](https://github.com/GRID4EARTH/healpix-geo/issues).
++- For non-trivial changes, open an
++  [issue](https://github.com/GRID4EARTH/healpix-geo/issues/new) before starting work so the
++  approach can be discussed with the maintainers.
++- Fork the repository and create a feature branch for each change.
++- Add or update tests and documentation where appropriate.
++- Open a pull request with a clear title and description, and link the related issue.
+ 
+-### Discussion Before Submitting
++See [`DEVELOPMENT.md`](DEVELOPMENT.md) for the branch model and the workflow for changes that
++span multiple GRID4EARTH repositories.
+ 
+-- **Mandatory Pre-Submission Discussion**: For all non-trivial contributions, open an issue or start a discussion with maintainers about your proposed changes. This allows maintainers to provide feedback, suggest directions, and ensure your efforts align with the project's roadmap.
+-- **Collaboration**: Engage constructively with maintainers during this phase to refine and improve your proposal.
+-- Fork the repository and create feature branches for your changes.
+-- Add tests and documentation for your contributions.
+-- Submit pull requests with clear titles and descriptions, referencing related issues.
+-
+-## Pull Request Guidelines
++## Pull request guidelines
+ 
+ - Keep commits focused and descriptive.
+-- Ensure all tests pass and maintain code style.
+-- Maintain open communication with maintainers during the review process.
+-- By contributing, you agree to license your changes under Apache 2.0.
++- Run the relevant tests and formatting checks before submitting.
++- Respond to review feedback and keep the pull request focused on its stated purpose.
+ 
+ ## Code of Conduct
+ 
+-All contributors should respect the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
++All contributors should respect the
++[Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
++
++## License
++
++The project is licensed under the [Apache License 2.0](LICENSE). By contributing, you agree that
++your contributions will be licensed under the same terms.
+diff --git a/DEVELOPMENT.md b/DEVELOPMENT.md
+new file mode 100644
+index 00000000..3a1feec4
+--- /dev/null
++++ b/DEVELOPMENT.md
+@@ -0,0 +1,73 @@
++# Development workflow
++
++This document describes the lightweight development workflow used by `healpix-geo`. It is
++intended to support both regular contributions and coordinated work across GRID4EARTH
++repositories without introducing a complex branching model.
++
++GRID4EARTH development is primarily supported by ESA-funded activities, and external
++contributions are welcome.
++
++## Branches
++
++- `main` is stable and release-ready.
++- `integration` is a shared branch for combining and validating unreleased changes before they
++  are promoted to `main`. It is used primarily for integration and cross-repository validation,
++  not as the default branch for day-to-day feature development.
++- Feature branches and pull requests contain individual developments. They should be focused
++  and linked to the relevant issue where possible. Start them from `main` by default.
++- Releases are tagged from `main`.
++
++The usual path remains a focused feature pull request to `main`. Use `integration` only when a
++change or compatible group of changes needs combined or downstream validation before promotion:
++
++```text
++feature branch ────────────────────────────────> PR to main ──> main ──> release tag
++       \
++        └─ when integration validation is needed ─> integration
++                                                       ├─> cross-feature validation
++                                                       ├─> cross-repository validation
++                                                       └─> PR: integration -> main
++```
++
++## Cross-repository development
++
++Some changes need to be tested with `healpix-analyse` or another GRID4EARTH repository before
++they are ready for a `healpix-geo` release. In that situation:
++
++1. Develop the change on a feature branch and submit it through the normal pull request
++   process.
++2. When the unreleased change is needed for development or testing in at least one other
++   repository in the GRID4EARTH organization, identify the downstream issue or pull request that
++   requires it. A maintainer may integrate the change into `integration` as soon as its feature
++   branch or pull request passes the relevant checks.
++3. Point the downstream development branch to `healpix-geo`'s `integration` branch temporarily
++   and document that unreleased dependency in the downstream pull request.
++4. After the combined and downstream checks pass, promote the compatible, release-ready changes
++   to `main` through an `integration`-to-`main` pull request and the normal review process. Keep
++   unrelated or incomplete changes out of that promotion.
++5. Tag the release from `main`, then update downstream repositories to use the released version
++   instead of the branch dependency.
++
++The `integration` branch is a validation and promotion point. It is not a replacement for
++focused feature branches, pull-request review, or releases, and feature branches should not use
++it as their base unless the feature specifically depends on unreleased integrated work.
++
++## Authorship and credit
++
++Contributions should retain accurate authorship through commits and pull requests. Project
++documentation and release records should acknowledge contributors where appropriate.
++
++The creators used for Zenodo release records are maintained in [`.zenodo.json`](.zenodo.json).
++Before tagging a release, review this metadata against the Git history, including
++`Co-authored-by` trailers. Add ORCID identifiers only after verifying them against a source
++controlled by the contributor. The release tag supplies the version to Zenodo, so the version is
++not stored in `.zenodo.json`.
++
++Core developers are listed first in the agreed contribution order. Other creators are listed
++alphabetically by family name. Changes to the core developer list or creator order require
++maintainer agreement; do not reorder the list mechanically by commit count or lines changed.
++
++Creator status reflects either ongoing core-development responsibility or a substantial
++contribution to the software's design, implementation, or documentation. More limited operational
++or maintenance contributions should still be credited in the Zenodo `contributors` list with an
++appropriate role.
+diff --git a/README.md b/README.md
+index 994c8d9f..45c4ec88 100644
+--- a/README.md
++++ b/README.md
+@@ -9,7 +9,13 @@
+ 
+ # `healpix-geo`
+ 
+-This package integrates with `cds-healpix-rust` and `cds-healpix-python` to support specialized algorithms for the geosciences.
++`healpix-geo` provides HEALPix algorithms and bindings for geoscience applications. It
++builds on [`cds-healpix-rust`](https://github.com/cds-astro/cds-healpix-rust) and complements
++[`cds-healpix-python`](https://github.com/cds-astro/cds-healpix-python).
++
++The package is part of the [GRID4EARTH](https://github.com/GRID4EARTH) ecosystem. GRID4EARTH
++development is primarily supported by activities funded by the European Space Agency (ESA),
++and external contributions are welcome.
+ 
+ ## Installation
+ 
+@@ -28,3 +34,25 @@ uv add healpix-geo  # with uv
+ ```
+ 
+ For more information, see the [documentation](https://healpix-geo.readthedocs.io/en/latest).
++
++## Related GRID4EARTH repositories
++
++- [`healpix-analyse`](https://github.com/GRID4EARTH/healpix-analyse) uses `healpix-geo` for
++  HEALPix-based analysis workflows.
++- See the [GRID4EARTH organization](https://github.com/GRID4EARTH) for other related projects.
++
++## Development and contributing
++
++Bug reports, feature requests, and contributions are welcome. See
++[`CONTRIBUTING.md`](CONTRIBUTING.md) for the contribution process and
++[`DEVELOPMENT.md`](DEVELOPMENT.md) for the lightweight branch and cross-repository development
++workflow.
++
++## Funding and acknowledgements
++
++**Funded by ESA, built by a European consortium.**
++
++ESA Contract: `4000147951/25/I-NS` — Technical Officer: Vincent Dumoulin.
++
++We also thank all external contributors and the open-source projects on which `healpix-geo`
++depends.

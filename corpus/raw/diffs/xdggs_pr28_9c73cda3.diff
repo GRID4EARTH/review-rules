@@ -1,0 +1,270 @@
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 8d4cf8f7..bfca8aa0 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -15,6 +15,7 @@ repos:
+     rev: v0.1.6
+     hooks:
+       - id: ruff
++        args: [--fix]
+   - repo: https://github.com/psf/black-pre-commit-mirror
+     rev: 23.11.0
+     hooks:
+diff --git a/examples/example_h3.ipynb b/examples/example_h3.ipynb
+index 936440fa..94a37eef 100644
+--- a/examples/example_h3.ipynb
++++ b/examples/example_h3.ipynb
+@@ -7,7 +7,9 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
++    "import numpy as np\n",
+     "import xarray as xr\n",
++    "\n",
+     "import xdggs"
+    ]
+   },
+@@ -41,7 +43,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "ds_idx.dggs.sel_latlon([37.0, 37.5], [299.3, 299.5])"
++    "ds_idx.dggs.sel_latlon(np.array([37.0, 37.5]), np.array([299.3, 299.5]))"
+    ]
+   },
+   {
+@@ -62,7 +64,7 @@
+    "metadata": {},
+    "outputs": [],
+    "source": [
+-    "result = ds_idx.dggs.sel_latlon(ds2.latitude, ds2.longitude)\n",
++    "result = ds_idx.dggs.sel_latlon(ds2.latitude.data, ds2.longitude.data)\n",
+     "result"
+    ]
+   },
+@@ -75,14 +77,6 @@
+    "source": [
+     "xr.testing.assert_equal(result, ds)"
+    ]
+-  },
+-  {
+-   "cell_type": "code",
+-   "execution_count": null,
+-   "id": "e445d58f-5b87-4d43-8b0d-935e7979357d",
+-   "metadata": {},
+-   "outputs": [],
+-   "source": []
+   }
+  ],
+  "metadata": {
+@@ -96,7 +90,7 @@
+    "name": "python",
+    "nbconvert_exporter": "python",
+    "pygments_lexer": "ipython3",
+-   "version": "3.12.0"
++   "version": "3.11.6"
+   }
+  },
+  "nbformat": 4,
+diff --git a/pyproject.toml b/pyproject.toml
+index e05635c9..7f7d0d16 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -73,10 +73,15 @@ select = [
+ ]
+ line-length = 100
+ 
++[tool.ruff.lint]
++fixable = ["I"]
++unfixable = ["ALL"]
++
+ [tool.ruff.isort]
+ known-first-party = ["xdggs"]
+ known-third-party=[
+     "xarray",
+     "healpy",
+     "h3",
++    "h3ronpy",
+ ]
+diff --git a/xdggs/h3.py b/xdggs/h3.py
+index 185af7ef..7c1ace81 100644
+--- a/xdggs/h3.py
++++ b/xdggs/h3.py
+@@ -1,11 +1,9 @@
+ from collections.abc import Mapping
+ from typing import Any
+ 
+-import h3
+-import h3.api.numpy_int
+-import h3.unstable.vect
+ import numpy as np
+ import xarray as xr
++from h3ronpy.arrow.vector import cells_to_coordinates, coordinates_to_cells
+ from xarray.indexes import PandasIndex
+ 
+ from xdggs.index import DGGSIndex
+@@ -23,7 +21,7 @@ def __init__(
+         resolution: int,
+     ):
+         super().__init__(cell_ids, dim)
+-        self._resolution = resolution
++        self._resolution = int(resolution)
+ 
+     @classmethod
+     def from_variables(
+@@ -41,15 +39,10 @@ def _replace(self, new_pd_index: PandasIndex):
+         return type(self)(new_pd_index, self._dim, self._resolution)
+ 
+     def _latlon2cellid(self, lat: Any, lon: Any) -> np.ndarray:
+-        return h3.unstable.vect.geo_to_h3(lat, lon, self._resolution)
++        return coordinates_to_cells(lat, lon, self._resolution, radians=False)
+ 
+     def _cellid2latlon(self, cell_ids: Any) -> tuple[np.ndarray, np.ndarray]:
+-        lat = np.empty(cell_ids.size)
+-        lon = np.empty(cell_ids.size)
+-        for i, cid in enumerate(cell_ids):
+-            lat[i], lon[i] = h3.api.numpy_int.h3_to_geo(cid)
+-
+-        return lat, lon
++        return cells_to_coordinates(cell_ids, radians=False)
+ 
+     def _repr_inline_(self, max_width: int):
+         return f"H3Index(resolution={self._resolution})"
+diff --git a/xdggs/tests/test_h3.py b/xdggs/tests/test_h3.py
+new file mode 100644
+index 00000000..4ab5ad87
+--- /dev/null
++++ b/xdggs/tests/test_h3.py
+@@ -0,0 +1,132 @@
++import itertools
++
++import numpy as np
++import pytest
++import xarray as xr
++from xarray.core.indexes import PandasIndex
++
++from xdggs import h3
++
++# from the h3 gallery, at resolution 3
++cell_ids = [
++    np.array([0x832830FFFFFFFFF]),
++    np.array([0x832831FFFFFFFFF, 0x832832FFFFFFFFF]),
++    np.array([0x832833FFFFFFFFF, 0x832834FFFFFFFFF, 0x832835FFFFFFFFF]),
++]
++cell_centers = [
++    np.array([[38.19320895, -122.19619676]]),
++    np.array([[38.63853196, -123.43390346], [38.82387033, -121.00991811]]),
++    np.array(
++        [
++            [39.27846774, -122.2594399],
++            [37.09786649, -122.13425086],
++            [37.55231005, -123.35925909],
++        ]
++    ),
++]
++dims = ["cells", "zones"]
++resolutions = [1, 5, 15]
++variable_names = ["cell_ids", "zonal_ids", "zone_ids"]
++
++variables = [
++    xr.Variable(
++        dims[0], cell_ids[0], {"grid_type": "h3", "resolution": resolutions[0]}
++    ),
++    xr.Variable(
++        dims[1], cell_ids[0], {"grid_type": "h3", "resolution": resolutions[0]}
++    ),
++    xr.Variable(
++        dims[0], cell_ids[1], {"grid_type": "h3", "resolution": resolutions[1]}
++    ),
++    xr.Variable(
++        dims[1], cell_ids[2], {"grid_type": "h3", "resolution": resolutions[2]}
++    ),
++]
++variable_combinations = [
++    (old, new) for old, new in itertools.product(variables, repeat=2)
++]
++
++
++@pytest.mark.parametrize("resolution", resolutions)
++@pytest.mark.parametrize("dim", dims)
++@pytest.mark.parametrize("cell_ids", cell_ids)
++def test_init(cell_ids, dim, resolution):
++    index = h3.H3Index(cell_ids, dim, resolution)
++
++    assert index._resolution == resolution
++    assert index._dim == dim
++
++    # TODO: how do we check the index, if at all?
++    assert index._pd_index.dim == dim
++    assert np.all(index._pd_index.index.values == cell_ids)
++
++
++@pytest.mark.parametrize("variable", variables)
++@pytest.mark.parametrize("variable_name", variable_names)
++@pytest.mark.parametrize("options", [{}])
++def test_from_variables(variable_name, variable, options):
++    expected_resolution = variable.attrs["resolution"]
++
++    variables = {variable_name: variable}
++    index = h3.H3Index.from_variables(variables, options=options)
++
++    assert index._resolution == expected_resolution
++    assert (index._dim,) == variable.dims
++
++    # TODO: how do we check the index, if at all?
++    assert (index._pd_index.dim,) == variable.dims
++    assert np.all(index._pd_index.index.values == variable.data)
++
++
++@pytest.mark.parametrize(["old_variable", "new_variable"], variable_combinations)
++def test_replace(old_variable, new_variable):
++    index = h3.H3Index(
++        cell_ids=old_variable.data,
++        dim=old_variable.dims[0],
++        resolution=old_variable.attrs["resolution"],
++    )
++    new_pandas_index = PandasIndex.from_variables(
++        {"cell_ids": new_variable}, options={}
++    )
++
++    new_index = index._replace(new_pandas_index)
++
++    assert new_index._resolution == index._resolution
++    assert new_index._dim == index._dim
++    assert new_index._pd_index == new_pandas_index
++
++
++@pytest.mark.parametrize(
++    ["cell_ids", "cell_centers"], list(zip(cell_ids, cell_centers))
++)
++def test_cellid2latlon(cell_ids, cell_centers):
++    index = h3.H3Index(cell_ids=cell_ids, dim="cells", resolution=3)
++
++    actual = index._cellid2latlon(cell_ids)
++    expected = cell_centers
++
++    np.testing.assert_allclose(actual, expected)
++
++
++@pytest.mark.parametrize(
++    ["cell_centers", "cell_ids"], list(zip(cell_centers, cell_ids))
++)
++def test_latlon2cellid(cell_centers, cell_ids):
++    index = h3.H3Index(cell_ids=[0], dim="cells", resolution=3)
++
++    actual = index._latlon2cellid(cell_centers[:, 0], cell_centers[:, 1])
++    expected = cell_ids
++
++    np.testing.assert_equal(actual, expected)
++
++
++@pytest.mark.parametrize("max_width", [20, 50, 80, 120])
++@pytest.mark.parametrize("resolution", resolutions)
++def test_repr_inline(resolution, max_width):
++    index = h3.H3Index(cell_ids=[0], dim="cells", resolution=resolution)
++
++    actual = index._repr_inline_(max_width)
++
++    assert f"resolution={resolution}" in actual
++    # ignore max_width for now
++    # assert len(actual) <= max_width
