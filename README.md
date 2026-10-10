@@ -276,6 +276,6 @@ The rubric reproduces the *form* of his judgement and the *facts* he
 stated (cdshealpix terminology, the geometry-library boundary, the
 `maybe_parallelize!` rule). It cannot reproduce judgement that depended on
 knowledge he never wrote down. Expect the agent to be strongest on sections
-B, C, D and weakest on "this API will be brittle" calls in section A. Have
-him review the rubric before he leaves; that is the cheapest improvement
-available.
+B, C, D and weakest on "this API will be brittle" calls in section A. He
+reviewed the rubric rule by rule in review-rules#1 (2026-10-07); his
+answers are in the rubric, marked "Maintainer review, 2026-10-07".
