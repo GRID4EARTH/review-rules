@@ -180,32 +180,27 @@ functions he merged himself with "we'll need examples at some point". Use
 
 The reusable workflow `.github/workflows/review-reusable.yml` runs
 `anthropics/claude-code-action@v1` with `use_bedrock: "true"`. Inference is
-billed to the AWS account; no Anthropic API key exists anywhere.
+billed to an AWS account; no Anthropic API key exists anywhere. The caller
+template is `templates/caller-rubric-review.yml`.
 
-One-time setup, in this order:
+What a deployment needs, in general terms (the prerequisites are also listed
+at the top of the reusable workflow):
 
-1. **AWS.** Create an IAM OIDC identity provider for
-   `token.actions.githubusercontent.com`. Create an IAM role whose trust
-   policy allows `repo:GRID4EARTH/*` (tighten to specific repositories if
-   you prefer) and attach a policy with `bedrock:InvokeModel`,
-   `bedrock:InvokeModelWithResponseStream`, `bedrock:ListInferenceProfiles`,
-   `bedrock:GetInferenceProfile`. In the Bedrock console, enable the Claude
-   model you want in the region (one use-case form per account). Note the
-   cross-region inference profile id, which looks like
-   `eu.anthropic.<model-id>`.
-2. **GitHub App.** Register a GitHub App (webhooks off) with repository
-   permissions Contents, Issues, Pull requests: read and write. Generate a
-   private key. Install it on the target repositories. The Anthropic-hosted
-   Claude GitHub App cannot be used with Bedrock.
-3. **Secrets** at organisation level (or per repository):
-   `REVIEW_APP_ID`, `REVIEW_APP_PRIVATE_KEY`, `AWS_BEDROCK_ROLE_ARN`.
-4. **This directory** becomes a repository; set
-   Settings → Actions → Access to "Accessible from repositories in the
-   organization" if it is private. A public repository is simpler and lets
-   `xarray-contrib/xdggs` use it too.
-5. **Target repository.** Copy `templates/caller-rubric-review.yml` to
-   `.github/workflows/rubric-review.yml`, fill in the three `CHANGE-ME`
-   values, merge to the default branch.
+1. **AWS.** An IAM role that GitHub Actions can assume through OIDC, limited
+   to Bedrock inference, and the chosen Claude model enabled in the region.
+2. **GitHub App.** A custom GitHub App (webhooks off; Contents, Issues,
+   Pull requests: read and write) installed on the target repositories. The
+   Anthropic-hosted Claude GitHub App cannot be used with Bedrock.
+3. **Secrets.** The three secrets the reusable workflow declares, in the
+   caller's repository or organisation.
+4. **Target repository.** Copy `templates/caller-rubric-review.yml` to
+   `.github/workflows/rubric-review.yml`, fill in the `CHANGE-ME` values,
+   merge to the default branch.
+
+Which account, region, App and repositories GRID4EARTH uses, who administers
+them and what it costs are not in this public repository; they are
+documented for members in the private `project-guidelines` repository
+(`docs/review-automation.md`).
 
 Behaviour of the caller:
 
