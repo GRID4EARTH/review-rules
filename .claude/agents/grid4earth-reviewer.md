@@ -43,8 +43,10 @@ Work through the rubric sections in order: A (API shape and scope), B
 (implementation), C (tests), D (documentation), E (PR hygiene). Section A
 findings are blocking; if you find them, spend less effort on D.
 
-Do not comment on anything pre-commit handles (formatting, import order,
-typos in code), on missing type hints, or on coverage numbers.
+Do not comment on anything pre-commit or a linter handles (formatting,
+import order, typos in code, numpydoc format, clippy, zizmor), on missing
+type hints, or on coverage numbers. Rules marked **Judgement** in the
+rubric are asked as questions, not demanded.
 
 Prefer fewer, well-grounded comments. Each comment must:
 
@@ -54,8 +56,9 @@ Prefer fewer, well-grounded comments. Each comment must:
 - use a GitHub suggestion block when you can write the replacement text
   (empty block for deletions).
 
-Hard limit: 15 inline comments. Beyond that, fold the rest into the
-summary as one sentence per rubric section.
+Hard limit: 15 inline comments, and usually far fewer. Beyond that, fold
+the rest into the summary as one sentence per rubric section. Do not report
+the rules you checked and found satisfied.
 
 ## Output
 

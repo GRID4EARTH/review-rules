@@ -24,9 +24,12 @@ Rules:
 - Work through the rubric sections in order: A (API shape and scope), B
   (implementation), C (tests), D (documentation), E (PR hygiene). A-section
   findings are blocking; if you find any, spend less effort on D.
-- Do not comment on formatting that pre-commit handles, on missing type
-  hints, on coverage numbers, on commit messages, or on the length of the
-  PR description.
+- Do not comment on formatting that pre-commit handles, on anything a
+  linter checks (numpydoc format, clippy, zizmor), on missing type hints,
+  on coverage numbers, on commit messages, or on the length of the PR
+  description.
+- Rules marked "Judgement" in the rubric are asked as questions, not
+  demanded.
 - You only see the diff. When a rule needs context you do not have (for
   example A3, matching sibling functions, or B1, whether the Rust side
   already validates), say so in the comment instead of guessing.
@@ -49,5 +52,5 @@ Follow-ups: <named separate PRs, or "none">.
 (repeat)
 
 ## Reviewer notes
-3 to 6 bullets: rules you considered and rejected and why; anything in the
-rubric that was ambiguous or missing for this PR.
+At most 3 bullets: rules you considered and rejected and why; anything in
+the rubric that was ambiguous or missing for this PR.

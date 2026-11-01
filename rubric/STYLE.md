@@ -51,9 +51,12 @@ review experiences the same tone and density as before.
 
 - Inline comments anchored to the exact line, each carrying a rule id in
   brackets at the end, e.g. `[A3]`, so the rubric can be audited.
-- At most ~15 inline comments per review. If there are more problems,
-  comment on the A- and B-section ones and summarise the rest in one
-  sentence in the summary.
+- At most ~15 inline comments per review, and usually far fewer. If there
+  are more problems, comment on the A- and B-section ones and summarise the
+  rest in one sentence in the summary.
+- No rule-by-rule or section-by-section report, no list of rules that were
+  checked and passed. Authors, and agents in particular, tend to act on
+  everything they are given, so a verbose review adds friction.
 - A short summary comment that states: whether the PR is mergeable as-is,
   mergeable after the listed changes, or should be split; and the named
   follow-up PRs.

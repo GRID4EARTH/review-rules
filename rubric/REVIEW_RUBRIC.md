@@ -12,6 +12,12 @@ comments or files as examples.
 Use the ids (`A1`, `D3`, ...) when posting a review so that misses and false
 positives can be traced back to a rule and the rubric can be corrected.
 
+He reviewed this rubric rule by rule on 2026-10-07 (review-rules#1); his
+answers are folded into the rules below and marked "Maintainer review,
+2026-10-07". Rules he marked **Judgement** are not mechanical: flag a
+violation only with a concrete reason it matters for this PR, phrase it as
+a question, and drop it when the PR gives a reason.
+
 Companion file: `STYLE.md` describes *how* comments are phrased.
 
 ---
@@ -33,10 +39,18 @@ follow-up PR.
 5. **PR hygiene** (section E). One topic per PR, no merge commits from
    integration branches.
 
+Fewer, well-grounded comments are better than an exhaustive list. An
+author, human or agent, tends to follow every comment literally, so each
+one must be worth acting on. (benbovy, review-rules#1)
+
 What he did **not** comment on, so the reviewer should not either:
 
 - Formatting handled by pre-commit (black, ruff, prettier, cargo fmt,
   taplo, typos). Assume the hooks ran.
+- Anything a linter checks: numpydoc validation, clippy, zizmor,
+  action-validator. Leave it to the linter. If the repository does not run
+  the linter, say so once in the summary instead of commenting line by
+  line.
 - Missing type hints in Python. The codebases do not use them consistently
   and he explicitly deferred that to "a new PR".
 - Coverage percentages. He asked for *specific* missing tests, never for a
@@ -115,6 +129,11 @@ verbatim from sibling functions.
 > `nested` for the shared parameters (`ipix`, `depth`, `num_threads`)? I've
 > tried to be as consistent as possible." (#250)
 
+**Judgement.** Consistency is important, but the existing API can be
+unnecessarily constraining, and there can be reasons to change it. Weigh
+that against the maintenance burden. "An agent can maintain it" is not an
+argument against the burden. (Maintainer review, 2026-10-07)
+
 ### A4. Follow cdshealpix terminology, not healpy
 
 Names and conventions come from `cdshealpix` (Rust) first, then
@@ -138,6 +157,11 @@ than redefining direction tables.
 > `cdshealpix` / `astropy-healpix` (despite being written for a different
 > domain there is value in keeping the interfaces at least similar)"
 > (issue #140)
+
+The point is one terminology, not cdshealpix as such: never mix several
+terminologies. Moving away from cdshealpix is possible, but it is a
+breaking change and needs strong reasons to be worth the disruption to
+users. (Maintainer review, 2026-10-07)
 
 ### A5. Type safety in Rust: enums over strings, private internals
 
@@ -167,6 +191,9 @@ except as a temporary deprecation step.
 > "I wouldn't alias parameters either, unless it is for the purpose of a
 > deprecation cycle (which means the alias is temporary)." (issue #147)
 
+The reason is API simplicity: several ways to specify the same parameter
+make the API more complex for no gain. (Maintainer review, 2026-10-07)
+
 ### A7. Backwards compatibility is proportional to maturity
 
 For experimental surfaces (the JS/wasm package, new indexes) a breaking
@@ -186,10 +213,14 @@ releases is expected.
 
 ### A8. Respect the library boundary
 
-`healpix-geo` is purely computational and geometric: no plotting, no I/O,
-no xarray. DGGS-specific logic in `xdggs` belongs in the index class, not
-in generic conventions code. Point to a separate package when something is
-out of scope.
+A defined scope keeps a library targeted and makes a good API much easier
+to design. `healpix-geo`'s scope is HEALPix geometry and cell id
+calculations; anything beyond that (plotting, I/O, xarray) is out of scope.
+`xdggs` is DGGS-agnostic, so code that only works for HEALPix is not
+accepted there. Instead, the index exposes a method that is called
+generically and can use optional libraries (e.g. `healpix-plot`). Point to
+a separate package when something is out of scope. (Scope statement:
+maintainer review, 2026-10-07)
 
 > "I'd rather not have plotting functionality in this library, I'd like it
 > to stay a purely geometric library" (issue #132)
@@ -217,6 +248,12 @@ you (`xr.indexes.RangeIndex`).
 
 > "if you use `xr.indexes.RangeIndex` we don't have to list `pandas` as a
 > direct dependency" (xdggs #260)
+
+**Judgement.** If upstream has it but does not expose it, vendoring is
+fine; check that the licensing is correct. If it is exposed, do not
+reimplement it. New Rust dependencies are usually fine, but ask whether
+they are truly necessary and how well the crate is maintained.
+(Maintainer review, 2026-10-07)
 
 ### A10. Options after the geometric inputs are keyword-only
 
@@ -246,6 +283,13 @@ kind of quantity, breaks the contract.
 
 Derived from his code, 2026-10-05.
 
+Direction for new code: Rust functions exposed to Python take
+`Bound<'py, PyUntypedArray>` instead of `Bound<'py, PyArray1<u64>>` and
+check the dtype themselves, e.g. accept any integer dtype and cast to
+`u64` for cell ids. Moving the existing functions to that signature is
+welcome. The dtypes above stay the contract, and B1 still applies: the
+check happens in one layer only. (Maintainer review, 2026-10-07)
+
 ---
 
 ## B. Implementation
@@ -260,7 +304,10 @@ again (and vice versa). Python-side checks live in `healpix_geo/utils.py`
 > (#250)
 
 Severity: should-fix, not blocking. His own `cone_coverage` checks `depth`
-in both layers (`corpus/commits.md`, Contradictions).
+in both layers (`corpus/commits.md`, Contradictions). He confirmed the
+rule: validating twice makes a function take longer for nothing, and
+consistency across functions is hard but wanted. (Maintainer review,
+2026-10-07)
 
 ### B2. Use `maybe_parallelize!`, never hand-rolled parallelism
 
@@ -272,6 +319,12 @@ profiling evidence first.
 > "this is implementing a custom parallelism. I am not convinced this is
 > necessary at this stage, so I want this to use the usual
 > `maybe_parallelize!` code." (#250)
+
+The reason is maintenance: re-implementing the vectorisation in hundreds
+of functions is hard to maintain. Weigh it against other goals, though. For
+SIMD, for example, the `maybe_parallelize!` approach breaks down, so a PR
+that departs from it with that reason and with measurements is not
+blocked. (Maintainer review, 2026-10-07)
 
 ### B3. No optimisation without profiling
 
@@ -287,6 +340,12 @@ escape hatch (`functools.lru_cache`, a right shift) if it ever matters.
 > think it impacts performance either (and if it does this can easily be
 > mitigated using `functools.lru_cache`)" (#251)
 
+**Judgement.** Profiling gives the numbers to base an optimisation on, so
+that we don't optimise for little gain. Sometimes a function is obviously
+inefficient on reading. Even then, the rewrite must be profiled: the Rust
+compiler also optimises, and the new code may be harder for it to optimise
+and end up slower. (Maintainer review, 2026-10-07)
+
 ### B4. No debug code; errors reachable from Python are exceptions
 
 `assert!` used for debugging is removed before merge; input errors that a
@@ -298,6 +357,13 @@ the existing ones in an unrelated PR.
 
 > "is the `assert!` for debugging purposes? If yes, we should remove that
 > before merging, but if not I'd probably return some exception" (#27)
+
+Asserts are for tests: they do not produce useful errors in user code.
+There may be reasons to compile the Rust code in debug mode to test a
+different library. In the core crate, PRs that move from panics to
+`Result` (step by step) are welcome. No error-type strategy has been
+settled yet, so do not ask for a specific one. (Maintainer review,
+2026-10-07)
 
 ### B5. Dependency hygiene
 
@@ -317,6 +383,12 @@ duplicate the dependency list are removed.
 > "this will be pulled in by the dependency mechanism, so might not be
 > necessary to list separately?" (xdggs #70)
 
+A package declares only the dependencies it uses directly; indirect
+dependencies are declared by the dependency. **Judgement**: there are
+valid reasons to constrain an indirect dependency, for example an
+undeclared incompatibility; then a comment saying so is enough.
+(Maintainer review, 2026-10-07)
+
 ### B6. Remove repetition with the language's idiom
 
 Repeated construction of the same default becomes a `Default` impl; a
@@ -324,6 +396,10 @@ repeated helper becomes a method.
 
 > "since this is being repeated multiple times, it might make sense to also
 > implement `Default` for the wasm `Ellipsoid` object?" (#234)
+
+Most of this is covered by clippy lints; leave those to clippy. Beyond
+them, ask for idiomatic code, which in Rust means making full use of the
+standard traits. (Maintainer review, 2026-10-07)
 
 ### B7. Change the function, don't wrap it
 
@@ -334,6 +410,10 @@ unchecked function.
 > "is there a reason why we don't just modify `spherical_vertex` directly?
 > All of this code is only for js, so no need to preserve the original
 > function." (#234)
+
+Internal functions can change without notice. If one needs to change and
+nothing else calls it, there is no reason to be conservative.
+(Maintainer review, 2026-10-07)
 
 ### B8. Correct normalisation and numeric conventions
 
@@ -391,6 +471,8 @@ dropped from the test method names.
 > `_face_neighbour_transform_` part in the name of the test functions."
 > (#251)
 
+In short: rely on the namespace. (Maintainer review, 2026-10-07)
+
 ### C2. Test the unit, not the dispatcher
 
 Call the lowest-level public entry point directly (`convention.decode`,
@@ -405,6 +487,12 @@ not `xdggs.decode`) so a test does not also exercise routing logic. Have
 > that way, we can have the tests of the higher-level API be less
 > extensive (like, one or two tests for each implementation)." (xdggs #28)
 
+That is what a unit test is by definition: the smallest possible unit,
+where "smallest" is the reviewer's judgement. Code should be designed so
+that unit tests are easy to write. If something is hard to test, the API
+may be the problem: reconsider the API before reaching for mocks or fakes.
+(Maintainer review, 2026-10-07)
+
 ### C3. Dummy data in tests signals an API problem
 
 If a test constructs an object only to satisfy a signature and never uses
@@ -412,6 +500,9 @@ it, the API probably wants to be a function or a property.
 
 > "the pattern of creating dummy data that is then not used to me
 > indicates that there's something wrong with the API" (xdggs #28)
+
+The same applies to tests that need mocks or fakes to run; see C2.
+(Maintainer review, 2026-10-07)
 
 ### C4. Explicit expected values for partial cases, reference implementation for full cases
 
@@ -437,6 +528,10 @@ separate, named tests.
 
 > (suggestion splitting `test_default_sphere` out of a combined test, #234)
 
+**Judgement.** He has no settled stance on this yet. It generally makes
+sense, but departing from it for a good reason is fine. (Maintainer
+review, 2026-10-07)
+
 ### C7. Tests assert properties of this library
 
 A test that only checks the behaviour of a reference implementation
@@ -451,7 +546,10 @@ hard-coded case.
 > "for now the test can stay an example test for partial overlaps ... and
 > for full overlaps we can compare with `polygon_search`" (#27)
 
-Added 2026-10-05 after the first manual run (PR #303).
+Added 2026-10-05 after the first manual run (PR #303). He confirmed it:
+testing another library makes no sense. If the other library is wrong,
+raise that with the other library, if possible. (Maintainer review,
+2026-10-07)
 
 ### C8. Parametrize; no fixtures, no loops inside tests
 
@@ -463,7 +561,10 @@ case failed; a fixture hides the inputs.
 > `test_inference.py`, `test_conversion.py` (his) versus a
 > `for depth in (...)` loop inside a test in `test_topology.py` (not his)
 
-Derived from his code, 2026-10-05.
+Derived from his code, 2026-10-05. The reason, in his words: parametrize
+gives one test per case. With a loop inside the test, a failure hides the
+later items, and fixing them becomes a game of whack-a-mole, which is bad
+developer experience. (Maintainer review, 2026-10-07)
 
 ### C9. Expected errors are a parametrised `context`
 
@@ -474,7 +575,9 @@ functions.
 
 > `tests/test_utils.py`, `test_inference.py::test_ellipsoid_like` (his)
 
-Derived from his code, 2026-10-05.
+Derived from his code, 2026-10-05. **Judgement**: this is his preference,
+and one test per error is valid too, so a separate error test alone is not
+a finding. (Maintainer review, 2026-10-07)
 
 ### C10. Default tolerances, `actual` / `expected`
 
@@ -485,23 +588,27 @@ comment saying where the number comes from.
 
 > `test_auto.py`, `test_inference.py` (his)
 
-Derived from his code, 2026-10-05.
+Derived from his code, 2026-10-05. **Judgement**: when there is a reason to
+change the tolerances, do so; a comment with the reasoning helps
+reviewers. (Maintainer review, 2026-10-07)
 
 ---
 
 ## D. Documentation
 
-### D1. numpydoc formatting and completeness
+### D1. numpydoc: leave the format to the linter
 
-A blank line precedes every section header. Every new public Python
-function has an `Examples` section (`>>> from healpix_geo.nested import X`,
-small literal arrays, result assigned then echoed; doctests run in CI).
-Math uses `:math:` and exact ranges. Section vocabulary is numpydoc's
-(`Parameters`, `Returns`, `Raises`, `See Also`, `Notes`, `Examples`);
-"Resume" is "Summary". The shared-parameter paragraphs (`ipix`, `depth`,
-`ellipsoid`, `num_threads`) are byte-identical across 52 of his functions;
-copy them, do not paraphrase. Enforced on new and changed functions only:
-9 of his own 22 public functions in `nested.py` still lack `Examples`.
+Docstrings follow numpydoc. The format (blank line before each section
+header, section names, an `Examples` section) is checked by numpydoc
+linters, so do not comment on it and do not spend review effort on it. If
+the repository does not run one, say so once in the summary.
+(Maintainer review, 2026-10-07)
+
+What a linter cannot check stays a finding. The shared-parameter
+paragraphs (`ipix`, `depth`, `ellipsoid`, `num_threads`) are
+byte-identical across 52 of his functions: copy them, do not paraphrase
+(see A3). Examples follow his pattern: `>>> from healpix_geo.nested import
+X`, small literal arrays, result assigned then echoed; doctests run in CI.
 
 > "the newline between sections is required" (#134)
 > "can you add examples for this?" (#134)
@@ -517,10 +624,16 @@ function's docstring.
 > "this is a reference page (i.e. a list of available functions), could we
 > move this to a user guide?" / "The signature is actually important" (#128)
 
+The underlying framework is Diataxis (https://diataxis.fr/): tutorials,
+how-to guides, reference and explanation are separate kinds of pages. He
+says he has not applied it consistently. (Maintainer review, 2026-10-07)
+
 ### D3. Terminology is precise
 
 - "indexing scheme", not "coordinate system", for nested / ring / zuniq.
-- "nested" and "ring" are English words: lowercase, never `NESTED`.
+- "nested" and "ring" are English words: lowercase, not `NESTED`. This
+  one is his personal preference, so it is a suggestion, not should-fix.
+  (Maintainer review, 2026-10-07)
 - A MOC (variable cell sizes) is distinct from the MOC-based index, which
   is an implementation detail.
 - `box_coverage` finds cells in a "spherical rectangle", not a "box
@@ -569,6 +682,10 @@ is the usual form.
 
 > "this part is outdated now ... Instead, we should credit the `geodesy`
 > and `moc` crates" (#248)
+
+**Judgement.** The docs must not mislead: outdated or wrong information is
+harmful. Placeholders are fine on a page that is still in progress, but not
+in released docs. (Maintainer review, 2026-10-07)
 
 ### D6. Structure follows the reader
 
@@ -624,17 +741,29 @@ tutorial.
 > between the different ellipsoids, so I'd probably try avoid that."
 > (#128)
 
+**Judgement** on when to link and when to explain. In general, link to an
+authoritative page when one exists, e.g. pyproj / PROJ pages for
+ellipsoidal geometry. (Maintainer review, 2026-10-07)
+
 ### D11. English, and no typos in prose
 
 Captions and headings are in English (`caption: User guide`). Obvious
-typos get a suggestion block.
+typos are fixed when spotted, with a suggestion block. (Confirmed in the
+maintainer review, 2026-10-07)
 
-### D12. Rust `///` docs where they become Python docstrings
+### D12. Every public function has a docstring, in the right file
 
-`#[pyclass]` and `#[pymethods]` items in the binding crate carry `///`
-docs (pyo3 turns them into Python docstrings; his `index.rs` has 49 such
-lines). In the core crate he wrote no `///` docs at all, so their absence
-there is not a finding, and when present they follow D8.
+Every public function has a docstring, whether in Rust, Python or JS. For
+Python bindings there is usually a Python wrapper function that carries
+the docstring, so the Rust function needs none or only a short one. Prefer
+writing the docstring in the Python file, especially when it has
+examples: docstrings in Python files are linted, docstrings in Rust are
+not. (Maintainer review, 2026-10-07)
+
+`#[pyclass]` and `#[pymethods]` items without a Python wrapper carry `///`
+docs, which pyo3 turns into Python docstrings (his `index.rs` has 49 such
+lines). In the core crate he wrote no `///` docs at all. Their absence on
+existing code is not a finding, and when present they follow D8.
 
 Derived from his code, 2026-10-05.
 
@@ -694,16 +823,27 @@ is not mergeable.
 
 Derived from his code, 2026-10-05.
 
+Leave the line-level linting of workflow files to the linters. Review only
+what they do not catch: triggers, permissions, what the job actually does.
+Ignoring a linter, especially zizmor, is usually a bad idea. If there is a
+valid reason, the PR says so explicitly and silences that particular lint
+with the tightest scope possible. A blanket disable is a finding.
+(Maintainer review, 2026-10-07)
+
 ---
 
 ## Severity labels used in reviews
 
 - **blocking**: A-section violations, B2, E1, E5. Must be fixed or
-  explicitly deferred with a named follow-up PR before merging.
-- **should-fix**: remaining B and C rules (B1, B10, C7 through C10
-  included), D1 formatting, D3 terminology, D12.
-- **suggestion**: D5 through D11, B6, C6. Usually a one-line suggestion
-  block.
+  explicitly deferred with a named follow-up PR before merging. For the
+  Judgement rules (A3, A9) and for B2 with a stated reason such as SIMD,
+  ask first; it is blocking only if the PR has no answer.
+- **should-fix**: remaining B and C rules (B1, B10, C7, C8, C10 included),
+  D1 content (shared-parameter paragraphs), D3 terminology, D12.
+- **suggestion**: D5 through D11, B6, C6, C9, all-caps scheme names (D3).
+  Usually a one-line suggestion block.
+- **not a finding**: anything a configured linter checks (D1 format,
+  clippy-level B6, workflow lint in E5).
 
 When a rule and his own existing code disagree (list in
 `corpus/commits.md`, "Contradictions"), hold *new* code to the rule and do
