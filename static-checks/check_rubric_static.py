@@ -7,8 +7,7 @@ each finding names the rubric rule so a false positive can be judged quickly.
 Rules covered (ids from rubric/REVIEW_RUBRIC.md):
 
 * D3  all-caps indexing scheme names (NESTED / RING / ZUNIQ) in prose and comments
-* D1  numpydoc section header without a blank line before it
-* D1  new public Python function in a top-level module without an ``Examples`` section
+      (reported as "suggestion": a maintainer preference, it does not affect the exit status)
 * C1  more than two top-level test functions for the same target not grouped in a class
 * B2  rayon parallel iterators used outside the ``maybe_parallelize!`` definition
 * B1  Python-side ``raise ValueError`` for a parameter whose Rust binding already validates
@@ -18,12 +17,15 @@ Rules covered (ids from rubric/REVIEW_RUBRIC.md):
 * A9  hand-written degree/radian conversion helpers in Rust
 * D11 non-English MyST toctree captions
 
+Not covered on purpose: the D1 docstring format (section headers, ``Examples``
+section) is left to a numpydoc linter such as ``numpydoc validate``.
+
 Usage::
 
     python static-checks/check_rubric_static.py [paths...]   # default: repository root
     python static-checks/check_rubric_static.py --changed    # only files changed vs. main
 
-Exit status 1 when any finding is reported, so it can gate CI if wanted.
+Exit status 1 when any finding other than a suggestion is reported, so it can gate CI if wanted.
 Python 3.9+, no third-party packages.
 """
 from __future__ import annotations
@@ -35,8 +37,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-NUMPYDOC_SECTIONS = ("Parameters", "Returns", "Yields", "Raises", "See Also", "Notes", "Examples",
-                     "References", "Warnings", "Attributes", "Methods", "Other Parameters")
+SUGGESTION_RULES = {"D3"}
 SKIP_DIRS = {".git", "target", "node_modules", ".pixi", "pkg", "dist", "build", "_build", "generated",
              "review-agent"}
 
@@ -80,38 +81,6 @@ def check_caps_scheme(paths, rep):
                 m = pat.search(line)
                 if m:
                     rep.add("D3", f, i, f"'{m.group(1)}' spelled all-caps; the scheme names are English words")
-
-
-def check_numpydoc(paths, rep):
-    for f in iter_files(paths, {".py"}):
-        lines = read(f).splitlines()
-        in_doc = False
-        for i, line in enumerate(lines, 1):
-            if line.count('"""') == 1:
-                in_doc = not in_doc
-                continue
-            if not in_doc:
-                continue
-            s = line.strip()
-            if s in NUMPYDOC_SECTIONS and i < len(lines) and set(lines[i].strip()) == {"-"}:
-                prev = lines[i - 2].strip() if i >= 2 else ""
-                if prev and not prev.endswith('"""'):
-                    rep.add("D1", f, i, f"no blank line before numpydoc section '{s}'")
-
-
-def check_examples_section(paths, rep):
-    """Public functions in healpix_geo/*.py (not tests, not private) should have Examples."""
-    for f in iter_files(paths, {".py"}):
-        if "tests" in f.parts or f.name.startswith("_") or "conftest" in f.name:
-            continue
-        text = read(f)
-        for m in re.finditer(r'^def (?P<name>[a-z][a-z0-9_]*)\(.*?\).*?:\n(?P<indent>\s+)r?"""(?P<doc>.*?)"""', text, re.S | re.M):
-            name, doc = m.group("name"), m.group("doc")
-            if name.startswith("_") or "Parameters" not in doc:
-                continue
-            if "Examples" not in doc:
-                line = text[: m.start()].count("\n") + 1
-                rep.add("D1", f, line, f"public function '{name}' has a numpydoc docstring without an Examples section")
 
 
 def check_test_grouping(paths, rep):
@@ -183,8 +152,7 @@ def check_toctree_captions(paths, rep):
                 rep.add("D11", f, i, "non-English toctree caption")
 
 
-CHECKS = [check_caps_scheme, check_numpydoc, check_examples_section, check_test_grouping,
-          check_parallelism, check_python_validation, check_placeholder_pages,
+CHECKS = [check_caps_scheme, check_test_grouping, check_parallelism, check_python_validation, check_placeholder_pages,
           check_rust_doc_paths, check_angle_helpers, check_toctree_captions]
 
 
@@ -216,10 +184,11 @@ def main() -> None:
     only = set(args.only.split(",")) if args.only else None
     findings = sorted(f for f in rep.findings if only is None or f[0] in only)
     for rule, path, line, msg in findings:
-        print(f"{path}:{line}: [{rule}] {msg}")
+        kind = " suggestion:" if rule in SUGGESTION_RULES else ""
+        print(f"{path}:{line}: [{rule}]{kind} {msg}")
     by_rule = collections.Counter(f[0] for f in findings)
     print(f"\n{len(findings)} findings" + (": " + ", ".join(f"{k} ×{v}" for k, v in sorted(by_rule.items())) if findings else ""))
-    sys.exit(1 if findings else 0)
+    sys.exit(1 if any(f[0] not in SUGGESTION_RULES for f in findings) else 0)
 
 
 if __name__ == "__main__":
